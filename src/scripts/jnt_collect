@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Collect entry_point for Janitoo
+"""
+__license__ = """
+    This file is part of Janitoo.
+
+    Janitoo is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Janitoo is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Janitoo. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+__author__ = 'Sébastien GALLET aka bibi21000'
+__email__ = 'bibi21000@gmail.com'
+__copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
+
+from pkg_resources import iter_entry_points
+
+def collect(key):
+    print "-------------------------------------------------------------------------------"
+    print "Group : %s" %key
+    collected = []
+    for entrypoint in iter_entry_points(group = key):
+        collected.append("%s" %(entrypoint))
+    collected.sort()
+    for coll in collected:
+        print " %s" %(coll)
+    print ""
+
+print "==============================================================================="
+
+collect("janitoo.threads")
+collect("janitoo.components")
+collect("janitoo.values")
+
+print "==============================================================================="
+collect("janitoo_web.socketio")
+collect("janitoo_web.views")
+collect("janitoo_web.template")
+
+print "==============================================================================="
+collect("janitoo_admin.socketio")
+collect("janitoo_admin.views")
+collect("janitoo_admin.widget")
+collect("janitoo_admin.network")
+

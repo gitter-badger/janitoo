@@ -1,0 +1,34 @@
+[janitoo.components]
+http.resource = janitoo.threads.http:make_http_resource
+scenes.scene = janitoo.threads.scenes:make_scene
+
+[janitoo.threads]
+email = janitoo.threads.email:make_thread
+http = janitoo.threads.http:make_thread
+scenes = janitoo.threads.scenes:make_thread
+
+[janitoo.values]
+action_byte = janitoo.value_factory.action:make_action_byte
+action_integer = janitoo.value_factory.action:make_action_integer
+action_list = janitoo.value_factory.action:make_action_list
+action_string = janitoo.value_factory.action:make_action_string
+config_array = janitoo.value_factory.config:make_config_array
+config_boolean = janitoo.value_factory.config:make_config_boolean
+config_float = janitoo.value_factory.config:make_config_float
+config_integer = janitoo.value_factory.config:make_config_integer
+config_password = janitoo.value_factory.config:make_config_password
+config_string = janitoo.value_factory.config:make_config_string
+ip_ping = janitoo.value_factory.other:make_ip_ping
+sensor_byte = janitoo.value_factory.sensor:make_sensor_byte
+sensor_current = janitoo.value_factory.sensor:make_sensor_current
+sensor_float = janitoo.value_factory.sensor:make_sensor_float
+sensor_frequency = janitoo.value_factory.sensor:make_sensor_frequency
+sensor_integer = janitoo.value_factory.sensor:make_sensor_integer
+sensor_memory = janitoo.value_factory.sensor:make_sensor_memory
+sensor_orientation = janitoo.value_factory.sensor:make_sensor_orientation
+sensor_percent = janitoo.value_factory.sensor:make_sensor_percent
+sensor_rotation_speed = janitoo.value_factory.sensor:make_sensor_rotation_speed
+sensor_string = janitoo.value_factory.sensor:make_sensor_string
+sensor_temperature = janitoo.value_factory.sensor:make_sensor_temperature
+sensor_voltage = janitoo.value_factory.sensor:make_sensor_voltage
+
