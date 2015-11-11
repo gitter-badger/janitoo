@@ -48,7 +48,8 @@ from utils import JanitooNotImplemented, HADD, HADD_SEP, CADD
 from mqtt import MQTTClient
 import uuid as muuid
 #We must NOT subsitute % in value for alembic (database section)
-from ConfigParser import RawConfigParser as ConfigParser
+import ConfigParser
+from ConfigParser import RawConfigParser
 from datetime import datetime, timedelta
 
 class JNTOptions(object):
@@ -84,7 +85,7 @@ class JNTOptions(object):
             return self._cache[section]
         try:
             if 'conf_file' in self.data and self.data['conf_file'] is not None:
-                config = ConfigParser()
+                config = RawConfigParser()
                 config.read([self.data['conf_file']])
                 #~ print "items ", config.items(section)
                 self._cache[section] = dict(config.items(section))
@@ -108,9 +109,9 @@ class JNTOptions(object):
             return self._cache[section][key]
         try:
             if 'conf_file' in self.data and self.data['conf_file'] is not None:
-                config = ConfigParser()
+                config = RawConfigParser()
                 config.read([self.data['conf_file']])
-                opt = config.get(section, key, None)
+                opt = config.get(section, key)
                 if default is None:
                     self._cache[section][key] = opt
                     return self._cache[section][key]
@@ -133,8 +134,8 @@ class JNTOptions(object):
                     return self._cache[section][key]
         except ConfigParser.NoOptionError:
             return default
-        #~ except ConfigParser.NoSectionError:
-        except:
+        except ConfigParser.NoSectionError:
+        #~ except ValueError: 
             return None
         return None
 
@@ -145,7 +146,7 @@ class JNTOptions(object):
             self.get_options(section)
         #print self.data['conf_file']
         if 'conf_file' in self.data and self.data['conf_file'] is not None:
-            config = ConfigParser()
+            config = RawConfigParser()
             config.read([self.data['conf_file']])
             if config.has_section(section) == False:
                 config.add_section(section)
@@ -163,7 +164,7 @@ class JNTOptions(object):
             self.get_options(section)
         #print self.data['conf_file']
         if 'conf_file' in self.data and self.data['conf_file'] is not None:
-            config = ConfigParser()
+            config = RawConfigParser()
             config.read([self.data['conf_file']])
             if config.has_section(section) == False:
                 config.add_section(section)
@@ -182,7 +183,7 @@ class JNTOptions(object):
         """
         #print self.data['conf_file']
         if 'conf_file' in self.data and self.data['conf_file'] is not None:
-            config = ConfigParser()
+            config = RawConfigParser()
             config.read([self.data['conf_file']])
             for key in data:
                 config.remove_option(section, key)
@@ -198,7 +199,7 @@ class JNTOptions(object):
         """
         #print self.data['conf_file']
         if 'conf_file' in self.data and self.data['conf_file'] is not None:
-            config = ConfigParser()
+            config = RawConfigParser()
             config.read([self.data['conf_file']])
             config.remove_section(section)
             with open(self.data['conf_file'], 'wb') as configfile:
@@ -236,14 +237,14 @@ def get_option_autostart(options, section):
     """
     #print self.data['conf_file']
     if 'conf_file' in options and options['conf_file'] is not None:
-        config = ConfigParser()
+        config = RawConfigParser()
         config.read([options['conf_file']])
         try:
             return config.getboolean(section, 'auto_start')
         except ValueError:
             return False
-        except ConfigParser.NoOptionError:
-            return False
+        #~ except :
+            #~ return False
         #~ except ConfigParser.NoSectionError:
             #~ return False
     return False
