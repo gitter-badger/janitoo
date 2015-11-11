@@ -23,7 +23,6 @@ __license__ = """
 __author__ = 'Sébastien GALLET aka bibi21000'
 __email__ = 'bibi21000@gmail.com'
 
-from sqlalchemy.orm import class_mapper
 from datetime import datetime
 import json
 from bson import json_util
@@ -100,23 +99,6 @@ class JanitooRuntime(JanitooException):
     def __init__(self, message=''):
         JanitooException.__init__(self, "Janitoo Runtime Exception", message=message, )
 
-def saobject_to_dict(obj, found=None):
-    if found is None:
-        found = set()
-    mapper = class_mapper(obj.__class__)
-    columns = [column.key for column in mapper.columns]
-    get_key_value = lambda c: (c, getattr(obj, c).isoformat()) if isinstance(getattr(obj, c), datetime) else (c, getattr(obj, c))
-    out = dict(map(get_key_value, columns))
-    for name, relation in mapper.relationships.items():
-        if relation not in found:
-            found.add(relation)
-            related_obj = getattr(obj, name)
-            if related_obj is not None:
-                if relation.uselist:
-                    out[name] = [saobject_to_dict(child, found) for child in related_obj]
-                else:
-                    out[name] = saobject_to_dict(related_obj, found)
-    return out
 
 def json_dumps(data_as_object):
     return json.dumps(data_as_object, default=json_util.default)
