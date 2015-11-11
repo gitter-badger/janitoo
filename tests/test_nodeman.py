@@ -34,9 +34,9 @@ from janitoo.server import JNTServer
 from janitoo.node import JNTNodeMan, JNTBusNodeMan
 from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
+from janitoo.threads.http import HttpBus
 import mock
 import uuid as muuid
-from janitoo.thread.http import HttpBus
 
 class TestNodeManagerState(TestJanitoo):
     """Test the network state machine
