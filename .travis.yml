@@ -9,4 +9,5 @@ install:
   - make travis-deps
   - python setup.py install
 # command to run tests
-script: nosetests
+script: 
+ - nosetests --verbosity=2 --cover-min-percentage= --with-coverage --cover-inclusive
