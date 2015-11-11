@@ -1207,6 +1207,12 @@ class JNTBusNodeMan(JNTNodeMan):
         #~ print components
         #~ return {}
 
+    def after_fsm_stop(self):
+        """
+        """
+        self.stop_bus()
+        JNTNodeMan.after_fsm_stop(self)
+
     def get_nodes_hadds_from_local_config(self):
         """ {'uuid':'hadd'}
         """
