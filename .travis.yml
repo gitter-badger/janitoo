@@ -6,8 +6,6 @@ python:
   - "pypy"
 # command to install dependencies
 install:
-  - sudo apt-get install python-daemon
   - python setup.py install
-  - sudo apt-get remove python-daemon
 # command to run tests
 script: nosetests

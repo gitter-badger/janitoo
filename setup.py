@@ -129,7 +129,7 @@ setup(
     keywords = "core, official",
     install_requires=[
                      'lockfile >= 0.10',
-                     'python-daemon == 2.0.5',
+                     'python-daemon',
                      'paho-mqtt >= 1.1',
                      'featmongo >= 0.1.2',
                      'transitions',
