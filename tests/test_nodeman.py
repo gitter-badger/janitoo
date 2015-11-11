@@ -35,8 +35,8 @@ from janitoo.node import JNTNodeMan, JNTBusNodeMan
 from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 import mock
-from janitoo_buses.i2c.smbus import I2CSmbus
 import uuid as muuid
+from janitoo.thread.http import HttpBus
 
 class TestNodeManagerState(TestJanitoo):
     """Test the network state machine
@@ -50,7 +50,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'hardware'
+        section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -63,12 +63,11 @@ class TestNodeManagerState(TestJanitoo):
         node_state.stop()
 
     def test_020_busnodeman_sfm_states(self):
-        from janitoo_buses.i2c.smbus import I2CSmbus
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = I2CSmbus(options=options)
-        section = 'i2csmbus'
+        bus = HttpBus(options=options)
+        section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -192,8 +191,8 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = I2CSmbus(options=options)
-        section = 'i2csmbus'
+        bus = HttpBus(options=options)
+        section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -221,8 +220,8 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = I2CSmbus(options=options)
-        section = 'i2csmbus'
+        bus = HttpBus(options=options)
+        section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -264,8 +263,8 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = I2CSmbus(options=options)
-        section = 'i2csmbus'
+        bus = HttpBus(options=options)
+        section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
