@@ -6,6 +6,7 @@ python:
   - "pypy"
 # command to install dependencies
 install:
+  - make travis-deps
   - python setup.py install
 # command to run tests
 script: nosetests
