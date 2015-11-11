@@ -10,4 +10,4 @@ install:
   - python setup.py install
 # command to run tests
 script: 
- - nosetests --verbosity=2 --cover-min-percentage= --with-coverage --cover-inclusive
+ - nosetests --verbosity=2 --cover-min-percentage= --with-coverage
