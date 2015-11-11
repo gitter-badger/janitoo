@@ -32,7 +32,7 @@ from pkg_resources import iter_entry_points
 
 from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
 from janitoo_nosetests.thread import JNTTThread, JNTTThreadCommon
-from janitoo_nosetests.packaging import JNTTPackaging, JNTTPackagingCommon
+#from janitoo_nosetests.packaging import JNTTPackaging, JNTTPackagingCommon
 
 from janitoo.utils import json_dumps, json_loads
 from janitoo.utils import HADD_SEP, HADD
@@ -51,7 +51,7 @@ COMMAND_DISCOVERY = 0x5000
 assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
-class TestPackage(JNTTPackaging, JNTTPackagingCommon):
-    """Test the package
-    """
-    pass
+#~ class TestPackage(JNTTPackaging, JNTTPackagingCommon):
+    #~ """Test the package
+    #~ """
+    #~ pass
