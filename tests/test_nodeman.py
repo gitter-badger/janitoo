@@ -189,8 +189,7 @@ class TestNodeManagerState(TestJanitoo):
             time.sleep(1)
 
     def test_120_busnode_state(self):
-        self.skipTest("Pass but freeze nosetests")
-        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
+       with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
         bus = HttpBus(options=options)
@@ -223,6 +222,7 @@ class TestNodeManagerState(TestJanitoo):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
         bus = HttpBus(options=options)
+        print bus
         section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:

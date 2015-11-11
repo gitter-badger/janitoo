@@ -1144,12 +1144,10 @@ class JNTBusNodeMan(JNTNodeMan):
         self.bus = bus
         self.uuid = thread_uuid
 
-    def stop_bus(self):
-        """Stop the bus
-        """
-        if self.bus != None:
-            self.bus.stop()
-        self.bus = None
+    #~ def stop_bus(self):
+        #~ """Stop the bus
+        #~ """
+        #~ self.bus.stop()
 
     def after_controller_reply_config(self):
         """Start the bus
@@ -1210,7 +1208,7 @@ class JNTBusNodeMan(JNTNodeMan):
     def after_fsm_stop(self):
         """
         """
-        self.stop_bus()
+        self.bus.stop()
         JNTNodeMan.after_fsm_stop(self)
 
     def get_nodes_hadds_from_local_config(self):
