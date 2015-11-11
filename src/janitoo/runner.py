@@ -387,7 +387,7 @@ def jnt_parse_args():
         config = ConfigParser()
         config.read([args.conf_file])
         if not os.path.isfile(args.conf_file):
-            raise IOError("Can't find %s. Im' here : %s"%(args.conf_file, os.getcwd()))
+            raise IOError("Can't find configuration file %s"%(args.conf_file))
         defaults = dict(config.items("system"))
         defaults['conf_file'] = conf_file
         if 'hostname' not in defaults or defaults['hostname'] is None:
