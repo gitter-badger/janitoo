@@ -39,7 +39,7 @@ from logging.config import fileConfig as logging_fileConfig
 import datetime
 import gc
 
-from janitoo.utils import saobject_to_dict, HADD, HADD_SEP, json_dumps, json_loads
+from janitoo.utils import HADD, HADD_SEP, json_dumps, json_loads
 from janitoo.utils import JanitooNotImplemented, JanitooException
 from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
 from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST

@@ -30,21 +30,13 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-try:  # Python 2.7+                                   # pragma: no cover
-    from logging import NullHandler                   # pragma: no cover
-except ImportError:                                   # pragma: no cover
-    class NullHandler(logging.Handler):               # pragma: no cover
-        """NullHandler logger for python 2.6"""       # pragma: no cover
-        def emit(self, record):                       # pragma: no cover
-            pass                                      # pragma: no cover
 logger = logging.getLogger('janitoo.dhcp')
-logger.addHandler(NullHandler())
 import os, sys
 import datetime
 import threading
 import sqlite3 as lite
 from transitions import Machine, State
-from janitoo.utils import saobject_to_dict, HADD, HADD_SEP
+from janitoo.utils import HADD, HADD_SEP
 from janitoo.utils import json_dumps, json_loads, hadd_split
 from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
 from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST, TOPIC_RESOLV_REQUEST, TOPIC_RESOLV, TOPIC_RESOLV_REPLY, TOPIC_RESOLV_BROADCAST
