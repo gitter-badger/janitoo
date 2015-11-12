@@ -46,7 +46,7 @@ class TestSerser(JNTTBase):
             self.assertEqual(server.options.get_options('database')['sqlalchemy.url'], 'sqlite:////tmp/janitoo_test/home/test_test.db')
 
     def test_020_server_start(self):
-        self.wipTest("Pass but freeze nosetests")
+        #~ self.wipTest("Pass but freeze nosetests")
         server = None
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
@@ -56,7 +56,7 @@ class TestSerser(JNTTBase):
         server.stop()
 
     def test_030_server_options(self):
-        self.skipTest("Pass but freeze nosetests")
+        #~ self.skipTest("Pass but freeze nosetests")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_server_conf_testing.conf']):
             options = vars(jnt_parse_args())
             server = JNTServer(options)
