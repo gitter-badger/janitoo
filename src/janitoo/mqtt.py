@@ -43,16 +43,7 @@ __copyright__ = "Copyright © 2013-2014 Sébastien GALLET aka bibi21000"
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-try:  # Python 2.7+                                   # pragma: no cover
-    from logging import NullHandler                   # pragma: no cover
-except ImportError:                                   # pragma: no cover
-    class NullHandler(logging.Handler):               # pragma: no cover
-        """NullHandler logger for python 2.6"""       # pragma: no cover
-        def emit(self, record):                       # pragma: no cover
-            pass                                      # pragma: no cover
 logger = logging.getLogger('janitoo.mqtt')
-logger.addHandler(NullHandler())
-
 import threading
 import paho.mqtt.client as mqtt
 import uuid as muuid
