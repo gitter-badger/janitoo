@@ -81,7 +81,6 @@ class TestNetworkState(TestJanitoo):
         net_state.stop()
 
     def test_100_network_state_primary(self):
-        #~ self.skipTest("Pass but freeze nosetests")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -105,7 +104,6 @@ class TestNetworkState(TestJanitoo):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_110_network_state_secondary(self):
-        #~ self.skipTest("Pass but freeze nosetests")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -129,7 +127,6 @@ class TestNetworkState(TestJanitoo):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_120_network_state_secondary_fail(self):
-        #~ self.skipTest("Pass but freeze nosetests")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -167,7 +164,7 @@ class TestNetworkState(TestJanitoo):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_130_network_state_secondary_random(self):
-        #~ self.skipTest("Pass but freeze nosetests")
+        self.skipTest("Pass but freeze nosetests")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()

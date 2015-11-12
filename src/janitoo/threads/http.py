@@ -72,7 +72,15 @@ def make_http_resource(**kwargs):
 class ThreadedHTTPHandler(SimpleHTTPRequestHandler):
     """
     """
-    pass
+    def translate_path(self, path):
+        #~ if self.path.startswith(PUBLIC_RESOURCE_PREFIX):
+            #~ if self.path == PUBLIC_RESOURCE_PREFIX or self.path == PUBLIC_RESOURCE_PREFIX + '/':
+                #~ return PUBLIC_DIRECTORY + '/index.html'
+            #~ else:
+                #~ return PUBLIC_DIRECTORY + path[len(PUBLIC_RESOURCE_PREFIX):]
+        #~ else:
+        #~ return SimpleHTTPServer.SimpleHTTPRequestHandler.translate_path(self, path)
+        return SimpleHTTPServer.SimpleHTTPRequestHandler.translate_path(self, self.server.root_directory + "/" + path)
 #~ class ThreadedHTTPHandler(BaseHTTPRequestHandler):
     #~ """
     #~ """
@@ -87,7 +95,9 @@ class ThreadedHTTPHandler(SimpleHTTPRequestHandler):
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
-    pass
+    def __init__(self, server_address, RequestHandlerClass, root_directory):
+        ThreadedHTTPServer.ThreadingTCPServer.__init__(self,server_address,RequestHandlerClass)
+        self.root_directory = root_directory
 
 class HttpServerThread(BaseThread):
     """The Rdd cache thread
@@ -132,8 +142,8 @@ class HttpServerThread(BaseThread):
         dirname = os.path.join(dirname, 'public')
         if not os.path.exists(dirname):
             os.makedirs(dirname)
-        os.chdir(dirname)
-        self._server = ThreadedHTTPServer((self.host, self.port), ThreadedHTTPHandler)
+        #~ os.chdir(dirname)
+        self._server = ThreadedHTTPServer((self.host, self.port), ThreadedHTTPHandler, root_directory=dirname)
 
     def post_loop(self):
         """Launch after finishing the run loop. The node manager is still available.

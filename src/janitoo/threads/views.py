@@ -141,7 +141,7 @@ class HttpServerThread(BaseThread):
         dirname = os.path.join(dirname, 'public')
         if not os.path.exists(dirname):
             os.makedirs(dirname)
-        os.chdir(dirname)
+        #~ os.chdir(dirname)
         self._server = ThreadedHTTPServer((self.host, self.port), ThreadedHTTPHandler)
 
     def post_loop(self):

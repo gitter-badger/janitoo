@@ -28,12 +28,13 @@ import time
 import unittest
 import threading
 import logging
-from common import TestJanitoo, SLEEP
+#~ from common import TestJanitoo, SLEEP
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
+from janitoo_nosetests import JNTTBase
 import mock
 
-class TestSerser(TestJanitoo):
+class TestSerser(JNTTBase):
     """Test the common server
     """
     prog='start.py'

@@ -135,7 +135,7 @@ class JNTOptions(object):
         except ConfigParser.NoOptionError:
             return default
         except ConfigParser.NoSectionError:
-        #~ except ValueError: 
+        #~ except ValueError:
             return None
         return None
 
@@ -241,12 +241,10 @@ def get_option_autostart(options, section):
         config.read([options['conf_file']])
         try:
             return config.getboolean(section, 'auto_start')
-        except ValueError:
+        except ConfigParser.NoOptionError:
             return False
-        #~ except :
-            #~ return False
-        #~ except ConfigParser.NoSectionError:
-            #~ return False
+        except ConfigParser.NoSectionError:
+            return False
     return False
 
 def string_to_bool(data):

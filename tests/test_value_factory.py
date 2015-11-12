@@ -84,7 +84,7 @@ class BaseConfig(BaseFactory):
     """Test the value factory
     """
     def test_030_value_entry_config(self):
-        self.skipTest("Pass but freeze nosetests")
+        #~ self.skipTest("Pass but freeze nosetests")
         print "entry_name ", self.entry_name
         entry_points = { }
         node_uuid='test_node'
@@ -148,7 +148,6 @@ class TestIpPing(TestFactory, BaseConfig, BasePoll):
     entry_name='ip_ping'
 
     def test_100_value_entry_config(self):
-        self.skipTest("Pass but freeze nosetests")
         print "entry_name ", self.entry_name
         entry_points = { }
         node_uuid='test_node'
