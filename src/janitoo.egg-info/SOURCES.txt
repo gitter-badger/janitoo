@@ -32,3 +32,5 @@ src/janitoo/value_factory/action.py
 src/janitoo/value_factory/config.py
 src/janitoo/value_factory/other.py
 src/janitoo/value_factory/sensor.py
+src/scripts/jnt_collect
+src/scripts/jnt_spy_root
