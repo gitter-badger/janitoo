@@ -1,6 +1,0 @@
-lockfile >= 0.10
-python-daemon
-paho-mqtt >= 1.1
-featmongo >= 0.1.2
-transitions
-mock
