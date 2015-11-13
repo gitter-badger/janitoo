@@ -37,10 +37,12 @@ NOSECOVER     = --cover-package=${MODULENAME} --cover-min-percentage= --with-cov
 
 DEBIANDEPS := $(shell [ -f debian.deps ] && cat debian.deps)
 
+TAGGED := $(shell git tag | grep -c v${janitoo_version} )
+
 -include CONFIG.make
 -include ../CONFIG.make
 
-.PHONY: help clean all build develop install uninstall clean-doc doc tests pylint deps
+.PHONY: help check-tag clean all build develop install uninstall clean-doc doc tests pylint deps
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
@@ -60,6 +62,7 @@ clean: clean-doc
 	-rm -rf $(ARCHBASE)
 	-rm -rf $(BUILDDIR)
 	-rm -f generated_doc
+	-rm -f janidoc
 	-@find . -name \*.pyc -delete
 
 uninstall:
@@ -95,6 +98,7 @@ doc: janidoc apidoc
 	-cp -Rf rst/* ${BUILDDIR}/janidoc/source
 	make -C ${BUILDDIR}/janidoc html
 	cp ${BUILDDIR}/janidoc/source/README.rst README.rst
+	-ln -s $(BUILDDIR)/docs/html generated_doc
 	@echo
 	@echo "Documentation finished."
 
@@ -135,29 +139,29 @@ egg:
 
 tar:
 	-mkdir -p $(DISTDIR)
-	-ln -s $(BUILDDIR)/docs/html generated_doc
-	tar cvjf $(DISTDIR)/${MODULENAME}-${janitoo_version}.tar.bz2 -h --exclude=\*.pyc --exclude=\*.egg-info --exclude=janidoc --exclude=$(BUILDDIR) --exclude=$(DISTDIR) --exclude=$(ARCHBASE) .
-	rm -f generated_doc
+	tar cvjf $(DISTDIR)/${MODULENAME}-${janitoo_version}.tar.bz2 -h --exclude=\*.pyc --exclude=\*.egg-info --exclude=janidoc --exclude=.git* --exclude=$(BUILDDIR) --exclude=$(DISTDIR) --exclude=$(ARCHBASE) .
 	@echo
 	@echo "Archive for ${MODULENAME} version ${janitoo_version} created"
 
-push:
+commit: develop tests doc
 	git commit -m "Auto-commit for docs" README.rst INSTALL_REPO.txt CHANGELOG.txt docs/
 	git push
 	@echo
 	@echo "Commits for branch master pushed on github."
 
-commit: push
-	@echo
-	@echo "Commits for branches master/python3 pushed on github."
-
-tag: commit
+tag: check-tag commit
 	git tag v${janitoo_version}
 	git push origin v${janitoo_version}
 	@echo
 	@echo "Tag pushed on github."
 
-new-version: tag tar ftp
+check-tag:
+ifneq ('${TAGGED}','0')
+	echo "Already tagged with version ${janitoo_version}"
+	@/bin/false
+endif
+
+new-version: tag tar
 	@echo
 	@echo "New version ${janitoo_version} created and published"
 
