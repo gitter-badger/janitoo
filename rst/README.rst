@@ -2,6 +2,15 @@
 janitoo
 =======
 
+.. image:: https://travis-ci.org/bibi21000/janitoo.svg?branch=master
+    :target: https://travis-ci.org/bibi21000/janitoo
+    :alt: Travis test status
+
+.. image:: https://travis-ci.org/bibi21000/janitoo.svg?branch=v0.0.6
+    :target: https://travis-ci.org/bibi21000/janitoo
+    :alt: Travis production status
+
+
 janitoo is a mqtt protocol for Home Automation
 
 
