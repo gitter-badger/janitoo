@@ -88,7 +88,7 @@ class TestArgParser(TestJanitoo):
             self.assertEqual(args['user'], 'janitoo')
             self.assertEqual(args['log_dir'], '/tmp/janitoo_test/log')
             self.assertEqual(args['home_dir'], '/tmp/janitoo_test/home')
-            self.assertEqual(args['pid_dir'], '/tmp/janitoo_test/var/run')
+            self.assertEqual(args['pid_dir'], '/tmp/janitoo_test/run')
             self.assertEqual(args['conf_dir'], '/tmp/janitoo_test/etc')
             self.assertEqual(args['broker_ip'], '127.0.0.1')
             self.assertEqual(args['broker_port'], '1883')
