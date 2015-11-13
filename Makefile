@@ -33,7 +33,7 @@ endif
 
 MODULENAME   = $(shell basename `pwd`)
 
-NOSECOVER     = --cover-package=${MODULENAME} --cover-min-percentage= --with-coverage --cover-inclusive --cover-tests --cover-html --cover-html-dir=${BUILDDIR}/docs/html/tools/coverage --with-html --html-file=${BUILDDIR}/docs/html/tools/nosetests/index.html
+NOSECOVER     = --cover-package=janitoo,janitoo_db,${MODULENAME} --cover-min-percentage= --with-coverage --cover-inclusive --cover-tests --cover-html --cover-html-dir=${BUILDDIR}/docs/html/tools/coverage --with-html --html-file=${BUILDDIR}/docs/html/tools/nosetests/index.html
 
 DEBIANDEPS := $(shell [ -f debian.deps ] && cat debian.deps)
 
@@ -161,7 +161,7 @@ ifneq ('${TAGGED}','0')
 	@/bin/false
 endif
 
-new-version: tag tar
+new-version: tag clean tar
 	@echo
 	@echo "New version ${janitoo_version} created and published"
 
