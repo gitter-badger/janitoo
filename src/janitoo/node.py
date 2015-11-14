@@ -511,7 +511,10 @@ class JNTNodeMan(object):
         #~ print self.config_timeout
         #~ print self._controller.name
         #~ print self._controller.location
-        self.after_controller_reply_config()
+        try:
+            self.after_controller_reply_config()
+        except:
+            logger.exception("Exception when starting coontroller")
         self.fsm_state_next()
 
     def stop_controller_reply_config(self):
