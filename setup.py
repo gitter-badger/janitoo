@@ -133,7 +133,7 @@ setup(
                      'paho-mqtt >= 1.1',
                      'featmongo >= 0.1.2',
                      'transitions',
-                     'mock',
+                     'mock == 1.0.1',
                     ],
     entry_points = janitoo_entry_points,
 )
