@@ -472,7 +472,7 @@ class MQTTClient(threading.Thread):
             #~ #print "Ok"
             #~ rc = self._mqttc.loop_forever()
         while not self._stopevent.isSet():
-            self._mqttc.loop()
+            self._mqttc.loop(timeout=0.25)
         return 0
 
     def stop(self):
