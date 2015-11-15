@@ -118,7 +118,7 @@ class BaseThread(threading.Thread):
         """
         try:
             self.loop_sleep = float(self.options.get_option(self.section, 'loop_sleep'))
-        except ValueError:
+        except:
             logger.warning("[%s] - C'ant set loop_sleep from configuration file. Using default valuse %s", self.__class__.__name__, self.loop_sleep)
 
     def post_loop(self):
