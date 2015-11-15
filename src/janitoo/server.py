@@ -103,8 +103,8 @@ class JNTServer(object):
             try:
                 mkth = entry.load()
                 th = mkth(self.options.data)
-            except ImportError:
-                logger.exception("[%s] - Exception when loading thread from entry_point", self.__class__.__name__)
+            except:
+                logger.exception("[%s] - Exception when loading thread from entry_point : %s", self.__class__.__name__, entry.name)
             if th is not None:
                 self._threads.append(th)
         for th in self._threads:
