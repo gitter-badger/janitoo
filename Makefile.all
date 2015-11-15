@@ -1,0 +1,225 @@
+# Makefile for janitoo
+#
+
+# You can set these variables from the command line.
+ARCHBASE      = archive
+BUILDDIR      = build
+DISTDIR       = dists
+NOSE          = $(shell which nosetests)
+NOSEOPTS      = --verbosity=2
+#NOSECOVER     = --cover-package=janitoo,janitoo_db,janitoo_dhcp,janitoo_pi,janitoo_roomba,janitoo_samsung,janitoo_buses,janitoo_web,janitoo_admin,janitoo_datalog,janitoo_events,janitoo_events_earth --cover-min-percentage= --with-coverage --cover-inclusive --cover-tests --cover-html --cover-html-dir=docs/html/functional/coverage --with-html --html-file=docs/html/functional/nosetests/nosetests.html
+NOSECOVER     =
+PYLINT        = $(shell which pylint)
+PYLINTOPTS    = --max-line-length=140 --max-args=9 --extension-pkg-whitelist=zmq --ignored-classes=zmq --min-public-methods=0
+
+-include CONFIG.make
+
+ifndef PYTHON_EXEC
+PYTHON_EXEC=python
+endif
+
+ifdef VIRTUAL_ENV
+python_version_full := $(wordlist 2,4,$(subst ., ,$(shell ${VIRTUAL_ENV}/bin/${PYTHON_EXEC} --version 2>&1)))
+else
+python_version_full := $(wordlist 2,4,$(subst ., ,$(shell ${PYTHON_EXEC} --version 2>&1)))
+endif
+
+janitoo_version := $(shell ${PYTHON_EXEC} _version.py)
+
+python_version_major = $(word 1,${python_version_full})
+python_version_minor = $(word 2,${python_version_full})
+python_version_patch = $(word 3,${python_version_full})
+
+PIP_EXEC=pip
+ifeq (${python_version_major},3)
+	PIP_EXEC=pip3
+endif
+
+ARCHNAME     = janitoo-${janitoo_version}
+ARCHDIR      = ${ARCHBASE}/${ARCHNAME}
+
+SUBMODULES   = $(shell find . -iname jani\* -type d -maxdepth 1|sort)
+
+.PHONY: help clean all update build develop install install-api uninstall clean-docs docs autobuild-tests tests pylint commit developper-deps python-deps autobuild-deps arch-deps common-deps cython-deps merge-python3
+
+help:
+	@echo "Please use \`make <target>' where <target> is one of"
+	@echo "  build           : build janitoo"
+	@echo "  develop         : install janitoo for developpers"
+	@echo "  install         : install janitoo for users"
+	@echo "  uninstall       : uninstall janitoo"
+	@echo "  developper-deps : install dependencies for developpers"
+	@echo "  deps            : install dependencies for users"
+	@echo "  docs       	 : make documentation"
+	@echo "  tests           : launch tests"
+	@echo "  commit          : publish janitoo updates on GitHub"
+	@echo "  clean           : clean the development directory"
+	@echo "  update          : update sources of janitoo and openzwave"
+
+clean: clean-docs clean-archive
+	for module in ${SUBMODULES};do make -C $$module clean; done
+	-rm -rf $(BUILDDIR)
+	-find . -name \*.pyc -delete
+
+clean-dist:
+	for module in ${SUBMODULES};do make -C $$module clean-dist; done
+	@echo
+	@echo "Archives created"
+
+uninstall:
+	for module in ${SUBMODULES};do make -C $$module uninstall; done
+	-@find . -name \*.egg-info -type d -exec rm -rf "{}" \;
+
+developper-deps: common-deps cython-deps tests-deps pip-deps doc-deps
+	@echo
+	@echo "Dependencies for developpers of janitoo installed (python ${python_version_full})"
+
+autobuild-deps: common-deps cython-deps tests-deps pip-deps
+	apt-get install -y git
+	@echo
+	@echo "Dependencies for autobuilders (docker, travis, ...) installed (python ${python_version_full})"
+
+arch-deps: common-deps pip-deps
+	@echo
+	@echo "Dependencies for users installed (python ${python_version_full})"
+
+python-deps:
+ifeq (${python_version_major},2)
+	apt-get install -y python2.7 python2.7-dev python2.7-minimal
+endif
+ifeq (${python_version_major},3)
+	-apt-get install -y python3 python3-dev python3-minimal
+endif
+
+cython-deps:
+ifeq (${python_version_major},2)
+	apt-get install -y cython
+endif
+ifeq (${python_version_major},3)
+	-apt-get install -y cython3
+endif
+
+common-deps:
+	@echo Installing dependencies for python : ${python_version_full}
+ifeq (${python_version_major},2)
+	apt-get install -y python-pip python-dev python-docutils python-setuptools python-louie
+endif
+ifeq (${python_version_major},3)
+	-apt-get install -y python3-pip python3-docutils python3-dev python3-setuptools
+endif
+	apt-get install -y build-essential libudev-dev g++
+
+tests-deps:
+	${PIP_EXEC} install pylint
+	${PIP_EXEC} install mock
+
+doc-deps:
+	-apt-get install -y python-sphinx
+	${PIP_EXEC} install sphinxcontrib-blockdiag sphinxcontrib-actdiag sphinxcontrib-nwdiag sphinxcontrib-seqdiag
+
+pip-deps:
+	#${PIP_EXEC} install docutils
+	#${PIP_EXEC} install setuptools
+	#The following line crashes with a core dump
+	#${PIP_EXEC} install "Cython==0.22"
+
+merge-python3:
+	#git checkout python3
+	#git merge -m "Auto-merge from master" master
+	#git push
+	#git checkout master
+	#@echo
+	#@echo "Commits for branch python3 pushed on github."
+
+clean-doc:
+	-rm -Rf docs
+
+commit:
+	make -C $(module) commit
+
+pull:
+	make -C $(module) pull
+
+pull-all:
+	for module in ${SUBMODULES};do make -C $$module pull; done
+
+status:
+	make -C $(module) status
+
+status-all:
+	for module in ${SUBMODULES};do make -C $$module status; done
+
+pylint-all:
+	for module in ${SUBMODULES};do make -C $$module pylint; done
+
+pylint:
+	make -C $(module) pylint
+
+doc-all: clean-doc
+	-mkdir -p docs
+	for module in ${SUBMODULES};do make -C $$module doc; done
+	for module in ${SUBMODULES};do cp -Rf $$module/${BUILDDIR}/docs/html docs/$$module; done
+	@echo
+	@echo "Documentation finished."
+
+doc:
+	make -C $(module) doc
+
+install:
+	make -C $(module) install
+
+install-all:
+	for module in ${SUBMODULES};do make -C $$module install; done
+	@echo
+	@echo "Installation for users finished."
+
+develop:
+	make -C $(module) develop
+
+develop-all:
+	make -C janitoo develop
+	make -C janitoo_packaging develop
+	make -C janitoo_db develop
+	make -C janitoo_web develop
+	for module in ${SUBMODULES};do make -C $$module develop; done
+	@echo
+	@echo "Installation for developpers of janitoo finished."
+
+tests:
+	make -C $(module) tests
+
+tests-all:
+	for module in ${SUBMODULES};do make -C $$module tests; done
+	@echo
+	@echo "Tests for janitoo finished."
+
+coverage-all:
+	-mkdir -p docs/tools/coverage
+	-mkdir -p docs/tools/nosetests
+	-rm -rf .coverage
+	-mkdir -p .coverage
+	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage/coverage._$$target"; done
+	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage/coverage._$$target" ".coverage/.coverage._$$target"; done
+	cd .coverage && coverage combine
+	cd .coverage && coverage html -d ../docs/tools/coverage/
+	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/build/docs/html/tools/nosetests/index.html "docs/tools/nosetests/$$target.html"; done
+	@echo
+	@echo "Coverage for janitoo finished."
+
+clean-archive:
+	-rm -rf $(ARCHBASE)
+
+$(ARCHDIR):
+	-mkdir -p $(ARCHDIR)/src-common
+	-mkdir -p $(ARCHDIR)/src-dhcp
+	cp -Rf src-common $(ARCHDIR)/src-common/
+	cp -Rf src-dhcp $(ARCHDIR)/src-dhcp/
+	-find $(ARCHDIR) -name \*.pyc -delete
+
+tar:
+	make -C $(module) tar
+
+tar-all:
+	for module in ${SUBMODULES};do make -C $$module tar; done
+	@echo
+	@echo "Archives created"
