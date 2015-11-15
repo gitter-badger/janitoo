@@ -66,6 +66,9 @@ def make_config_boolean(**kwargs):
 def make_config_array(**kwargs):
     return JNTValueConfigArray(**kwargs)
 
+def make_config_list(**kwargs):
+    return JNTValueConfigList(**kwargs)
+
 class JNTValueConfigGeneric(JNTValueFactoryEntry):
     """
     """
@@ -121,6 +124,17 @@ class JNTValueConfigString(JNTValueConfigGeneric):
         index = kwargs.pop('index', 0)
         JNTValueConfigGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, type=0x08, **kwargs)
+
+class JNTValueConfigList(JNTValueConfigGeneric):
+    def __init__(self, entry_name="config_list", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A string')
+        label = kwargs.pop('label', 'String')
+        list_items = kwargs.pop('list_items', ['value1', 'value2'])
+        index = kwargs.pop('index', 0)
+        JNTValueConfigGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
+            index=index, type=0x05, list_items=list_items, **kwargs)
 
 class JNTValueConfigPassword(JNTValueConfigGeneric):
     def __init__(self, entry_name="config_password", **kwargs):

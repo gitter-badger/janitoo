@@ -130,11 +130,12 @@ class JNTNodeMan(object):
         """
         pass
 
-    def start(self, trigger_reload=None, loop_sleep=0.1):
+    def start(self, trigger_reload=None, loop_sleep=0.05):
         """
         """
         if trigger_reload is not None:
             self.trigger_reload = trigger_reload
+        self.loop_sleep = loop_sleep
         self.fsm_state = Machine(model=self, states=self.fsm_states, initial='OFFLINE')
         self.fsm_state.add_ordered_transitions()
         self.fsm_state.add_transition('fsm_state_start', 'OFFLINE', 'BOOT')
@@ -967,7 +968,7 @@ class JNTNodeMan(object):
                 if stopevent is not None:
                     stopevent.wait(0.02)
 
-    def publish_poll(self, mqttc, value, stopevent):
+    def publish_poll(self, mqttc, value, stopevent=None):
         """
         """
         node = self.nodes[value.node_uuid]

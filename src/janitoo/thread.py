@@ -116,7 +116,10 @@ class BaseThread(threading.Thread):
     def pre_loop(self):
         """Launch before entering the run loop. The node manager is available.
         """
-        pass
+        try:
+            self.loop_sleep = float(self.options.get_option(self.section, 'loop_sleep'))
+        except ValueError:
+            logger.warning("[%s] - C'ant set loop_sleep from configuration file. Using default valuse %s", self.__class__.__name__, self.loop_sleep)
 
     def post_loop(self):
         """Launch after finishing the run loop. The node manager is still available.

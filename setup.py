@@ -89,6 +89,7 @@ janitoo_entry_points = {
         "config_string = janitoo.value_factory.config:make_config_string",
         "config_password = janitoo.value_factory.config:make_config_password",
         "config_integer = janitoo.value_factory.config:make_config_integer",
+        "config_list = janitoo.value_factory.config:make_config_list",
         "config_float = janitoo.value_factory.config:make_config_float",
         "action_string = janitoo.value_factory.action:make_action_string",
         "action_byte = janitoo.value_factory.action:make_action_byte",

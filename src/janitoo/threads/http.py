@@ -74,27 +74,9 @@ class ThreadedHTTPHandler(SimpleHTTPRequestHandler):
     """
     """
     def translate_path(self, path):
-        #~ if self.path.startswith(PUBLIC_RESOURCE_PREFIX):
-            #~ if self.path == PUBLIC_RESOURCE_PREFIX or self.path == PUBLIC_RESOURCE_PREFIX + '/':
-                #~ return PUBLIC_DIRECTORY + '/index.html'
-            #~ else:
-                #~ return PUBLIC_DIRECTORY + path[len(PUBLIC_RESOURCE_PREFIX):]
-        #~ else:
-        #~ return SimpleHTTPServer.SimpleHTTPRequestHandler.translate_path(self, path)
         logger.debug("[%s] - Request page for %s", self.__class__.__name__, path)
         logger.debug("[%s] - Serve files from %s", self.__class__.__name__, self.server.root_directory + path)
         return SimpleHTTPRequestHandler.translate_path(self, self.server.root_directory + path)
-#~ class ThreadedHTTPHandler(BaseHTTPRequestHandler):
-    #~ """
-    #~ """
-    #~ pass
-    #~ def do_GET(self):
-        #~ self.send_response(200)
-        #~ self.end_headers()
-        #~ message =  threading.currentThread().getName()
-        #~ self.wfile.write(message)
-        #~ self.wfile.write('\n')
-        #~ return
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
