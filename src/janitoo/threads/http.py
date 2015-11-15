@@ -33,7 +33,10 @@ import threading
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SimpleHTTPServer import SimpleHTTPRequestHandler
 from SocketServer import ThreadingMixIn
+from distutils.dir_util import copy_tree
+import shutil
 from pkg_resources import get_distribution, DistributionNotFound, resource_filename, Requirement
+
 from janitoo.thread import JNTBusThread, BaseThread
 from janitoo.options import get_option_autostart
 from janitoo.utils import HADD
@@ -41,8 +44,6 @@ from janitoo.node import JNTNode
 from janitoo.value import JNTValue
 from janitoo.component import JNTComponent
 from janitoo.bus import JNTBus
-from distutils.dir_util import copy_tree
-import shutil
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -80,7 +81,9 @@ class ThreadedHTTPHandler(SimpleHTTPRequestHandler):
                 #~ return PUBLIC_DIRECTORY + path[len(PUBLIC_RESOURCE_PREFIX):]
         #~ else:
         #~ return SimpleHTTPServer.SimpleHTTPRequestHandler.translate_path(self, path)
-        return SimpleHTTPServer.SimpleHTTPRequestHandler.translate_path(self, self.server.root_directory + "/" + path)
+        logger.debug("[%s] - Request page for %s", self.__class__.__name__, path)
+        logger.debug("[%s] - Serve files from %s", self.__class__.__name__, self.server.root_directory + path)
+        return SimpleHTTPRequestHandler.translate_path(self, self.server.root_directory + path)
 #~ class ThreadedHTTPHandler(BaseHTTPRequestHandler):
     #~ """
     #~ """
@@ -96,7 +99,7 @@ class ThreadedHTTPHandler(SimpleHTTPRequestHandler):
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     """Handle requests in a separate thread."""
     def __init__(self, server_address, RequestHandlerClass, root_directory):
-        ThreadedHTTPServer.ThreadingTCPServer.__init__(self,server_address,RequestHandlerClass)
+        HTTPServer.__init__(self, server_address, RequestHandlerClass)
         self.root_directory = root_directory
 
 class HttpServerThread(BaseThread):
@@ -143,6 +146,9 @@ class HttpServerThread(BaseThread):
         if not os.path.exists(dirname):
             os.makedirs(dirname)
         #~ os.chdir(dirname)
+        if dirname.endswith("/"):
+            dirname = dirname[:-1]
+        logger.debug("[%s] - dirname %s", self.__class__.__name__, dirname)
         self._server = ThreadedHTTPServer((self.host, self.port), ThreadedHTTPHandler, root_directory=dirname)
 
     def post_loop(self):

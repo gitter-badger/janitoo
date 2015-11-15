@@ -188,7 +188,7 @@ class Runner(object):
         #print "Here"
         try:
             self.daemon_context.open()
-        except PIDLockFile.AlreadyLocked:
+        except TimeoutPIDLockFile.AlreadyLocked:
             pidfile_path = self.pidfile.path
             raise RunnerStartFailureError(
                 "PID file %(pidfile_path)r already locked" % vars())
