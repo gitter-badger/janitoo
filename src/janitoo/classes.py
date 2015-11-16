@@ -164,8 +164,14 @@ COMMAND_DESC = {
         0x2101: 'COMMAND_AV_VOLUME',
         0x2102: 'COMMAND_AV_SOURCE',
 
+#camera
+        0x2200: 'COMMAND_CAMERA_PREVIEW',
+        0x2201: 'COMMAND_CAMERA_PHOTO',
+        0x2202: 'COMMAND_CAMERA_VIDEO',
+        0x2203: 'COMMAND_CAMERA_STREAM',
+
 #datalog
-        0x2200: 'COMMAND_LOG',
+        0x2800: 'COMMAND_LOG',
 
 #
         0x3000: 'COMMAND_BUTTON',

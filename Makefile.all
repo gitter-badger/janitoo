@@ -177,10 +177,11 @@ develop:
 	make -C $(module) develop
 
 develop-all:
-	make -C janitoo develop
-	make -C janitoo_packaging develop
-	make -C janitoo_db develop
-	make -C janitoo_web develop
+	-make -C janitoo develop
+	-make -C janitoo_packaging develop
+	-make -C janitoo_db develop
+	-make -C janitoo_flask develop
+	-make -C janitoo_web develop
 	for module in ${SUBMODULES};do make -C $$module develop; done
 	@echo
 	@echo "Installation for developpers of janitoo finished."
