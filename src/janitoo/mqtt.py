@@ -47,7 +47,8 @@ logger = logging.getLogger('janitoo.mqtt')
 import threading
 import paho.mqtt.client as mqtt
 import uuid as muuid
-from utils import JanitooNotImplemented, HADD, json_dumps
+
+from janitoo.utils import JanitooNotImplemented, HADD, json_dumps
 
 class MQTTClient(threading.Thread):
     def __init__(self, clientid=None, options={}):

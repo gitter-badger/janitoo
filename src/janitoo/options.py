@@ -44,13 +44,15 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
 logger = logging.getLogger( "janitoo" )
-from utils import JanitooNotImplemented, HADD, HADD_SEP, CADD
-from mqtt import MQTTClient
+
 import uuid as muuid
 #We must NOT subsitute % in value for alembic (database section)
 import ConfigParser
 from ConfigParser import RawConfigParser
 from datetime import datetime, timedelta
+
+from janitoo.utils import JanitooNotImplemented, HADD, HADD_SEP, CADD
+from janitoo.mqtt import MQTTClient
 
 class JNTOptions(object):
     def __init__(self, options={}):

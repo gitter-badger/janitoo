@@ -30,18 +30,20 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-logger = logging.getLogger( __name__ )
-from value import JNTValue
-from value_factory import JNTValueFactoryEntry
-import value
-from utils import HADD, HADD_SEP, json_dumps, json_loads
+logger = logging.getLogger( "janitoo" )
+
+import datetime
+import threading
+from transitions import Machine, State
+
+import janitoo.value
+from janitoo.value import JNTValue
+from janitoo.value_factory import JNTValueFactoryEntry
+from janitoo.utils import HADD, HADD_SEP, json_dumps, json_loads
 from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
 from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST
 from janitoo.utils import TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_BASIC, TOPIC_VALUES_SYSTEM, TOPIC_HEARTBEAT
-import datetime
-from transitions import Machine, State
-from mqtt import MQTTClient
-import threading
+from janitoo.mqtt import MQTTClient
 from janitoo.options import string_to_bool
 
 ##############################################################
@@ -125,12 +127,17 @@ class JNTNodeMan(object):
         self.state = "OFFLINE"
         self.trigger_reload = None
 
+    def __del__(self):
+        """
+        """
+        self.stop()
+
     def trigger_reload(self):
         """
         """
         pass
 
-    def start(self, trigger_reload=None, loop_sleep=0.05):
+    def start(self, trigger_reload=None, loop_sleep=0.1):
         """
         """
         if trigger_reload is not None:
@@ -1424,19 +1431,19 @@ class JNTNode(object):
     def add_internal_system_values(self):
         """
         """
-        myval = value.value_system_heartbeat(get_data_cb=self.heartbeat_get, set_data_cb=self.heartbeat_set)
+        myval = janitoo.value.value_system_heartbeat(get_data_cb=self.heartbeat_get, set_data_cb=self.heartbeat_set)
         self.add_value(myval.uuid, myval)
-        myval = value.value_system_hadd(get_data_cb=self.hadd_get, set_data_cb=self.hadd_set)
+        myval = janitoo.value.value_system_hadd(get_data_cb=self.hadd_get, set_data_cb=self.hadd_set)
         self.add_value(myval.uuid, myval)
-        myval = value.value_system_config_timeout(get_data_cb=self.config_timeout_get, set_data_cb=self.config_timeout_set)
+        myval = janitoo.value.value_system_config_timeout(get_data_cb=self.config_timeout_get, set_data_cb=self.config_timeout_set)
         self.add_value(myval.uuid, myval)
 
     def add_internal_config_values(self):
         """
         """
-        myval = value.value_config_name(get_data_cb=self.name_get, set_data_cb=self.name_set)
+        myval = janitoo.value.value_config_name(get_data_cb=self.name_get, set_data_cb=self.name_set)
         self.add_value(myval.uuid, myval)
-        myval = value.value_config_location(get_data_cb=self.location_get, set_data_cb=self.location_set)
+        myval = janitoo.value.value_config_location(get_data_cb=self.location_get, set_data_cb=self.location_set)
         self.add_value(myval.uuid, myval)
 
     def add_value(self, uuid, value):

@@ -25,15 +25,12 @@ __author__ = 'Sébastien GALLET aka bibi21000'
 __email__ = 'bibi21000@gmail.com'
 __copyright__ = "Copyright © 2013-2014 Sébastien GALLET aka bibi21000"
 
-# Set default logging handler to avoid "No handler found" warnings.
 import logging
 logger = logging.getLogger('janitoo')
-import threading
-import uuid as muuid
-import ConfigParser
 from pkg_resources import resource_filename, Requirement, iter_entry_points
-from utils import JanitooNotImplemented, HADD
-from node import JNTNode
+
+from janitoo.utils import JanitooNotImplemented, HADD
+from janitoo.node import JNTNode
 
 class JNTComponent(object):
     def __init__(self, oid='generic.generic', bus=None, addr=None, **kwargs):

@@ -31,11 +31,12 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
 logger = logging.getLogger('janitoo.dhcp')
+
 import os, sys
 import datetime
 import threading
-import sqlite3 as lite
 from transitions import Machine, State
+
 from janitoo.utils import HADD, HADD_SEP
 from janitoo.utils import json_dumps, json_loads, hadd_split
 from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
@@ -470,6 +471,11 @@ class JNTNetwork(object):
         #~ self._replies = {'request_info_nodes' : self.add_nodes, 'request_info_users' : self.add_users, 'request_info_configs' : self.add_configs,
             #~ 'request_info_systems' : self.add_systems, 'request_info_basics' : self.add_basics, 'request_info_commands' : self.add_commands }
 
+    def __del__(self):
+        """
+        """
+        self.stop()
+
     @property
     def is_failed(self):
         """
@@ -500,10 +506,11 @@ class JNTNetwork(object):
         self._is_failed = False
         self.emit_network()
 
-    def start(self):
+    def start(self, loop_sleep=0.1):
         """Start the network
         """
         self.heartbeat_cache = CacheManager()
+        self.loop_sleep = loop_sleep
         options = self.options.get_options('network')
         self.from_dict(options)
         if self.is_primary and self.is_secondary:
@@ -1625,11 +1632,11 @@ class JNTNetwork(object):
         msg = { 'cmd_class': COMMAND_DISCOVERY, 'genre':0x04, 'uuid':'request_info_commands', 'reply_hadd':self.hadds[0]}
         self.resolv_mqttc.publish(TOPIC_RESOLV_REQUEST, json_dumps(msg))
 
-    def boot(self, hadds):
+    def boot(self, hadds, loop_sleep=0.1):
         """Boot the node manager
         """
         self.hadds = hadds
-        self.start()
+        self.start(loop_sleep=loop_sleep)
 
     def on_heartbeat(self, client, userdata, message):
         """on_heartbeat
@@ -1928,7 +1935,7 @@ class JNTNetwork(object):
         except ValueError:
             sleep = 0
         if sleep<0:
-            sleep=0
+            sleep=0.1
         self._stopevent.wait(sleep)
 
     @property

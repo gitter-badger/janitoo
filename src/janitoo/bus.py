@@ -25,22 +25,12 @@ __author__ = 'Sébastien GALLET aka bibi21000'
 __email__ = 'bibi21000@gmail.com'
 __copyright__ = "Copyright © 2013-2014 Sébastien GALLET aka bibi21000"
 
-import threading
-from utils import JanitooNotImplemented, HADD
-import uuid as muuid
-import ConfigParser
+import logging
+logger = logging.getLogger( "janitoo" )
+
 from pkg_resources import iter_entry_points
 
-# Set default logging handler to avoid "No handler found" warnings.
-import logging
-try:  # Python 2.7+                                   # pragma: no cover
-    from logging import NullHandler                   # pragma: no cover
-except ImportError:                                   # pragma: no cover
-    class NullHandler(logging.Handler):               # pragma: no cover
-        """NullHandler logger for python 2.6"""       # pragma: no cover
-        def emit(self, record):                       # pragma: no cover
-            pass                                      # pragma: no cover
-logger = logging.getLogger( __name__ )
+from utils import JanitooNotImplemented, HADD
 from janitoo.node import JNTNode
 
 ##############################################################

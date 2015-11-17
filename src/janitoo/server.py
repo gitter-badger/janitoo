@@ -88,6 +88,11 @@ class JNTServer(object):
             except:
                 logger.exception("[%s] - Exception when retrieving value of slow_start. Use default value instead", self.__class__.__name__)
 
+    def __del__(self):
+        """
+        """
+        self.stop()
+
     def start(self):
         """Start the server. Must be called at the end of the children class.
         """

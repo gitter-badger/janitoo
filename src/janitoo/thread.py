@@ -77,6 +77,11 @@ class BaseThread(threading.Thread):
         if self.section is None:
             self.init_section()
 
+    def __self__(self):
+        """
+        """
+        self.stop()
+
     def init_section(self):
         """Init the bus. Must be overloaded
         """
