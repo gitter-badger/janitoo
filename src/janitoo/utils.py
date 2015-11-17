@@ -76,7 +76,7 @@ class JanitooException(Exception):
         self.message = message
 
     def __str__(self):
-        return repr(self.__name__ +' : '+self.message)
+        return repr(self.message)
 
 class JanitooNotImplemented(JanitooException):
     """

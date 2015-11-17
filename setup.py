@@ -95,6 +95,7 @@ janitoo_entry_points = {
         "action_byte = janitoo.value_factory.action:make_action_byte",
         "action_integer = janitoo.value_factory.action:make_action_integer",
         "action_list = janitoo.value_factory.action:make_action_list",
+        "action_boolean = janitoo.value_factory.action:make_action_boolean",
     ],
 }
 

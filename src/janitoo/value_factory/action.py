@@ -27,14 +27,7 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 # Set default logging handler to avoid "No handler found" warnings.
 import os
 import logging
-try:  # Python 2.7+                                   # pragma: no cover
-    from logging import NullHandler                   # pragma: no cover
-except ImportError:                                   # pragma: no cover
-    class NullHandler(logging.Handler):               # pragma: no cover
-        """NullHandler logger for python 2.6"""       # pragma: no cover
-        def emit(self, record):                       # pragma: no cover
-            pass                                      # pragma: no cover
-logger = logging.getLogger( __name__ )
+logger = logging.getLogger("janitoo")
 
 from janitoo.classes import GENRE_DESC, VALUE_DESC
 from janitoo.utils import json_dumps
@@ -62,7 +55,10 @@ def make_action_byte(**kwargs):
     return JNTValueActionByte(**kwargs)
 
 def make_action_integer(**kwargs):
-    return JNTValueActionIntger(**kwargs)
+    return JNTValueActionInteger(**kwargs)
+
+def make_action_boolean(**kwargs):
+    return JNTValueActionBoolean(**kwargs)
 
 def make_action_list(**kwargs):
     return JNTValueActionList(**kwargs)
@@ -99,12 +95,22 @@ class JNTValueActionByte(JNTValueActionGeneric):
         JNTValueActionGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, type=0x02, **kwargs)
 
-class JNTValueActionIntger(JNTValueActionGeneric):
+class JNTValueActionInteger(JNTValueActionGeneric):
     def __init__(self, entry_name="action_integer", **kwargs):
         """
         """
         help = kwargs.pop('help', 'An integer')
         label = kwargs.pop('label', 'Integer')
+        index = kwargs.pop('index', 0)
+        JNTValueActionGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
+            index=index, type=0x04, **kwargs)
+
+class JNTValueActionBoolean(JNTValueActionGeneric):
+    def __init__(self, entry_name="action_boolean", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A boolean')
+        label = kwargs.pop('label', 'Boolean')
         index = kwargs.pop('index', 0)
         JNTValueActionGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, type=0x04, **kwargs)

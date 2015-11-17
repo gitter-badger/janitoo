@@ -164,7 +164,7 @@ class TestNetworkState(TestJanitoo):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_130_network_state_secondary_random(self):
-        self.skipTest("Pass but freeze nosetests")
+        self.onlyTravisTest()
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -201,6 +201,52 @@ class TestNetworkState(TestJanitoo):
         self.assertEqual(net_state.state, 'STOPPED')
         net_state.boot(hadds)
         time.sleep(42)
+        net_state.stop()
+        i = 0
+        while net_state.state != 'STOPPED' and i<150:
+            i += 1
+            print net_state.state
+            time.sleep(1)
+        self.assertEqual(net_state.state, 'STOPPED')
+
+    def test_131_network_state_secondary_random_more(self):
+        self.onlyTravisTest()
+        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
+            options = vars(jnt_parse_args())
+        stopevent = threading.Event()
+        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=5)
+        print net_state.state
+        hadds = { 0 : HADD%(self.add_ctrl,0),
+                     }
+        net_state.boot(hadds)
+        time.sleep(5)
+        net_state.stop()
+        i = 0
+        while net_state.state != 'STOPPED' and i<150:
+            i += 1
+            print net_state.state
+            time.sleep(1)
+        self.assertEqual(net_state.state, 'STOPPED')
+        net_state.boot(hadds)
+        time.sleep(25)
+        net_state.stop()
+        i = 0
+        while net_state.state != 'STOPPED' and i<150:
+            i += 1
+            print net_state.state
+            time.sleep(1)
+        self.assertEqual(net_state.state, 'STOPPED')
+        net_state.boot(hadds)
+        time.sleep(31)
+        net_state.stop()
+        i = 0
+        while net_state.state != 'STOPPED' and i<150:
+            i += 1
+            print net_state.state
+            time.sleep(1)
+        self.assertEqual(net_state.state, 'STOPPED')
+        net_state.boot(hadds)
+        time.sleep(52)
         net_state.stop()
         i = 0
         while net_state.state != 'STOPPED' and i<150:

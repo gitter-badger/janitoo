@@ -27,14 +27,7 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 # Set default logging handler to avoid "No handler found" warnings.
 import os
 import logging
-try:  # Python 2.7+                                   # pragma: no cover
-    from logging import NullHandler                   # pragma: no cover
-except ImportError:                                   # pragma: no cover
-    class NullHandler(logging.Handler):               # pragma: no cover
-        """NullHandler logger for python 2.6"""       # pragma: no cover
-        def emit(self, record):                       # pragma: no cover
-            pass                                      # pragma: no cover
-logger = logging.getLogger( __name__ )
+logger = logging.getLogger("janitoo")
 
 from janitoo.classes import GENRE_DESC, VALUE_DESC
 from janitoo.utils import json_dumps

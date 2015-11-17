@@ -54,7 +54,10 @@ class JNTBus(object):
         self.factory = {}
         for entry in iter_entry_points(group='janitoo.components', name=None):
             if entry.name.startswith('%s.'%self.oid):
-                self.factory[entry.name] = entry.load()
+                try:
+                    self.factory[entry.name] = entry.load()
+                except:
+                    logger.exception('Exception when loading entry_point %s',  entry.name)
         self.components = {}
         self.values = {}
         self.cmd_classes = [COMMAND_CONTROLLER]
@@ -71,7 +74,10 @@ class JNTBus(object):
         self.nodeman = None
         self.value_factory = {}
         for entrypoint in iter_entry_points(group = 'janitoo.values'):
-            self.value_factory[entrypoint.name] = entrypoint.load()
+            try:
+                self.value_factory[entrypoint.name] = entrypoint.load()
+            except:
+                logger.exception('Exception when loading entry_point %s',  entry.name)
 
     def start(self, mqttc, trigger_thread_reload_cb=None):
         self._trigger_thread_reload_cb = trigger_thread_reload_cb

@@ -44,6 +44,9 @@ collect("janitoo.components")
 collect("janitoo.values")
 
 print "==============================================================================="
+collect("janitoo.models")
+
+print "==============================================================================="
 collect("janitoo_web.socketio")
 collect("janitoo_web.views")
 collect("janitoo_web.template")
@@ -53,4 +56,3 @@ collect("janitoo_admin.socketio")
 collect("janitoo_admin.views")
 collect("janitoo_admin.widget")
 collect("janitoo_admin.network")
-

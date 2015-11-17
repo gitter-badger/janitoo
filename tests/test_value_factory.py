@@ -31,12 +31,13 @@ import logging
 from pkg_resources import iter_entry_points
 import mock
 
-from common import TestJanitoo, SLEEP
+from janitoo_nosetests import JNTTBase
+
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
 from janitoo.options import JNTOptions
 
-class TestFactory(TestJanitoo):
+class TestFactory(JNTTBase):
     """Test the value factory
     """
     prog = 'test'
@@ -186,6 +187,16 @@ class TestActionString(TestFactory):
     """Test the value factory
     """
     entry_name='action_string'
+
+class TestActionBoolean(TestFactory):
+    """Test the value factory
+    """
+    entry_name='action_boolean'
+
+class TestActionInteger(TestFactory):
+    """Test the value factory
+    """
+    entry_name='action_integer'
 
 class TestListString(TestFactory):
     """Test the value factory
