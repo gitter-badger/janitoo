@@ -136,6 +136,7 @@ setup(
                      'featmongo >= 0.1.2',
                      'transitions',
                      'mock == 1.0.1',
+                     'six',
                     ],
     entry_points = janitoo_entry_points,
 )

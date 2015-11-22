@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Unittests for Datalog Server.
+"""Unittests for packaging.
 """
 __license__ = """
     This file is part of Janitoo.
