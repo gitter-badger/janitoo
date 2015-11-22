@@ -38,7 +38,6 @@ def collect(key):
     print ""
 
 print "==============================================================================="
-
 collect("janitoo.threads")
 collect("janitoo.components")
 collect("janitoo.values")
@@ -47,12 +46,13 @@ print "=========================================================================
 collect("janitoo.models")
 
 print "==============================================================================="
-collect("janitoo_web.socketio")
-collect("janitoo_web.views")
-collect("janitoo_web.template")
+collect("janitoo_flask.blueprint")
+collect("janitoo_flask.menu_left")
+collect("janitoo_flask.listener")
+collect("janitoo_flask.network")
 
 print "==============================================================================="
-collect("janitoo_admin.socketio")
-collect("janitoo_admin.views")
-collect("janitoo_admin.widget")
-collect("janitoo_admin.network")
+collect("janitoo_manager.blueprint")
+collect("janitoo_manager.menu_left")
+collect("janitoo_manager.listener")
+collect("janitoo_manager.network")
