@@ -1240,19 +1240,19 @@ class JNTNetwork(object):
                 #~ print data
                 if data[key]['genre'] == 0x01:
                     self.add_basics(data)
-                    self.emit_basics()
+                    self.emit_basic(data)
                 elif data[key]['genre'] == 0x02:
                     self.add_users(data)
-                    self.emit_users()
+                    self.emit_user(data)
                 elif data[key]['genre'] == 0x03:
                     self.add_configs(data)
-                    self.emit_configs()
+                    self.emit_config(data)
                 elif data[key]['genre'] == 0x04:
                     self.add_systems(data)
-                    self.emit_systems()
+                    self.emit_system(data)
                 elif data[key]['genre'] == 0x05:
                     self.add_commands(data)
-                    self.emit_commands()
+                    self.emit_command(data)
                 else :
                     logger.warning("Unknown genre in value %s", data)
         except:
@@ -1780,7 +1780,11 @@ class JNTNetwork(object):
                         self.users[hadd] = {}
                     if uuid not in self.users[hadd]:
                         self.users[hadd][uuid] = {}
-                    self.users[hadd][uuid][index] = data[nval][kval]
+                    if index not in self.users[hadd][uuid]:
+                        self.users[hadd][uuid][index] = data[nval][kval]
+                    else:
+                        self.users[hadd][uuid][index].update(data[nval][kval])
+                    data[nval][kval].update(self.users[hadd][uuid][index])
                     #~ print 'add_users', self.users[hadd][uuid][index]
             #~ print "seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeelf.users"
             #~ print self.users
@@ -1816,7 +1820,11 @@ class JNTNetwork(object):
                         self.configs[hadd] = {}
                     if uuid not in self.configs[hadd]:
                         self.configs[hadd][uuid] = {}
-                    self.configs[hadd][uuid][index] = data[nval][kval]
+                    if index not in self.configs[hadd][uuid]:
+                        self.configs[hadd][uuid][index] = data[nval][kval]
+                    else:
+                        self.configs[hadd][uuid][index].update(data[nval][kval])
+                    data[nval][kval].update(self.configs[hadd][uuid][index])
             #~ for nval in data:
                 #~ for kval in data[nval]:
                     #~ if data[nval][kval]['hadd'] not in self.configs:
@@ -1855,7 +1863,11 @@ class JNTNetwork(object):
                         self.basics[hadd] = {}
                     if uuid not in self.basics[hadd]:
                         self.basics[hadd][uuid] = {}
-                    self.basics[hadd][uuid][index] = data[nval][kval]
+                    if index not in self.basics[hadd][uuid]:
+                        self.basics[hadd][uuid][index] = data[nval][kval]
+                    else:
+                        self.basics[hadd][uuid][index].update(data[nval][kval])
+                    data[nval][kval].update(self.basics[hadd][uuid][index])
                     #~ print 'add_basics', self.basics[hadd][uuid][index]
             #~ print "seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeelf.basics"
             #~ print self.basics
