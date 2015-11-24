@@ -283,17 +283,17 @@ class HttpResourceComponent(JNTComponent):
                 product_name=product_name, product_type=product_type, product_manufacturer="Janitoo", **kwargs)
         logger.debug("[%s] - __init__ node uuid:%s", self.__class__.__name__, self.uuid)
         self.path = path
+
+    def start(self, mqttc):
+        """Start the component.
+
+        """
         dirname='.'
         if 'home_dir' in self.options.data and self.options.data['home_dir'] is not None:
             dirname = self.options.data['home_dir']
         dirname = os.path.join(dirname, "public")
         dirname = os.path.join(dirname, self.path)
         self.deploy_resource(dirname)
-
-    def start(self, mqttc):
-        """Start the component.
-
-        """
         JNTComponent.start(self, mqttc)
         return True
 
