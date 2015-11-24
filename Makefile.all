@@ -137,6 +137,9 @@ clean-doc:
 commit:
 	make -C $(module) commit
 
+commit-all:
+	for module in ${SUBMODULES};do make -C $$module commit; done
+
 pull:
 	make -C $(module) pull
 
