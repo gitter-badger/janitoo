@@ -176,6 +176,11 @@ install-all:
 	@echo
 	@echo "Installation for users finished."
 
+deps-all:
+	for module in ${SUBMODULES};do make -C $$module install; done
+	@echo
+	@echo "Debian packages installed."
+
 develop:
 	make -C $(module) develop
 
