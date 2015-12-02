@@ -494,3 +494,20 @@ If we do not receive new informations after a delay of 30 seconds, we can consid
 Typically, a fulll network discovering can take from 1 minute to many.
 
 About sleeping devices (the one which works with battery), the controller should announce them.
+
+
+Graphes
+=======
+
+Network
+-------
+
+.. image:: images/fsm_network.png
+    :alt: Network state machine
+
+Nodeman
+-------
+
+.. image:: images/fsm_nodeman.png
+    :alt: NodeMan state machine
+

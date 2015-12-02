@@ -116,6 +116,7 @@ apidoc:
 	cd ${BUILDDIR}/janidoc/source && ./janitoo_collect.py  >extensions/index.rst
 
 doc: janidoc apidoc
+	- [ -f transitions_graph.py ] && python transitions_graph.py
 	-cp -Rf rst/* ${BUILDDIR}/janidoc/source
 	make -C ${BUILDDIR}/janidoc html
 	cp ${BUILDDIR}/janidoc/source/README.rst README.rst

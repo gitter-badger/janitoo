@@ -143,20 +143,26 @@ class JNTNodeMan(object):
         if trigger_reload is not None:
             self.trigger_reload = trigger_reload
         self.loop_sleep = loop_sleep
-        self.fsm_state = Machine(model=self, states=self.fsm_states, initial='OFFLINE')
-        self.fsm_state.add_ordered_transitions()
-        self.fsm_state.add_transition('fsm_state_start', 'OFFLINE', 'BOOT')
-        self.fsm_state.add_transition('fsm_state_next', 'BOOT', 'SYSTEM')
-        self.fsm_state.add_transition('fsm_state_next', 'SYSTEM', 'CONFIG')
-        self.fsm_state.add_transition('fsm_state_next', 'CONFIG', 'INIT')
-        self.fsm_state.add_transition('fsm_state_next', 'INIT','ONLINE')
-        self.fsm_state.add_transition('fsm_state_stop', '*', 'OFFLINE',
+        self.fsm_state = self.create_fsm()
+        self.fsm_state_start()
+
+    def create_fsm(self):
+        """
+        """
+        fsm_state = Machine(model=self, states=self.fsm_states, initial='OFFLINE')
+        fsm_state.add_ordered_transitions()
+        fsm_state.add_transition('fsm_state_start', 'OFFLINE', 'BOOT')
+        fsm_state.add_transition('fsm_state_next', 'BOOT', 'SYSTEM')
+        fsm_state.add_transition('fsm_state_next', 'SYSTEM', 'CONFIG')
+        fsm_state.add_transition('fsm_state_next', 'CONFIG', 'INIT')
+        fsm_state.add_transition('fsm_state_next', 'INIT','ONLINE')
+        fsm_state.add_transition('fsm_state_stop', '*', 'OFFLINE',
             before=['stop_controller_uuid', 'stop_controller_reply_system', 'stop_controller_reply_config',
                     'stop_nodes_init', 'stop_controller_reply',
                     'stop_broadcast_request', 'stop_nodes_request'],
             after=['after_fsm_stop']
         )
-        self.fsm_state_start()
+        return fsm_state
 
     def stop(self):
         """
