@@ -14,6 +14,10 @@ ifndef PYTHON_EXEC
 PYTHON_EXEC=python
 endif
 
+ifndef message
+message="Auto-commit"
+endif
+
 ifdef VIRTUAL_ENV
 python_version_full := $(wordlist 2,4,$(subst ., ,$(shell ${VIRTUAL_ENV}/bin/${PYTHON_EXEC} --version 2>&1)))
 else
@@ -170,7 +174,7 @@ commit: develop
 	-git add rst/
 	-cp rst/README.rst .
 	-git add README.rst
-	-git commit -m "Auto-commit" -a
+	-git commit -m "$(message)" -a
 	git push
 	@echo
 	@echo "Commits for branch master pushed on github."

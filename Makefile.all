@@ -135,7 +135,7 @@ clean-doc:
 	-rm -Rf docs
 
 commit:
-	make -C $(module) commit
+	make -C $(module) message="$(message)" commit
 
 commit-all:
 	for module in ${SUBMODULES};do make -C $$module commit; done

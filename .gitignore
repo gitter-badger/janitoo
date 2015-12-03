@@ -60,7 +60,7 @@ target/
 dists/
 build/
 archive/
-generated_docs/
-janidoc/
+generated_doc
+janidoc
 flask_cache_store/
 
