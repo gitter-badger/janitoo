@@ -250,7 +250,7 @@ class JNTControllerManager(object):
         if self.uuid == None:
             self.uuid = muuid.uuid1()
             self.options.set_option(self.section, 'uuid', self.uuid)
-
+        self.polls = {}
 
     def stop_controller_timer(self):
         """Stop the controller timer
@@ -292,16 +292,22 @@ class JNTControllerManager(object):
         self._controller.add_internal_config_values()
         self._controller.hadd_get(section, None)
         self._controller.load_system_from_local()
+        self.add_more_values()
         self.mqtt_controller = MQTTClient(options=options.data)
         self.mqtt_controller.connect()
-        logger.debug("[%s] - Subscribe to topic %s", self.__class__.__name__, TOPIC_NODES_REQUEST%(self._controller.hadd))
+        logger.debug(u"[%s] - Subscribe to topic %s", self.__class__.__name__, TOPIC_NODES_REQUEST%(self._controller.hadd))
         self.mqtt_controller.subscribe(topic=TOPIC_NODES_REQUEST%(self._controller.hadd), callback=self.on_controller_request)
         self.mqtt_controller.start()
+
+    def add_more_values(self, **kwargs):
+        """Start the controller
+        """
+        pass
 
     def heartbeat_controller(self):
         """Send a add_ctrl:-1 heartbeat message. It will ping all devices managed by this controller.
         """
-        logger.debug("[%s] - Send heartbeat for controller", self.__class__.__name__)
+        logger.debug(u"[%s] - Send heartbeat for controller", self.__class__.__name__)
         if self.heartbeat_controller_timer is not None:
             #The manager is started
             self.heartbeat_controller_timer.cancel()
@@ -313,6 +319,42 @@ class JNTControllerManager(object):
             add_ctrl, add_node = self._controller.split_hadd()
             msg = {'add_ctrl':add_ctrl, 'add_node':add_node, 'state':'ONLINE'}
             self.mqtt_controller.publish_heartbeat_msg(msg)
+            values = [ k for k in self._controller.values if self._controller.values[k].is_polled ]
+            for value in values:
+                self.publish_poll(self.mqtt_controller, self._controller.values[value])
+
+    def remove_poll(self, value):
+        """
+        """
+        if value.uuid in self.polls:
+            #~ value.is_polled= False
+            del self.polls[value.uuid]
+
+    def add_poll(self, value, timeout=None):
+        """
+        """
+        if value.poll_delay == 0:
+            self.remove_poll(value)
+            return
+        if value.uuid not in self.polls or timeout:
+            if timeout is None:
+                timeout = self.config_timeout
+            self.polls[value.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=timeout), 'value':value}
+        else:
+            self.polls[value.uuid]['next_run'] = datetime.datetime.now()+datetime.timedelta(seconds=value.poll_delay)
+        value.is_polled= True
+
+    def publish_poll(self, mqttc, value, stopevent=None):
+        """
+        """
+        node = self._controller
+        genres = {1:'basic', 2:'user', 3:'config', }
+        if value.genre in genres:
+            genre = genres[value.genre]
+        else:
+            genre = "user"
+        mqttc.publish_value(node.hadd, value, genre)
+        self.add_poll(value)
 
     def get_controller_hadd(self):
         """Return the controller hadd"""
@@ -354,7 +396,7 @@ class JNTControllerManager(object):
                                 self._requests[data['uuid']](topic, resp)
                             return
                         except:
-                            logger.exception("Exception when running on_request method")
+                            logger.exception(u"Exception when running on_request method")
                             return
             logger.warning("Unknown request value %s", data)
         except:
