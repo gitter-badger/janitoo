@@ -161,8 +161,8 @@ class TestIpPing(TestFactory, BaseConfig, BasePoll):
         print main_value
         config_value = main_value.create_config_value()
         print config_value
-        main_value.set_config(node_uuid, 0, '192.168.14.5')
-        self.assertEqual('192.168.14.5', main_value.get_config(node_uuid, 0))
+        main_value.set_config(node_uuid, 0, '127.0.0.1')
+        self.assertEqual('127.0.0.1', main_value.get_config(node_uuid, 0))
         self.assertTrue(main_value.ping_ip(node_uuid, 0))
         main_value.set_config(node_uuid, 0, '192.168.24.5')
         self.assertEqual('192.168.24.5', main_value.get_config(node_uuid, 0))
