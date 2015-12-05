@@ -1739,21 +1739,23 @@ class JNTNetwork(object):
                 self.broadcast_nodes_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_nodes_discover)
                 self.broadcast_nodes_timer.start()
             if 'hadd' in data:
-                data = {'0':data}
-            for knode in data.keys():
-                self.nodes[data[knode]['hadd']] = {}
-                self.nodes[data[knode]['hadd']].update(JNTNode().to_dict())
-                self.nodes[data[knode]['hadd']].update(data[knode])
-                self.nodes[data[knode]['hadd']].update(data[knode])
-                add_ctrl, add_node = hadd_split(data[knode]['hadd'])
+                ndata = {'0':data}
+            else:
+                ndata = data
+            for knode in ndata.keys():
+                self.nodes[ndata[knode]['hadd']] = {}
+                self.nodes[ndata[knode]['hadd']].update(JNTNode().to_dict())
+                self.nodes[ndata[knode]['hadd']].update(ndata[knode])
+                self.nodes[ndata[knode]['hadd']].update(ndata[knode])
+                add_ctrl, add_node = hadd_split(ndata[knode]['hadd'])
                 if self.heartbeat_cache.has_entry(add_ctrl, add_node) == False:
                     do_emit = True
-                #~ print self.nodes[data[knode]['hadd']]
-                #~ print self.nodes[data[knode]['hadd']]['heartbeat']
-                self.heartbeat_cache.update(add_ctrl, add_node, heartbeat=self.nodes[data[knode]['hadd']]['heartbeat'])
-                data[knode]['state'] = 'PENDING'
+                #~ print self.nodes[ndata[knode]['hadd']]
+                #~ print self.nodes[ndata[knode]['hadd']]['heartbeat']
+                self.heartbeat_cache.update(add_ctrl, add_node, heartbeat=self.nodes[ndata[knode]['hadd']]['heartbeat'])
+                ndata[knode]['state'] = 'PENDING'
             if do_emit == True and initial_startup == False:
-                self.emit_node(data)
+                self.emit_node(ndata)
         except:
             logger.exception("Exception in add_nodes")
         finally:
@@ -1770,27 +1772,29 @@ class JNTNetwork(object):
                 self.broadcast_users_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_users_discover)
                 self.broadcast_users_timer.start()
             if 'uuid' in data:
-                data = {'0': {'0':data}}
+                ndata = {'0': {'0':data}}
             elif 'uuid' in data[data.keys()[0]]:
-                data = {'0':data}
-            #~ print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % data
-            for nval in data:
-                for kval in data[nval]:
-                    hadd = data[nval][kval]['hadd']
-                    uuid = data[nval][kval]['uuid']
+                ndata = {'0':data}
+            else:
+                ndata = data
+            #~ print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
+            for nval in ndata:
+                for kval in ndata[nval]:
+                    hadd = ndata[nval][kval]['hadd']
+                    uuid = ndata[nval][kval]['uuid']
                     #~ print "haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddd", hadd, uuid
                     index = 0
-                    if 'index' in data[nval][kval]:
-                        index = data[nval][kval]['index']
+                    if 'index' in ndata[nval][kval]:
+                        index = ndata[nval][kval]['index']
                     if hadd not in self.users:
                         self.users[hadd] = {}
                     if uuid not in self.users[hadd]:
                         self.users[hadd][uuid] = {}
                     if index not in self.users[hadd][uuid]:
-                        self.users[hadd][uuid][index] = data[nval][kval]
+                        self.users[hadd][uuid][index] = ndata[nval][kval]
                     else:
-                        self.users[hadd][uuid][index].update(data[nval][kval])
-                    data[nval][kval].update(self.users[hadd][uuid][index])
+                        self.users[hadd][uuid][index].update(ndata[nval][kval])
+                    ndata[nval][kval].update(self.users[hadd][uuid][index])
                     #~ print 'add_users', self.users[hadd][uuid][index]
             #~ print "seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeelf.users"
             #~ print self.users
@@ -1810,32 +1814,34 @@ class JNTNetwork(object):
                 self.broadcast_configs_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_configs_discover)
                 self.broadcast_configs_timer.start()
             if 'uuid' in data:
-                data = {'0': {'0':data}}
+                ndata = {'0': {'0':data}}
             elif 'uuid' in data[data.keys()[0]]:
-                data = {'0':data}
-            for nval in data:
-                for kval in data[nval]:
-                    #~ print "haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddd", data[nval][kval]
-                    hadd = data[nval][kval]['hadd']
-                    uuid = data[nval][kval]['uuid']
+                ndata = {'0':data}
+            else:
+                ndata = data
+            for nval in ndata:
+                for kval in ndata[nval]:
+                    #~ print "haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddd", ndata[nval][kval]
+                    hadd = ndata[nval][kval]['hadd']
+                    uuid = ndata[nval][kval]['uuid']
                     #~ print "haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddd", hadd, uuid
                     index = 0
-                    if 'index' in data[nval][kval]:
-                        index = data[nval][kval]['index']
+                    if 'index' in ndata[nval][kval]:
+                        index = ndata[nval][kval]['index']
                     if hadd not in self.configs:
                         self.configs[hadd] = {}
                     if uuid not in self.configs[hadd]:
                         self.configs[hadd][uuid] = {}
                     if index not in self.configs[hadd][uuid]:
-                        self.configs[hadd][uuid][index] = data[nval][kval]
+                        self.configs[hadd][uuid][index] = ndata[nval][kval]
                     else:
-                        self.configs[hadd][uuid][index].update(data[nval][kval])
-                    data[nval][kval].update(self.configs[hadd][uuid][index])
-            #~ for nval in data:
-                #~ for kval in data[nval]:
-                    #~ if data[nval][kval]['hadd'] not in self.configs:
-                        #~ self.configs[data[nval][kval]['hadd']] = {}
-                    #~ self.configs[data[nval][kval]['hadd']][data[nval][kval]['uuid']] = data[nval][kval]
+                        self.configs[hadd][uuid][index].update(ndata[nval][kval])
+                    ndata[nval][kval].update(self.configs[hadd][uuid][index])
+            #~ for nval in ndata:
+                #~ for kval in ndata[nval]:
+                    #~ if ndata[nval][kval]['hadd'] not in self.configs:
+                        #~ self.configs[ndata[nval][kval]['hadd']] = {}
+                    #~ self.configs[ndata[nval][kval]['hadd']][ndata[nval][kval]['uuid']] = ndata[nval][kval]
             #~ print "add_configs self.configs ", self.configs
         except:
             logger.exception("Exception in add_configs")
@@ -1853,27 +1859,29 @@ class JNTNetwork(object):
                 self.broadcast_basics_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_basics_discover)
                 self.broadcast_basics_timer.start()
             if 'uuid' in data:
-                data = {'0': {'0':data}}
+                ndata = {'0': {'0':data}}
             elif 'uuid' in data[data.keys()[0]]:
-                data = {'0':data}
-            #~ print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % data
-            for nval in data:
-                for kval in data[nval]:
-                    hadd = data[nval][kval]['hadd']
-                    uuid = data[nval][kval]['uuid']
+                ndata = {'0':data}
+            else:
+                ndata = data
+            #~ print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
+            for nval in ndata:
+                for kval in ndata[nval]:
+                    hadd = ndata[nval][kval]['hadd']
+                    uuid = ndata[nval][kval]['uuid']
                     #~ print "haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddd", hadd, uuid
                     index = 0
-                    if 'index' in data[nval][kval]:
-                        index = data[nval][kval]['index']
+                    if 'index' in ndata[nval][kval]:
+                        index = ndata[nval][kval]['index']
                     if hadd not in self.basics:
                         self.basics[hadd] = {}
                     if uuid not in self.basics[hadd]:
                         self.basics[hadd][uuid] = {}
                     if index not in self.basics[hadd][uuid]:
-                        self.basics[hadd][uuid][index] = data[nval][kval]
+                        self.basics[hadd][uuid][index] = ndata[nval][kval]
                     else:
-                        self.basics[hadd][uuid][index].update(data[nval][kval])
-                    data[nval][kval].update(self.basics[hadd][uuid][index])
+                        self.basics[hadd][uuid][index].update(ndata[nval][kval])
+                    ndata[nval][kval].update(self.basics[hadd][uuid][index])
                     #~ print 'add_basics', self.basics[hadd][uuid][index]
             #~ print "seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeelf.basics"
             #~ print self.basics
@@ -1893,17 +1901,19 @@ class JNTNetwork(object):
                 self.broadcast_systems_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_systems_discover)
                 self.broadcast_systems_timer.start()
             if 'uuid' in data:
-                data = {'0': {'0':data}}
+                ndata = {'0': {'0':data}}
             elif 'uuid' in data[data.keys()[0]]:
-                data = {'0':data}
-            #print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % data
-            for nval in data:
-                for kval in data[nval]:
-                    if data[nval][kval]['hadd'] not in self.systems:
-                        self.systems[data[nval][kval]['hadd']] = {}
-                    self.systems[data[nval][kval]['hadd']][data[nval][kval]['uuid']] = data[nval][kval]
-                    if 'node_uuid' not in data[nval][kval]:
-                        data[nval][kval]['node_uuid'] = self.nodes[data[nval][kval]['hadd']]
+                ndata = {'0':data}
+            else:
+                ndata = data
+            #print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
+            for nval in ndata:
+                for kval in ndata[nval]:
+                    if ndata[nval][kval]['hadd'] not in self.systems:
+                        self.systems[ndata[nval][kval]['hadd']] = {}
+                    self.systems[ndata[nval][kval]['hadd']][ndata[nval][kval]['uuid']] = ndata[nval][kval]
+                    if 'node_uuid' not in ndata[nval][kval]:
+                        ndata[nval][kval]['node_uuid'] = self.nodes[ndata[nval][kval]['hadd']]
         except:
             logger.exception("Exception in add_systems")
         finally:
@@ -1920,16 +1930,16 @@ class JNTNetwork(object):
                 self.broadcast_commands_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_commands_discover)
                 self.broadcast_commands_timer.start()
             if 'uuid' in data:
-                data = {'0': {'0':data}}
+                ndata = {'0': {'0':data}}
             elif 'uuid' in data[data.keys()[0]]:
-                data = {'0':data}
-            for nval in data:
-                for kval in data[nval]:
-                    if data[nval][kval]['hadd'] not in self.commands:
-                        self.commands[data[nval][kval]['hadd']] = {}
-                    self.commands[data[nval][kval]['hadd']][data[nval][kval]['uuid']] = data[nval][kval]
-                    if 'node_uuid' not in data[nval][kval]:
-                        data[nval][kval]['node_uuid'] = self.nodes[data[nval][kval]['hadd']]
+                ndata = {'0':data}
+            for nval in ndata:
+                for kval in ndata[nval]:
+                    if ndata[nval][kval]['hadd'] not in self.commands:
+                        self.commands[ndata[nval][kval]['hadd']] = {}
+                    self.commands[ndata[nval][kval]['hadd']][ndata[nval][kval]['uuid']] = ndata[nval][kval]
+                    if 'node_uuid' not in ndata[nval][kval]:
+                        ndata[nval][kval]['node_uuid'] = self.nodes[ndata[nval][kval]['hadd']]
         except:
             logger.exception("Exception in add_commands")
         finally:

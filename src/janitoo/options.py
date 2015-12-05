@@ -206,9 +206,9 @@ class JNTOptions(object):
             config.remove_section(section)
             with open(self.data['conf_file'], 'wb') as configfile:
                 config.write(configfile)
-                return True
             if section in self._cache:
                 del self._cache[section]
+            return True
         return False
 
     def get_options_key(self, section, key, strict=False):

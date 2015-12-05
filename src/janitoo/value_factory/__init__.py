@@ -93,7 +93,7 @@ class JNTValueFactoryEntry(JNTValue):
         if index not in self.instances:
             self.instances[index] = {}
         try:
-            if index not in self.instances or self.instances[index]['config'] != data:
+            if config not in self.instances[index] or self.instances[index]['config'] != data:
                 self.instances[index]['config'] = data
                 self.options.set_option(node_uuid, '%s_%s_%s'%(self.uuid, 'config', index), data)
         except:
