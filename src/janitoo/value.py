@@ -33,7 +33,7 @@ except ImportError:                                   # pragma: no cover
         """NullHandler logger for python 2.6"""       # pragma: no cover
         def emit(self, record):                       # pragma: no cover
             pass                                      # pragma: no cover
-logger = logging.getLogger( __name__ )
+logger = logging.getLogger(__name__)
 
 from classes import GENRE_DESC, VALUE_DESC
 from utils import json_dumps

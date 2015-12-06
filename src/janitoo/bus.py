@@ -26,7 +26,7 @@ __email__ = 'bibi21000@gmail.com'
 __copyright__ = "Copyright © 2013-2014 Sébastien GALLET aka bibi21000"
 
 import logging
-logger = logging.getLogger( "janitoo" )
+logger = logging.getLogger(__name__)
 
 from pkg_resources import iter_entry_points
 

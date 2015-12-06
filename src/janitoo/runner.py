@@ -47,7 +47,7 @@ __email__ = 'bibi21000@gmail.com'
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-logger = logging.getLogger('janitoo')
+logger = logging.getLogger(__name__)
 import sys
 import os
 import os.path

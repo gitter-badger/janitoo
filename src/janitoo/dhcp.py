@@ -30,7 +30,7 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-logger = logging.getLogger('janitoo.dhcp')
+logger = logging.getLogger(__name__)
 
 import os, sys
 import datetime
@@ -88,7 +88,7 @@ class CacheManager(object):
             for line in data:
                 self.update(line.add_ctrl, line.add_node, state=line.state, hearbeat=line.heartbeat, last_seen=line.last_seen)
 
-    def flush(self, query):
+    def flush(self, query=None):
         """Flush the cache to db. Remmove failed name from cache
 
         :param session: the session to use to communicate with db. May be a scoped_session if used in a separate tread. If None, use the common session.
@@ -579,7 +579,7 @@ class JNTNetwork(object):
         finally:
             self._lock.release()
         if self.heartbeat_cache is not None:
-            self.heartbeat_cache.flush(None)
+            self.heartbeat_cache.flush()
             self.heartbeat_cache = None
         self.emit_nodes()
         self.emit_network()

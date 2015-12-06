@@ -43,7 +43,7 @@ __copyright__ = "Copyright © 2013-2014 Sébastien GALLET aka bibi21000"
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-logger = logging.getLogger('janitoo.mqtt')
+logger = logging.getLogger(__name__)
 import threading
 import paho.mqtt.client as mqtt
 import uuid as muuid

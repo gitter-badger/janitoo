@@ -29,7 +29,7 @@ from bson import json_util
 import warnings
 
 import logging
-logger = logging.getLogger( "janitoo" )
+logger = logging.getLogger(__name__)
 
 HADD = "%0.4d/%0.4d"
 CADD = "%0.4d/"

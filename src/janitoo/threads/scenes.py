@@ -40,7 +40,7 @@ except ImportError:                                   # pragma: no cover
         """NullHandler logger for python 2.6"""       # pragma: no cover
         def emit(self, record):                       # pragma: no cover
             pass                                      # pragma: no cover
-logger = logging.getLogger( __name__ )
+logger = logging.getLogger(__name__)
 
 import os, sys
 import threading
