@@ -51,7 +51,7 @@ import uuid as muuid
 from janitoo.utils import JanitooNotImplemented, HADD, json_dumps
 
 class MQTTClient(threading.Thread):
-    def __init__(self, clientid=None, options={}):
+    def __init__(self, clientid=None, options={}, loop_sleep=0.15):
         """Initialise the client
 
         :param clientid: use a specific client id which must be unique on the broker. Use None to let the client generate a random id for you.
@@ -60,6 +60,7 @@ class MQTTClient(threading.Thread):
         threading.Thread.__init__(self)
         self._stopevent = threading.Event()
         self.options = options
+        self.loop_sleep = loop_sleep
         self._mqttc = mqtt.Client(clientid)
         self._mqttc.on_connect = self.mqtt_on_connect
         self._mqttc.on_publish = self.mqtt_on_publish
@@ -473,7 +474,7 @@ class MQTTClient(threading.Thread):
             #~ #print "Ok"
             #~ rc = self._mqttc.loop_forever()
         while not self._stopevent.isSet():
-            self._mqttc.loop(timeout=0.10)
+            self._mqttc.loop(timeout=self.loop_sleep)
         return 0
 
     def stop(self):

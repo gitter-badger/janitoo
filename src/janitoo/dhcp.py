@@ -607,7 +607,7 @@ class JNTNetwork(object):
             print "start_broadcast_nodes_discover"
         else:
             if self.broadcast_mqttc is None:
-                self.broadcast_mqttc = MQTTClient(options=self.options.data)
+                self.broadcast_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.broadcast_mqttc.connect()
                 self.broadcast_mqttc.subscribe(topic=TOPIC_BROADCAST_REPLY%self.hadds[0], callback=self.on_reply)
                 self.broadcast_mqttc.start()
@@ -873,7 +873,7 @@ class JNTNetwork(object):
             print "start_resolv_discover"
         else:
             if self.resolv_mqttc is None:
-                self.resolv_mqttc = MQTTClient(options=self.options.data)
+                self.resolv_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.resolv_mqttc.connect()
                 self.resolv_mqttc.subscribe(topic="%s#"%TOPIC_RESOLV)
                 self.resolv_mqttc.add_topic(topic=TOPIC_RESOLV_REPLY%self.hadds[0], callback=self.on_resolv_reply)
@@ -945,7 +945,7 @@ class JNTNetwork(object):
             print "start_resolv_request"
         else:
             if self.resolv_request_mqttc is None:
-                self.resolv_request_mqttc = MQTTClient(options=self.options.data)
+                self.resolv_request_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.resolv_request_mqttc.connect()
                 self.resolv_request_mqttc.subscribe(topic="%s#"%TOPIC_RESOLV_REQUEST, callback=self.on_resolv_request)
                 self.resolv_request_mqttc.start()
@@ -974,7 +974,7 @@ class JNTNetwork(object):
             print "start_resolv_heartbeat"
         else:
             if self.resolv_heartbeat_mqttc is None:
-                self.resolv_heartbeat_mqttc = MQTTClient(options=self.options.data)
+                self.resolv_heartbeat_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.resolv_heartbeat_mqttc.connect()
                 self.resolv_heartbeat_mqttc.subscribe(topic="%sheartbeat"%TOPIC_RESOLV, callback=self.on_resolv_heartbeat)
                 self.resolv_heartbeat_mqttc.start()
@@ -1053,7 +1053,7 @@ class JNTNetwork(object):
             print "start_nodes_discover"
         else:
             if self.nodes_mqttc is None:
-                self.nodes_mqttc = MQTTClient(options=self.options.data)
+                self.nodes_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.nodes_mqttc.connect()
                 self.nodes_mqttc.subscribe(topic='/nodes/%s/reply/'%self.hadds[0], callback=self.on_reply)
                 self.nodes_mqttc.start()
@@ -1068,7 +1068,7 @@ class JNTNetwork(object):
             print "start_heartbeat_discover"
         else:
             if self.heartbeat_discover_mqttc is None:
-                self.heartbeat_discover_mqttc = MQTTClient(options=self.options.data)
+                self.heartbeat_discover_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.heartbeat_discover_mqttc.connect()
                 self.heartbeat_discover_mqttc.subscribe(topic='/dhcp/heartbeat/#', callback=self.on_heartbeat_discover)
                 self.heartbeat_discover_mqttc.start()
@@ -1100,7 +1100,7 @@ class JNTNetwork(object):
             print "start_heartbeat"
         else:
             if self.heartbeat_mqttc is None:
-                self.heartbeat_mqttc = MQTTClient(options=self.options.data)
+                self.heartbeat_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.heartbeat_mqttc.connect()
                 self.heartbeat_mqttc.subscribe(topic='/dhcp/heartbeat/#', callback=self.on_heartbeat)
                 self.heartbeat_mqttc.start()
@@ -1132,7 +1132,7 @@ class JNTNetwork(object):
             print "start_dispatch_heartbeat"
         else:
             if self.dispatch_heartbeat_mqttc is None:
-                self.dispatch_heartbeat_mqttc = MQTTClient(options=self.options.data)
+                self.dispatch_heartbeat_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.dispatch_heartbeat_mqttc.connect()
                 #~ self.dispatch_heartbeat_mqttc.subscribe(topic="%sheartbeat"%TOPIC_RESOLV, callback=self.on_dispatch_heartbeat)
                 self.dispatch_heartbeat_mqttc.start()
@@ -1203,7 +1203,7 @@ class JNTNetwork(object):
             print "start_values_listener"
         else:
             if self.values_mqttc is None:
-                self.values_mqttc = MQTTClient(options=self.options.data)
+                self.values_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.values_mqttc.connect()
                 self.values_mqttc.subscribe(topic='/values/#', callback=self.on_value)
                 self.values_mqttc.start()

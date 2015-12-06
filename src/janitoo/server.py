@@ -66,27 +66,8 @@ class JNTServer(object):
             logging_fileConfig(self.options.data['conf_file'])
         self.loop_sleep = 0.25
         loop_sleep = self.options.get_option('system','loop_sleep')
-        if loop_sleep is not None:
-            try:
-                self.loop_sleep = int(loop_sleep)
-            except:
-                logger.exception("[%s] - Exception when retrieving value of loop_sleep. Use default value instead", self.__class__.__name__)
         self.gc_delay = 0
-        gc_delay = self.options.get_option('system','gc_delay')
-        if gc_delay is not None:
-            try:
-                self.gc_delay = int(gc_delay)
-            except:
-                logger.exception("[%s] - Exception when retrieving value of loop_sleep. Use default value instead", self.__class__.__name__)
-        if self.gc_delay>0:
-            self.gc_next_run = datetime.datetime.now() + datetime.timedelta(seconds=self.gc_delay)
         self.slow_start = 0.05
-        slow_start = self.options.get_option('system','slow_start')
-        if slow_start is not None:
-            try:
-                self.slow_start = int(slow_start)
-            except:
-                logger.exception("[%s] - Exception when retrieving value of slow_start. Use default value instead", self.__class__.__name__)
 
     def __del__(self):
         """
@@ -101,6 +82,26 @@ class JNTServer(object):
         """
         logger.info("[%s] - Start the server", self.__class__.__name__)
         self._stopevent.clear()
+        loop_sleep = self.options.get_option('system','loop_sleep')
+        if loop_sleep is not None:
+            try:
+                self.loop_sleep = int(loop_sleep)
+            except:
+                logger.exception("[%s] - Exception when retrieving value of loop_sleep. Use default value instead", self.__class__.__name__)
+        gc_delay = self.options.get_option('system','gc_delay')
+        if gc_delay is not None:
+            try:
+                self.gc_delay = int(gc_delay)
+            except:
+                logger.exception("[%s] - Exception when retrieving value of loop_sleep. Use default value instead", self.__class__.__name__)
+        if self.gc_delay>0:
+            self.gc_next_run = datetime.datetime.now() + datetime.timedelta(seconds=self.gc_delay)
+        slow_start = self.options.get_option('system','slow_start')
+        if slow_start is not None:
+            try:
+                self.slow_start = int(slow_start)
+            except:
+                logger.exception("[%s] - Exception when retrieving value of slow_start. Use default value instead", self.__class__.__name__)
         self.start_threads()
 
     def start_threads(self):
