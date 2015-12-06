@@ -474,7 +474,10 @@ class JNTNetwork(object):
     def __del__(self):
         """
         """
-        self.stop()
+        try:
+            self.stop()
+        except:
+            pass
 
     @property
     def is_failed(self):

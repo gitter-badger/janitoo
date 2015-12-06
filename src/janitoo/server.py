@@ -91,7 +91,10 @@ class JNTServer(object):
     def __del__(self):
         """
         """
-        self.stop()
+        try:
+            self.stop()
+        except:
+            pass
 
     def start(self):
         """Start the server. Must be called at the end of the children class.
