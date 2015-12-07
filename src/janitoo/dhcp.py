@@ -597,7 +597,9 @@ class JNTNetwork(object):
     def fsm_do_heartbeat_dispatch(self):
         """
         """
-        return self.do_heartbeat_dispatch
+        # Temporary fix
+        # return self.do_heartbeat_dispatch
+        return True
 
     def start_broadcast_nodes_discover(self):
         """
@@ -1134,7 +1136,7 @@ class JNTNetwork(object):
             if self.dispatch_heartbeat_mqttc is None:
                 self.dispatch_heartbeat_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.dispatch_heartbeat_mqttc.connect()
-                #~ self.dispatch_heartbeat_mqttc.subscribe(topic="%sheartbeat"%TOPIC_RESOLV, callback=self.on_dispatch_heartbeat)
+                self.dispatch_heartbeat_mqttc.subscribe(topic='/dhcp/heartbeat/#', callback=self.on_heartbeat)
                 self.dispatch_heartbeat_mqttc.start()
                 self.start_dispatch_heartbeat_timer()
                 self.emit_network()
@@ -1660,10 +1662,10 @@ class JNTNetwork(object):
         logger.debug("[%s] - on_heartbeat %s", self.__class__.__name__, message.payload)
         hb = HeartbeatMessage(message)
         add_ctrl, add_node, state = hb.get_heartbeat()
+        #~ print "!"*30, "On heartbeat", add_ctrl, add_node
         if add_ctrl is None or add_node is None:
             return
         hadd = HADD % (add_ctrl, add_node)
-        #~ print "!!!!!!!!!!!!!!!!!!! On heartbeat", hadd
         #~ print self.nodes
         if hadd not in self.nodes:
             return
@@ -1757,12 +1759,13 @@ class JNTNetwork(object):
                 #~ print self.nodes[ndata[knode]['hadd']]['heartbeat']
                 self.heartbeat_cache.update(add_ctrl, add_node, heartbeat=self.nodes[ndata[knode]['hadd']]['heartbeat'])
                 ndata[knode]['state'] = 'PENDING'
-            if do_emit == True and initial_startup == False:
-                self.emit_node(ndata)
+            #~ if do_emit == True and initial_startup == False:
+            self.emit_node(ndata)
         except:
             logger.exception("Exception in add_nodes")
         finally:
             self._lock.release()
+        self.emit_network()
 
     def add_users(self, data):
         """

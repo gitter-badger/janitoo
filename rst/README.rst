@@ -6,13 +6,15 @@
     :target: https://coveralls.io/github/bibi21000/janitoo?branch=master
     :alt: Coveralls results
 
-===============
-The README file
-===============
+==================
+Welcome to Janitoo
+==================
+
+Not another Home Automation software ... a full protocol
+
+A video of presentation is available on youtube : https://www.youtube.com/watch?v=S3Gqj32sJ-Q
 
 This file will be published on your github account
 
-
-A section
-=========
-A text in this section.
+What is Janitoo
+===============
