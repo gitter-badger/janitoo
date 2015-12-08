@@ -6,6 +6,8 @@ RUN mkdir /opt/janitoo/src/janitoo
 ADD . /opt/janitoo/src/janitoo
 WORKDIR /opt/janitoo/src
 RUN ln -s janitoo/makefile.all Makefile
+RUN ls -lisa
+RUN ls -lisa janitoo
 RUN make deps module=janitoo
 RUN make develop module=janitoo
 
