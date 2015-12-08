@@ -2,6 +2,8 @@ FROM python:2.7.10
 
 MAINTAINER bibi21000 <bibi21000@gmail.com>
 
+RUN make docker-deps
+
 RUN mkdir /opt/janitoo
 RUN for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done
 RUN mkdir /opt/janitoo/src/janitoo

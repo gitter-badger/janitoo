@@ -205,6 +205,12 @@ develop-all:
 tests:
 	make -C $(module) tests
 
+docker-deps:
+	sudo apt-get -y install libevent-2.0-5 mosquitto
+	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
+	@echo
+	@echo "Travis dependencies installed."
+
 tests-all:
 	for module in ${SUBMODULES};do make -C $$module tests; done
 	@echo
