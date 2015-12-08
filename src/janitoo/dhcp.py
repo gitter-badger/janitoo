@@ -467,6 +467,7 @@ class JNTNetwork(object):
         self.dbcon = None
         self.hadds = {}
         self.heartbeat_cache = None
+        self.threads_timers = []
 
         #~ self._replies = {'request_info_nodes' : self.add_nodes, 'request_info_users' : self.add_users, 'request_info_configs' : self.add_configs,
             #~ 'request_info_systems' : self.add_systems, 'request_info_basics' : self.add_basics, 'request_info_commands' : self.add_commands }
@@ -563,6 +564,10 @@ class JNTNetwork(object):
     def stop(self):
         """Stop the network
         """
+        for th in self.threads_timers:
+            if th.is_alive():
+                th.cancel()
+        self.threads_timers = []
         self.stop_resolv_heartbeat_timer()
         self.stop_dispatch_heartbeat_timer()
         self.fsm_network_stop()
@@ -1360,8 +1365,9 @@ class JNTNetwork(object):
                     #~ print "final data_to_send %s"%data_to_send
                     #~ print
                     try:
-                        thread = threading.Thread(target = threaded_send_resolv, args = (self._stopevent, self.options, data['reply_hadd'], resp, data_to_send))
-                        thread.start()
+                        th = threading.Timer(0.05, threaded_send_resolv, args = (self._stopevent, self.options, data['reply_hadd'], resp, data_to_send))
+                        th.start()
+                        self.threads_timers.append(th)
                     except:
                         logger.exception("Exception when running on_request method")
                         return
@@ -1422,9 +1428,9 @@ class JNTNetwork(object):
                         logger.warning("Unknown value% in %s", data['uuid'],'on_reply')
                         return
                     if self.is_primary and self.is_started:
-                        thread = threading.Thread(target = threaded_send_resolv, args = (self._stopevent, self.options, None, data, None))
-                        thread.start()
-
+                        th = threading.Timer(0.05, threaded_send_resolv, args = (self._stopevent, self.options, None, data, None))
+                        th.start()
+                        self.threads_timers.append(th)
         except:
             logger.exception("Exception in on_reply")
 
@@ -1709,16 +1715,22 @@ class JNTNetwork(object):
             logger.debug("heartbeat from an unknown device %s,%s,%s", add_ctrl, add_node, state)
             th = threading.Timer(self.request_timeout/3, self.request_node_nodes, [hadd])
             th.start()
+            self.threads_timers.append(th)
             th = threading.Timer(self.request_timeout/2, self.request_node_systems, [hadd])
             th.start()
+            self.threads_timers.append(th)
             th = threading.Timer(self.request_timeout, self.request_node_configs, [hadd])
             th.start()
+            self.threads_timers.append(th)
             th = threading.Timer(self.request_timeout+self.request_timeout/4, self.request_node_basics, [hadd])
             th.start()
+            self.threads_timers.append(th)
             th = threading.Timer(self.request_timeout+self.request_timeout/3, self.request_node_users, [hadd])
             th.start()
+            self.threads_timers.append(th)
             th = threading.Timer(self.request_timeout+self.request_timeout/2, self.request_node_commands, [hadd])
             th.start()
+            self.threads_timers.append(th)
         else :
             #~ print " node : %s" % self.nodes[hadd]
             if state != self.heartbeat_cache.get_state(add_ctrl, add_node):
@@ -1954,6 +1966,12 @@ class JNTNetwork(object):
     def loop(self, mqttc, stopevent):
         """
         """
+        try:
+            for th in self.threads_timers:
+                if not th.is_alive():
+                    self.threads_timers.remove(th)
+        except:
+            logger.exception("Catched exception in loop")
         to_polls = []
         keys = self.polls.keys()
         for key in keys:
