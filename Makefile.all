@@ -24,8 +24,6 @@ else
 python_version_full := $(wordlist 2,4,$(subst ., ,$(shell ${PYTHON_EXEC} --version 2>&1)))
 endif
 
-janitoo_version := $(shell ${PYTHON_EXEC} _version.py)
-
 python_version_major = $(word 1,${python_version_full})
 python_version_minor = $(word 2,${python_version_full})
 python_version_patch = $(word 3,${python_version_full})
@@ -35,7 +33,7 @@ ifeq (${python_version_major},3)
 	PIP_EXEC=pip3
 endif
 
-ARCHNAME     = janitoo-${janitoo_version}
+ARCHNAME     = janitoo
 ARCHDIR      = ${ARCHBASE}/${ARCHNAME}
 
 SUBMODULES   = $(shell find . -iname jani\* -type d -maxdepth 1|sort)
@@ -206,10 +204,9 @@ tests:
 	make -C $(module) tests
 
 docker-deps:
-	apt-get -y install libevent-2.0-5 mosquitto sudo
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
 	@echo
-	@echo "Travis dependencies installed."
+	@echo "Docker dependencies installed."
 
 tests-all:
 	for module in ${SUBMODULES};do make -C $$module tests; done
