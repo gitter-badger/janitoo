@@ -144,10 +144,11 @@ clone:
 commit-all:
 	for module in ${SUBMODULES};do make -C $$module commit; done
 
+deps:
+	make -C $(module) deps
 
 pull:
 	make -C $(module) pull
-	make -C $(module) develop
 
 pull-all:
 	for module in ${SUBMODULES};do make -C $$module pull; make -C $$module develop; done
