@@ -137,14 +137,20 @@ clean-doc:
 commit:
 	make -C $(module) message="$(message)" commit
 
+clone:
+	make -C $(module) deps
+	git clone https://github.com/bibi21000/$(module).git
+
 commit-all:
 	for module in ${SUBMODULES};do make -C $$module commit; done
 
+
 pull:
 	make -C $(module) pull
+	make -C $(module) develop
 
 pull-all:
-	for module in ${SUBMODULES};do make -C $$module pull; done
+	for module in ${SUBMODULES};do make -C $$module pull; make -C $$module develop; done
 
 status:
 	make -C $(module) status

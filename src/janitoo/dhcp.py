@@ -597,9 +597,9 @@ class JNTNetwork(object):
     def fsm_do_heartbeat_dispatch(self):
         """
         """
-        # Temporary fix
-        # return self.do_heartbeat_dispatch
-        return True
+        return self.do_heartbeat_dispatch
+        # Temporary fix https://travis-ci.org/bibi21000/janitoo/builds/95463154
+        # return True
 
     def start_broadcast_nodes_discover(self):
         """
