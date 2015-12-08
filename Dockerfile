@@ -13,12 +13,8 @@ RUN ln -s janitoo/Makefile.all Makefile
 RUN make deps module=janitoo
 RUN make develop module=janitoo
 
-RUN make pull module=janitoo_db
-RUN make deps module=janitoo_db
-RUN make develop module=janitoo_db
+RUN make clone module=janitoo_db
 
-RUN make pull module=janitoo_db_full
-RUN make deps module=janitoo_db_full
-RUN make develop module=janitoo_db_full
+RUN make clone module=janitoo_db_full
 
 RUN make tests-all

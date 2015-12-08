@@ -138,8 +138,9 @@ commit:
 	make -C $(module) message="$(message)" commit
 
 clone:
-	make -C $(module) deps
 	git clone https://github.com/bibi21000/$(module).git
+	make -C $(module) deps
+	make -C $(module) develop
 
 commit-all:
 	for module in ${SUBMODULES};do make -C $$module commit; done
