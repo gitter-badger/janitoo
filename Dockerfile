@@ -13,7 +13,8 @@ ADD . /opt/janitoo/src/janitoo
 
 WORKDIR /opt/janitoo/src
 RUN ls .
-RUN ls docker
+RUN ls janitoo
+RUN ls janitoo/docker
 
 RUN cat docker/supervisord.conf
 
