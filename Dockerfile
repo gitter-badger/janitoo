@@ -5,6 +5,13 @@ MAINTAINER bibi21000 <bibi21000@gmail.com>
 RUN env
 RUN /sbin/ip addr
 
+RUN ls .
+RUN ls docker
+
+RUN cat docker/supervisord.conf
+
+COPY docker/supervisord.conf /etc/supervisor/conf.d/
+
 RUN apt-get update && \
     apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
     apt-get install -y sudo openssh-server && \
@@ -20,10 +27,6 @@ RUN mkdir /opt/janitoo && \
 ADD . /opt/janitoo/src/janitoo
 
 WORKDIR /opt/janitoo/src
-
-RUN cat janitoo/docker/supervisord.conf
-
-COPY janitoo/docker/supervisord.conf /etc/supervisor/conf.d/
 
 RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
