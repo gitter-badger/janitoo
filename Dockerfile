@@ -7,7 +7,8 @@ RUN /sbin/ip addr
 
 RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev
-RUN apt-get -y install libevent-2.0-5 mosquitto sudo
+RUN apt-get install -y libevent-2.0-5 mosquitto sudo
+RUN apt-get install -y netcat-openbsd
 
 RUN mkdir /opt/janitoo
 RUN for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done
