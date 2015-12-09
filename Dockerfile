@@ -41,6 +41,8 @@ RUN make clone module=janitoo_manager
 RUN make clone module=janitoo_manager_proxy
 
 RUN cat /etc/mosquitto/mosquitto.conf
+RUN ls -lisa /etc/mosquitto/conf.d/
+RUN netstat -l
 
 RUN service mosquitto restart
 
