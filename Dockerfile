@@ -23,6 +23,15 @@ RUN make clone module=janitoo_db
 
 RUN make clone module=janitoo_db_full
 
+RUN make clone module=janitoo_hostsensor
+RUN make clone module=janitoo_hostsensor_psutil
+RUN make clone module=janitoo_hostsensor_lmsensor
+
+RUN make clone module=janitoo_nut
+
+RUN make clone module=janitoo_manager
+RUN make clone module=janitoo_manager_proxy
+
 RUN make tests-all
 
 VOLUME ["/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo"]
