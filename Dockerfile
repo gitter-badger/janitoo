@@ -6,7 +6,7 @@ RUN cat /etc/issue
 RUN env
 RUN /sbin/ip addr
 
-COPY janitoo/docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN apt-get update && \
     apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
