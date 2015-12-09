@@ -2,9 +2,19 @@ FROM python:2.7.10
 
 MAINTAINER bibi21000 <bibi21000@gmail.com>
 
+RUN cat /etc/issue
 RUN env
 RUN /sbin/ip addr
-RUN /sbin/ip addr
+
+COPY janitoo/docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+RUN apt-get update && \
+    apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
+    apt-get install -y sudo openssh-server && \
+    mkdir -p /var/run/sshd && \
+    apt-get install -y sudo supervisor && \
+    mkdir -p /var/log/supervisor && \
+    apt-get install -y mosquitto
 
 RUN mkdir /opt/janitoo && \
     for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
@@ -17,16 +27,7 @@ RUN ls .
 RUN ls janitoo
 RUN ls janitoo/docker
 
-RUN cd /opt/janitoo/src/janitoo/docker && cat supervisord.conf
-RUN cd /opt/janitoo/src/janitoo/docker && cp supervisord.conf /etc/supervisor/conf.d/
-
-RUN apt-get update && \
-    apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
-    apt-get install -y sudo openssh-server && \
-    mkdir -p /var/run/sshd && \
-    apt-get install -y sudo supervisor && \
-    mkdir -p /var/log/supervisor && \
-    apt-get install -y mosquitto
+RUN cat janitoo/docker/supervisord.conf
 
 RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
