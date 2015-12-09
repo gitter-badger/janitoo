@@ -4,6 +4,7 @@ MAINTAINER bibi21000 <bibi21000@gmail.com>
 
 RUN env
 RUN /sbin/ip addr
+RUN /sbin/ip addr
 
 RUN mkdir /opt/janitoo && \
     for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
@@ -16,9 +17,8 @@ RUN ls .
 RUN ls janitoo
 RUN ls janitoo/docker
 
-RUN cat janitoo/docker/supervisord.conf
-
-COPY janitoo/docker/supervisord.conf /etc/supervisor/conf.d/
+RUN cd /opt/janitoo/src/janitoo/docker && cat supervisord.conf
+RUN cd /opt/janitoo/src/janitoo/docker && cp supervisord.conf /etc/supervisor/conf.d/
 
 RUN apt-get update && \
     apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
