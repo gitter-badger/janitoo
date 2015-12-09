@@ -21,6 +21,8 @@ ADD . /opt/janitoo/src/janitoo
 
 WORKDIR /opt/janitoo/src
 
+RUN cat janitoo/docker/supervisord.conf
+
 COPY janitoo/docker/supervisord.conf /etc/supervisor/conf.d/
 
 RUN ln -s janitoo/Makefile.all Makefile && \
