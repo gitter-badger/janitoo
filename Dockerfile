@@ -16,9 +16,9 @@ RUN ls .
 RUN ls janitoo
 RUN ls janitoo/docker
 
-RUN cat docker/supervisord.conf
+RUN cat janitoo/docker/supervisord.conf
 
-COPY docker/supervisord.conf /etc/supervisor/conf.d/
+COPY janitoo/docker/supervisord.conf /etc/supervisor/conf.d/
 
 RUN apt-get update && \
     apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
