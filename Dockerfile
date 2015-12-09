@@ -13,7 +13,7 @@ RUN apt-get update && \
     mkdir -p /var/log/supervisor && \
     apt-get install -y mosquitto
 
-COPY docker/supervisord.conf /etc/supervisor/conf.d/
+ADD docker/supervisord.conf /etc/supervisor/conf.d/
 
 RUN mkdir /opt/janitoo && \
     for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
@@ -26,23 +26,22 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     make deps module=janitoo && \
     make develop module=janitoo
 
-RUN make clone module=janitoo_db
-
-RUN make clone module=janitoo_db_full
+RUN make clone module=janitoo_db && \
+    make clone module=janitoo_db_full
 
 RUN make clone module=janitoo_layouts
 
-RUN make clone module=janitoo_hostsensor
-RUN make clone module=janitoo_hostsensor_psutil
-RUN make clone module=janitoo_hostsensor_lmsensor
+RUN make clone module=janitoo_hostsensor && \
+    make clone module=janitoo_hostsensor_psutil && \
+    make clone module=janitoo_hostsensor_lmsensor
 
 RUN make clone module=janitoo_nut
 
 RUN make clone module=janitoo_datalog_rrd
 
-RUN make clone module=janitoo_flask
-RUN make clone module=janitoo_manager
-RUN make clone module=janitoo_manager_proxy
+RUN make clone module=janitoo_flask && \
+    make clone module=janitoo_manager && \
+    make clone module=janitoo_manager_proxy
 
 RUN /usr/bin/supervisord && make tests-all
 
