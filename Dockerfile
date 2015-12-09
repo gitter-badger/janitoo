@@ -7,8 +7,13 @@ RUN /sbin/ip addr
 
 RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev
-RUN apt-get install -y libevent-2.0-5 mosquitto sudo
-RUN apt-get install -y netcat-openbsd
+RUN apt-get install -y netcat-openbsd apt-show-versions
+RUN apt-get install -y sudo openssh-server supervisor
+RUN mkdir -p /var/run/sshd /var/log/supervisor
+
+RUN apt-get install -y lmosquitto
+
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN mkdir /opt/janitoo
 RUN for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done
@@ -41,14 +46,10 @@ RUN make clone module=janitoo_flask
 RUN make clone module=janitoo_manager
 RUN make clone module=janitoo_manager_proxy
 
-RUN cat /etc/mosquitto/mosquitto.conf
-RUN ls -lisa /etc/mosquitto/conf.d/
-RUN netcat -zv 127.0.0.1 1-9999
-
-RUN service mosquitto restart
-
-RUN make tests-all
+RUN /usr/bin/supervisord && make tests-all
 
 VOLUME ["/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo"]
 
-#EXPOSE 1883 8883
+EXPOSE 22 1883
+
+CMD ["/usr/bin/supervisord"]
