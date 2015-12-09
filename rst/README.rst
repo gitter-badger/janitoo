@@ -6,6 +6,12 @@
     :target: https://coveralls.io/github/bibi21000/janitoo?branch=master
     :alt: Coveralls results
 
+.. image:: https://circleci.com/gh/docker/janitoo/tree/master.svg?style=svg
+    :target: https://coveralls.io/github/bibi21000/janitoo?branch=master
+    :alt: Coveralls results
+
+[![Circle CI]()](https://circleci.com/gh/docker/libnetwork/tree/master) [![Coverage Status](https://coveralls.io/repos/docker/libnetwork/badge.svg)](https://coveralls.io/r/docker/libnetwork)
+
 ==================
 Welcome to Janitoo
 ==================

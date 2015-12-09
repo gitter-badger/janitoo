@@ -23,14 +23,21 @@ RUN make clone module=janitoo_db
 
 RUN make clone module=janitoo_db_full
 
+RUN make clone module=janitoo_layouts
+
 RUN make clone module=janitoo_hostsensor
 RUN make clone module=janitoo_hostsensor_psutil
 RUN make clone module=janitoo_hostsensor_lmsensor
 
 RUN make clone module=janitoo_nut
 
+RUN make clone module=janitoo_datalog_rrd
+
+RUN make clone module=janitoo_flask
 RUN make clone module=janitoo_manager
 RUN make clone module=janitoo_manager_proxy
+
+RUN service mosquitto restart
 
 RUN make tests-all
 
