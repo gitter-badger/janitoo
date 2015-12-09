@@ -2,8 +2,8 @@ FROM python:2.7.10
 
 MAINTAINER bibi21000 <bibi21000@gmail.com>
 
-RUN ifconfig
 RUN env
+RUN /sbin/ifconfig
 
 RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev
