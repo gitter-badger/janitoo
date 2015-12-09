@@ -12,7 +12,9 @@ RUN apt-get update && \
     mkdir -p /var/run/sshd && \
     apt-get install -y sudo supervisor && \
     mkdir -p /var/log/supervisor && \
-    apt-get install -y mosquitto
+    apt-get install -y mosquitto && \
+    apt-get clean && \
+    rm -Rf /root/.cache/*
 
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
@@ -27,16 +29,28 @@ WORKDIR /opt/janitoo/src
 RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
     make deps module=janitoo && \
-    make develop module=janitoo
+    make develop module=janitoo && \
+    apt-get clean && \
+    [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_db && \
-    make clone module=janitoo_db_full
+    make clone module=janitoo_db_full && \
+    apt-get clean && \
+    [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
-RUN make clone module=janitoo_layouts
+RUN make clone module=janitoo_layouts && \
+    apt-get clean && \
+    [ -d /root/.cache ] && rm -Rf /root/.cache/*
+
+RUN make clone module=janitoo_datalog_rrd && \
+    apt-get clean && \
+    [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_flask && \
     make clone module=janitoo_manager && \
-    make clone module=janitoo_manager_proxy
+    make clone module=janitoo_manager_proxy && \
+    apt-get clean && \
+    [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 VOLUME ["/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
