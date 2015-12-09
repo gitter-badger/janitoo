@@ -10,7 +10,7 @@ RUN apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev pyt
 RUN apt-get install -y sudo openssh-server supervisor
 RUN mkdir -p /var/run/sshd /var/log/supervisor
 
-RUN apt-get install -y lmosquitto
+RUN apt-get install -y mosquitto
 
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
