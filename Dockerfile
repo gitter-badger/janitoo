@@ -13,14 +13,16 @@ RUN apt-get update && \
     mkdir -p /var/log/supervisor && \
     apt-get install -y mosquitto
 
-ADD docker/supervisord.conf /etc/supervisor/conf.d/
-
 RUN mkdir /opt/janitoo && \
     for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
     mkdir /opt/janitoo/src/janitoo
+
 ADD . /opt/janitoo/src/janitoo
 
 WORKDIR /opt/janitoo/src
+
+COPY janitoo/docker/supervisord.conf /etc/supervisor/conf.d/
+
 RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
     make deps module=janitoo && \
