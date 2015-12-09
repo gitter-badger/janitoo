@@ -5,27 +5,26 @@ MAINTAINER bibi21000 <bibi21000@gmail.com>
 RUN env
 RUN /sbin/ip addr
 
-RUN apt-get update
-RUN apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev
-RUN apt-get install -y sudo openssh-server supervisor
-RUN mkdir -p /var/run/sshd /var/log/supervisor
+RUN apt-get update && \
+    apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
+    apt-get install -y sudo openssh-server && \
+    mkdir -p /var/run/sshd && \
+    apt-get install -y sudo supervisor && \
+    mkdir -p /var/log/supervisor && \
+    apt-get install -y mosquitto
 
-RUN apt-get install -y mosquitto
+COPY docker/supervisord.conf /etc/supervisor/conf.d/
 
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN mkdir /opt/janitoo
-RUN for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done
-RUN mkdir /opt/janitoo/src/janitoo
+RUN mkdir /opt/janitoo && \
+    for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
+    mkdir /opt/janitoo/src/janitoo
 ADD . /opt/janitoo/src/janitoo
 
 WORKDIR /opt/janitoo/src
-RUN ln -s janitoo/Makefile.all Makefile
-
-RUN make docker-deps
-
-RUN make deps module=janitoo
-RUN make develop module=janitoo
+RUN ln -s janitoo/Makefile.all Makefile && \
+    make docker-deps && \
+    make deps module=janitoo && \
+    make develop module=janitoo
 
 RUN make clone module=janitoo_db
 
