@@ -7,7 +7,6 @@ RUN /sbin/ip addr
 
 RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev
-RUN apt-get install -y netcat-openbsd apt-show-versions
 RUN apt-get install -y sudo openssh-server supervisor
 RUN mkdir -p /var/run/sshd /var/log/supervisor
 
