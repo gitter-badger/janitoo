@@ -46,4 +46,4 @@ RUN make tests-all
 
 VOLUME ["/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo"]
 
-EXPOSE 1883 8883
+#EXPOSE 1883 8883
