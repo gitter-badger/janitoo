@@ -5,6 +5,13 @@ MAINTAINER bibi21000 <bibi21000@gmail.com>
 RUN env
 RUN /sbin/ip addr
 
+RUN mkdir /opt/janitoo && \
+    for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
+    mkdir /opt/janitoo/src/janitoo
+
+ADD . /opt/janitoo/src/janitoo
+
+WORKDIR /opt/janitoo/src
 RUN ls .
 RUN ls docker
 
@@ -19,14 +26,6 @@ RUN apt-get update && \
     apt-get install -y sudo supervisor && \
     mkdir -p /var/log/supervisor && \
     apt-get install -y mosquitto
-
-RUN mkdir /opt/janitoo && \
-    for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
-    mkdir /opt/janitoo/src/janitoo
-
-ADD . /opt/janitoo/src/janitoo
-
-WORKDIR /opt/janitoo/src
 
 RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
