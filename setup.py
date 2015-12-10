@@ -138,5 +138,9 @@ setup(
                      'mock == 1.0.1',
                      'six',
                     ],
+    tests_require=['janitoo_nosetests'],
+    dependency_links = [
+      'https://github.com/bibi21000/janitoo_nosetests/archive/master.zip#egg=janitoo_nosetests',
+    ],
     entry_points = janitoo_entry_points,
 )
