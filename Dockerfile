@@ -1,4 +1,4 @@
-FROM python:2.7.10
+FROM python:2.7.11
 
 MAINTAINER bibi21000 <bibi21000@gmail.com>
 
