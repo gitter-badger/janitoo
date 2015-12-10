@@ -8,5 +8,5 @@
 
 dependencies:
     pre:
-        - sudo make deps
-        - sudo make travis-deps
+        - make deps
+        - make travis-deps
