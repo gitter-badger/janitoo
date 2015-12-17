@@ -15,13 +15,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -Rf /root/.cache/*
 
-RUN wget -qO - http://deb.opera.com/archive.key | apt-key add - && \
-    cd /etc/apt/sources.list.d/ && \
-    wget http://repo.mosquitto.org/debian/mosquitto-jessie.list && \
-    apt-get update && \
-    apt-get install -y --force-yes mosquitto && \
-    apt-get clean    
-
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN mkdir /opt/janitoo && \
@@ -36,6 +29,10 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
     make deps module=janitoo && \
     make develop module=janitoo && \
+    apt-get clean && \
+    [ -d /root/.cache ] && rm -Rf /root/.cache/*
+
+RUN make clone module=janitoo_mosquitto && \
     apt-get clean && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
