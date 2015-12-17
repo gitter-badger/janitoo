@@ -12,9 +12,15 @@ RUN apt-get update && \
     mkdir -p /var/run/sshd && \
     apt-get install -y sudo supervisor && \
     mkdir -p /var/log/supervisor && \
-    apt-get install -y mosquitto && \
     apt-get clean && \
     rm -Rf /root/.cache/*
+
+RUN wget -qO - http://deb.opera.com/archive.key | apt-key add - && \
+    cd /etc/apt/sources.list.d/ && \
+    wget http://repo.mosquitto.org/debian/mosquitto-jessie.list && \
+    apt-get update && \
+    apt-get install -y mosquitto && \
+    apt-get clean    
 
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
