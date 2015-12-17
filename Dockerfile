@@ -19,7 +19,7 @@ RUN wget -qO - http://deb.opera.com/archive.key | apt-key add - && \
     cd /etc/apt/sources.list.d/ && \
     wget http://repo.mosquitto.org/debian/mosquitto-jessie.list && \
     apt-get update && \
-    apt-get install -y mosquitto && \
+    apt-get install -y --force-yes mosquitto && \
     apt-get clean    
 
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
