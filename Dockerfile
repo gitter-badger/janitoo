@@ -50,6 +50,7 @@ RUN make clone module=janitoo_datalog_rrd && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_flask && \
+    make clone module=janitoo_flask_socketio && \
     make clone module=janitoo_manager && \
     make clone module=janitoo_manager_proxy && \
     apt-get clean && \

@@ -130,6 +130,12 @@ You can now "develop" janitoo. It use a lot of entry-points, so it MUST be devel
 
     make develop module=janitoo
 
+Installing mosquito
+-------------------
+
+..code: bash
+
+    make clone module=janitoo_mosquitto
 
 Installing suplementary modules
 -------------------------------
