@@ -213,14 +213,21 @@ tests-all:
 	@echo
 	@echo "Tests for janitoo finished."
 
-coverage-all:
-	-mkdir -p docs/tools/coverage
-	-mkdir -p docs/tools/nosetests
+coverage-collect:
+	@echo "Collect coverage for janitoo."
+	@echo
 	-rm -rf .coverage
 	-mkdir -p .coverage
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage/coverage._$$target"; done
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage/coverage._$$target" ".coverage/.coverage._$$target"; done
 	cd .coverage && coverage combine
+	cd .coverage && coverage report
+	@echo
+	@echo "Coverage for janitoo collected."
+
+coverage-all: coverage-collect
+	-mkdir -p docs/tools/coverage
+	-mkdir -p docs/tools/nosetests
 	cd .coverage && coverage html -d ../docs/tools/coverage/
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/build/docs/html/tools/nosetests/index.html "docs/tools/nosetests/$$target.html"; done
 	@echo
