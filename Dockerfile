@@ -58,6 +58,6 @@ RUN make clone module=janitoo_flask && \
 
 VOLUME ["/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
-EXPOSE 22 1883 9001
+EXPOSE 22 1883 5005 9001
 
 CMD ["/usr/bin/supervisord", "--nodaemon"]
