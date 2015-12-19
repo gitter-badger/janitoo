@@ -33,6 +33,7 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_mosquitto && \
+    make clone module=janitoo_pki && \
     apt-get clean && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
