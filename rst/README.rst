@@ -184,4 +184,8 @@ And your
 Actually, the protocol is not fully developped, so you must create nodes in your configuration files.
 
 
+Support
+=======
+
+You can ask about support to google the google group : https://groups.google.com/d/forum/janitoo-dev
 
