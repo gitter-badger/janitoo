@@ -125,6 +125,7 @@ travis-deps: deps
 	git clone https://github.com/bibi21000/janitoo_mosquitto.git
 	make -C janitoo_mosquitto deps
 	make -C janitoo_mosquitto develop
+	sudo apt-get install -y python-pip
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
 	pip install coveralls
 	@echo
