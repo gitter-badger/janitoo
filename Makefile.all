@@ -204,6 +204,7 @@ tests:
 	make -C $(module) tests
 
 docker-deps:
+	sudo apt-get install -y python-pip
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
 	@echo
 	@echo "Docker dependencies installed."

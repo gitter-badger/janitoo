@@ -34,6 +34,7 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_mosquitto && \
+    make clone module=janitoo_nginx && \
     make clone module=janitoo_pki && \
     apt-get clean && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
@@ -60,6 +61,6 @@ RUN make clone module=janitoo_flask && \
 
 VOLUME ["/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
-EXPOSE 22 1883 5005 9001
+EXPOSE 22 1883 5005 8085 9001
 
 CMD ["/usr/bin/supervisord", "--nodaemon"]
