@@ -122,10 +122,13 @@ develop:
 	@echo "Installation for developpers of ${MODULENAME} finished."
 
 travis-deps: deps
+	sudo apt-get install -y python-pip
 	git clone https://github.com/bibi21000/janitoo_mosquitto.git
 	make -C janitoo_mosquitto deps
 	make -C janitoo_mosquitto develop
-	sudo apt-get install -y python-pip
+	git clone https://github.com/bibi21000/janitoo_nginx.git
+	make -C janitoo_nginx deps
+	make -C janitoo_nginx develop
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
 	pip install coveralls
 	@echo
