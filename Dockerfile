@@ -59,7 +59,7 @@ RUN make clone module=janitoo_flask && \
     apt-get clean && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
-VOLUME ["/etc/nginx/conf.d/", "/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
+VOLUME ["/etc/nginx/conf.d/", "/var/log/nginx", "/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
 EXPOSE 22 1883 5005 8085 9001
 
