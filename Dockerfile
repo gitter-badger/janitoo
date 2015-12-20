@@ -7,7 +7,8 @@ RUN env
 RUN /sbin/ip addr
 
 RUN apt-get update && \
-    apt-get install -y build-essential libssl-dev libwrap0-dev libc-ares-dev python-dev && \
+    apt-get install -y build-essential libwrap0-dev libc-ares-dev python-dev && \
+    apt-get dist-upgrade -y && \
     apt-get install -y sudo openssh-server && \
     mkdir -p /var/run/sshd && \
     apt-get install -y sudo supervisor && \
