@@ -29,9 +29,8 @@ WORKDIR /opt/janitoo/src
 RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
     make deps module=janitoo && \
-    make develop module=janitoo
-
-RUN apt-get clean && \
+    make develop module=janitoo && \
+    apt-get clean && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_mosquitto && \
