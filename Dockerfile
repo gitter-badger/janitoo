@@ -34,6 +34,7 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_mosquitto && \
+    sudo apt-get install -y --force-yes nginx-full && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_pki && \
     apt-get clean && \
