@@ -1,4 +1,4 @@
-FROM python:2.7.11
+FROM debian:jessie
 
 MAINTAINER bibi21000 <bibi21000@gmail.com>
 
