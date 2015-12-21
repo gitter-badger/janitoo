@@ -6,6 +6,12 @@ RUN cat /etc/issue
 RUN env
 RUN /sbin/ip addr
 
+COPY docker/auto.sh /root/
+COPY docker/supervisord.conf /root/
+COPY docker/supervisord.conf.d /root/
+
+RUN echo "janitoo\njanitoo" | passwd
+
 RUN apt-get update && \
     apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev git && \
     apt-get dist-upgrade -y && \
@@ -24,6 +30,7 @@ ADD . /opt/janitoo/src/janitoo
 
 COPY docker/auto.sh /root/
 COPY docker/supervisord.conf /root/
+COPY docker/supervisord.conf.d /root/
 
 WORKDIR /opt/janitoo/src
 
