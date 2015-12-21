@@ -130,6 +130,7 @@ travis-deps: deps
 	make -C janitoo_nginx deps
 	make -C janitoo_nginx develop
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
+	pip install git+git://github.com/bibi21000/janitoo_nosetests_flask@master
 	pip install coveralls
 	@echo
 	@echo "Travis dependencies for ${MODULENAME} installed."
