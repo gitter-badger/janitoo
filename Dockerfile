@@ -31,6 +31,8 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
     make deps module=janitoo && \
     make develop module=janitoo && \
+    make clone module=janitoo_nosetests && \
+    make clone module=janitoo_nosetests && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null|| true && \
     rm -Rf /tmp/* 2>/dev/null|| true
