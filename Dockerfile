@@ -7,16 +7,18 @@ RUN env
 RUN /sbin/ip addr
 
 COPY docker/auto.sh /root/
+COPY docker/shell.sh /root/
 COPY docker/supervisord.conf /root/
 COPY docker/supervisord.conf.d /root/
 
 RUN echo "janitoo\njanitoo" | passwd
 
 RUN apt-get update && \
-    apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev git && \
+    apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev git vim-nox && \
     apt-get dist-upgrade -y && \
     apt-get install -y sudo openssh-server && \
     mkdir -p /var/run/sshd && \
+    sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
     apt-get install -y sudo supervisor && \
     mkdir -p /var/log/supervisor && \
     apt-get clean && \
@@ -83,7 +85,7 @@ RUN apt-get install -y python-pip lm-sensors && \
     rm -Rf /root/.cache/* 2>/dev/null|| true && \
     rm -Rf /tmp/* 2>/dev/null|| true
 
-VOLUME ["/etc/nginx/conf.d/", "/var/log/nginx", "/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
+VOLUME ["/etc/nginx/conf.d/", "/var/log/nginx", "/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/var/log/supervisor", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
 EXPOSE 22 1883 5005 8085 9001
 
