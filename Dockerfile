@@ -33,6 +33,8 @@ ADD . /opt/janitoo/src/janitoo
 COPY docker/auto.sh /root/
 COPY docker/shell.sh /root/
 COPY docker/rescue.sh /root/
+COPY docker/supervisord-tests.conf /etc/supervisord/
+COPY docker/supervisord-tests.conf.d /etc/supervisord-tests/
 COPY docker/supervisord.conf /etc/supervisord/
 COPY docker/supervisord.conf.d /etc/supervisord/
 
