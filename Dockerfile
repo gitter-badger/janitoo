@@ -25,13 +25,14 @@ RUN apt-get update && \
     rm -Rf /root/.cache/*
 
 RUN mkdir /opt/janitoo && \
-    for dir in src home log run etc/janitoo init; do mkdir /opt/janitoo/$dir; done && \
+    for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
     mkdir /opt/janitoo/src/janitoo
 
 ADD . /opt/janitoo/src/janitoo
 
 COPY docker/auto.sh /root/
 COPY docker/shell.sh /root/
+COPY docker/rescue.sh /root/
 COPY docker/supervisord.conf /etc/supervisord/
 COPY docker/supervisord.conf.d /etc/supervisord/
 
@@ -66,6 +67,8 @@ RUN make clone module=janitoo_layouts && \
     rm -Rf /tmp/* 2>/dev/null|| true
 
 RUN make clone module=janitoo_datalog_rrd && \
+    cp janitoo_datalog_rrd/src/config/janitoo_datalog_rrd.conf /opt/janitoo/etc/ &&\
+    cp janitoo_datalog_rrd/src/scripts/supervisord.conf /etc/supervisord/supervisord.conf.d/ &&\
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null|| true && \
     rm -Rf /tmp/* 2>/dev/null|| true
