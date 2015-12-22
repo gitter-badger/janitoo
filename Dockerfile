@@ -20,7 +20,7 @@ RUN apt-get update && \
     mkdir -p /var/run/sshd && \
     sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
     apt-get install -y sudo supervisor && \
-    mkdir -p /var/log/supervisor && \
+    mkdir -p /var/log/supervisor /etc/supervisord && \
     apt-get clean && \
     rm -Rf /root/.cache/*
 
@@ -31,8 +31,9 @@ RUN mkdir /opt/janitoo && \
 ADD . /opt/janitoo/src/janitoo
 
 COPY docker/auto.sh /root/
-COPY docker/supervisord.conf /root/
-COPY docker/supervisord.conf.d /root/
+COPY docker/shell.sh /root/
+COPY docker/supervisord.conf /etc/supervisord/
+COPY docker/supervisord.conf.d /etc/supervisord/
 
 WORKDIR /opt/janitoo/src
 

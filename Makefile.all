@@ -36,7 +36,11 @@ endif
 ARCHNAME     = janitoo
 ARCHDIR      = ${ARCHBASE}/${ARCHNAME}
 
+DOCKIP       = 127.0.0.1
+
 SUBMODULES   = $(shell find . -iname jani\* -type d -maxdepth 1|sort)
+
+-include Makefile.local
 
 .PHONY: help clean all update build develop install install-api uninstall clean-docs docs autobuild-tests tests pylint commit developper-deps python-deps autobuild-deps arch-deps common-deps cython-deps merge-python3
 
@@ -252,3 +256,14 @@ tar-all:
 	for module in ${SUBMODULES};do make -C $$module tar; done
 	@echo
 	@echo "Archives created"
+
+~/.ssh/id_rsa.pub:
+	ssh-keygen -t rsa
+
+sshkey_generate: ~/.ssh/id_rsa.pub
+
+ssh:
+	ssh root@${DOCKIP} -p 8882
+
+sshkey_copy:
+	ssh-copy-id root@${DOCKIP} -p 8882
