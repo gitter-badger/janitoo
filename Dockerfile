@@ -25,7 +25,7 @@ RUN apt-get update && \
     rm -Rf /root/.cache/*
 
 RUN mkdir /opt/janitoo && \
-    for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
+    for dir in src home log run etc/janitoo init; do mkdir /opt/janitoo/$dir; done && \
     mkdir /opt/janitoo/src/janitoo
 
 ADD . /opt/janitoo/src/janitoo
@@ -42,7 +42,7 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     make deps module=janitoo && \
     make develop module=janitoo && \
     make clone module=janitoo_nosetests && \
-    make clone module=janitoo_nosetests && \
+    make clone module=janitoo_nosetests_flask && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null|| true && \
     rm -Rf /tmp/* 2>/dev/null|| true
