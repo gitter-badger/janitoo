@@ -219,6 +219,13 @@ tests-all:
 	@echo
 	@echo "Tests for janitoo finished."
 
+coverage-check:coverage-collect
+	@echo "Check coverage for janitoo."
+	@echo
+	cd .coverage && coverage xml --fail-under=59 -o ../docs/tools/coverage.full.xml
+	@echo
+	@echo "Coverage for janitoo collected."
+
 coverage-collect:
 	@echo "Collect coverage for janitoo."
 	@echo
@@ -227,7 +234,7 @@ coverage-collect:
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage/coverage._$$target"; done
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage/coverage._$$target" ".coverage/.coverage._$$target"; done
 	cd .coverage && coverage combine
-	cd .coverage && coverage report
+	cd .coverage && coverage report --fail-under=59
 	@echo
 	@echo "Coverage for janitoo collected."
 
