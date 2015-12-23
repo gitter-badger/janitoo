@@ -207,11 +207,6 @@ develop-all:
 tests:
 	make -C $(module) tests
 
-/etc/sudoers.d/docker:
-	echo "${USER} ALL= NOPASSWD:/usr/bin/docker"|sudo tee /etc/sudoers.d/docker
-
-sudoers: /etc/sudoers.d/docker
-
 docker-deps:
 	@echo "Install Docker dependencies."
 	@echo
