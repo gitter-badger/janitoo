@@ -25,6 +25,7 @@ RUN apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev 
 
 RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base && \
     mkdir -p /var/run/sshd && \
+    sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
