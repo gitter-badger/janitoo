@@ -15,26 +15,25 @@ RUN echo "janitoo\njanitoo" | passwd
 
 RUN apt-get update && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev git vim-nox && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base && \
     mkdir -p /var/run/sshd && \
-    sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN apt-get install -y sudo supervisor && \
     mkdir -p /var/log/supervisor /etc/supervisord && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN mkdir /opt/janitoo && \
     for dir in src cache cache/janitoo_manager home log run etc init; do mkdir /opt/janitoo/$dir; done && \
@@ -59,34 +58,34 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     make clone module=janitoo_nosetests && \
     make clone module=janitoo_nosetests_flask && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_pki && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_mosquitto && \
     apt-get clean && \
-    mkdir -p /var/log/gunicorn || true && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    mkdir -p /var/log/gunicorn||true && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_db && \
     make clone module=janitoo_db_full && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_layouts && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_datalog_rrd && \
     cp janitoo_datalog_rrd/src/config/janitoo_datalog_rrd.conf /opt/janitoo/etc/ &&\
     cp janitoo_datalog_rrd/src/scripts/supervisord.conf /etc/supervisord/supervisord.conf.d/ &&\
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_flask && \
     make clone module=janitoo_flask_socketio && \
@@ -96,16 +95,16 @@ RUN make clone module=janitoo_flask && \
     install -m 0644 janitoo_manager/src/config/janitoo_manager.gunincorn.conf /etc/gunicorn.d/janitoo_manager.conf &&\
     make clone module=janitoo_manager_proxy && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN apt-get install -y python-pip lm-sensors && \
     pip install psutil bottle batinfo https://bitbucket.org/gleb_zhulik/py3sensors/get/tip.tar.gz && \
     cd /root/ && \
     git clone -b develop https://github.com/nicolargo/glances.git && \
     apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null|| true && \
-    rm -Rf /tmp/* 2>/dev/null|| true
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 VOLUME ["/etc/nginx/conf.d/", "/var/log/nginx", "/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/var/log/supervisor", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
