@@ -213,11 +213,23 @@ tests:
 sudoers: /etc/sudoers.d/docker
 
 docker-deps:
+	@echo "Install Docker dependencies."
+	@echo
 	sudo apt-get install -y python-pip git python2.7-dev
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
 	pip install git+git://github.com/bibi21000/janitoo_nosetests_flask@master
 	@echo
 	@echo "Docker dependencies installed."
+
+docker-inst:
+	@echo "Configure Docker image."
+	@echo
+	test -d $(module)/docker/config && cp -rf $(module)/docker/config/* /opt/janitoo/etc/
+	test -d $(module)/docker/supervisord.conf.d && cp -rf $(module)/docker/supervisord.conf.d/* /etc/supervisord/supervisord.conf.d/
+	test -d $(module)/docker/supervisord-tests.conf.d && cp -rf $(module)/docker/supervisord-tests.conf.d/* /etc/supervisord/supervisord-tests.conf.d/
+	test -d $(module)/docker/nginx && cp -rf $(module)/docker/nginx/* /etc/nginx/conf.d/
+	@echo
+	@echo "Docker image configured."
 
 tests-all:
 	for module in ${SUBMODULES};do make -C $$module tests; done
