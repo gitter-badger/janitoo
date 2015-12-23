@@ -83,7 +83,7 @@ RUN make clone module=janitoo_layouts && \
 
 RUN make clone module=janitoo_datalog_rrd && \
     cp janitoo_datalog_rrd/src/config/janitoo_datalog_rrd.conf /opt/janitoo/etc/ &&\
-    cp janitoo_datalog_rrd/src/scripts/supervisord.conf /etc/supervisord/supervisord.conf.d/ &&\
+    cp janitoo_datalog_rrd/src/scripts/supervisord.conf /etc/supervisord/supervisord.conf.d/janitoo_datalog_rrd.conf &&\
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -107,7 +107,7 @@ RUN apt-get install -y python-pip lm-sensors && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-VOLUME ["/etc/nginx/conf.d/", "/var/log/nginx", "/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/var/log/supervisor", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
+VOLUME ["/root/", "/etc/nginx/conf.d/", "/var/log/nginx", "/etc/mosquitto/", "/var/data/mosquitto", "/var/log/mosquitto", "/var/log/supervisor", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
 EXPOSE 22 1883 5005 8085 9001
 
