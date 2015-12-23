@@ -207,6 +207,11 @@ develop-all:
 tests:
 	make -C $(module) tests
 
+/etc/sudoers.d/docker:
+	echo "${USER} ALL= NOPASSWD:/usr/bin/docker"|sudo tee /etc/sudoers.d/docker
+
+sudoers: /etc/sudoers.d/docker
+
 docker-deps:
 	sudo apt-get install -y python-pip git python2.7-dev
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
