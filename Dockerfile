@@ -14,18 +14,30 @@ COPY docker/supervisord.conf.d /root/
 RUN echo "janitoo\njanitoo" | passwd
 
 RUN apt-get update && \
-    apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev git vim-nox && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y sudo openssh-server && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null|| true && \
+    rm -Rf /tmp/* 2>/dev/null|| true
+
+RUN apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev git vim-nox && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null|| true && \
+    rm -Rf /tmp/* 2>/dev/null|| true
+
+RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base && \
     mkdir -p /var/run/sshd && \
     sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
-    apt-get install -y sudo supervisor && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null|| true && \
+    rm -Rf /tmp/* 2>/dev/null|| true
+
+RUN apt-get install -y sudo supervisor && \
     mkdir -p /var/log/supervisor /etc/supervisord && \
     apt-get clean && \
-    rm -Rf /root/.cache/*
+    rm -Rf /root/.cache/* 2>/dev/null|| true && \
+    rm -Rf /tmp/* 2>/dev/null|| true
 
 RUN mkdir /opt/janitoo && \
-    for dir in src home log run etc init; do mkdir /opt/janitoo/$dir; done && \
+    for dir in src cache cache/janitoo_manager home log run etc init; do mkdir /opt/janitoo/$dir; done && \
     mkdir /opt/janitoo/src/janitoo
 
 ADD . /opt/janitoo/src/janitoo
@@ -34,9 +46,9 @@ COPY docker/auto.sh /root/
 COPY docker/shell.sh /root/
 COPY docker/rescue.sh /root/
 COPY docker/supervisord-tests.conf /etc/supervisord/
-COPY docker/supervisord-tests.conf.d /etc/supervisord-tests/
+COPY docker/supervisord-tests.conf.d/ /etc/supervisord/supervisord-tests.conf.d/
 COPY docker/supervisord.conf /etc/supervisord/
-COPY docker/supervisord.conf.d /etc/supervisord/
+COPY docker/supervisord.conf.d/ /etc/supervisord/supervisord.conf.d/
 
 WORKDIR /opt/janitoo/src
 
@@ -54,6 +66,7 @@ RUN make clone module=janitoo_pki && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_mosquitto && \
     apt-get clean && \
+    mkdir -p /var/log/gunicorn || true && \
     rm -Rf /root/.cache/* 2>/dev/null|| true && \
     rm -Rf /tmp/* 2>/dev/null|| true
 
@@ -78,6 +91,9 @@ RUN make clone module=janitoo_datalog_rrd && \
 RUN make clone module=janitoo_flask && \
     make clone module=janitoo_flask_socketio && \
     make clone module=janitoo_manager && \
+    install -m 0644 janitoo_manager/src/config/janitoo_manager.conf /opt/janitoo/etc/janitoo_manager.conf &&\
+    install -m 0644 janitoo_manager/src/config/janitoo_manager.nginx.conf /etc/nginx/conf.d/janitoo_manager &&\
+    install -m 0644 janitoo_manager/src/config/janitoo_manager.gunincorn.conf /etc/gunicorn.d/janitoo_manager.conf &&\
     make clone module=janitoo_manager_proxy && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null|| true && \

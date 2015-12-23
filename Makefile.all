@@ -145,7 +145,7 @@ clone:
 	make -C $(module) develop
 
 commit-all:
-	for module in ${SUBMODULES};do make -C $$module commit; done
+	for module in ${SUBMODULES};do make -C $$module commit message=$message; done
 
 deps:
 	make -C $(module) deps
