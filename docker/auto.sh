@@ -1,5 +1,5 @@
 #!/bin/bash
-/usr/bin/supervisord -c /etc/supervisord/supervisord.conf
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 cd /root/glances
 git pull origin develop
 #You must loop here
