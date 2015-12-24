@@ -219,10 +219,10 @@ docker-deps:
 docker-inst:
 	@echo "Configure Docker image."
 	@echo
-	test -d $(module)/docker/config && cp -rf $(module)/docker/config/* /opt/janitoo/etc/
-	test -d $(module)/docker/supervisor.conf.d && cp -rf $(module)/docker/supervisor.conf.d/* /etc/supervisor/janitoo.conf.d/
-	test -d $(module)/docker/supervisor-tests.conf.d && cp -rf $(module)/docker/supervisor-tests.conf.d/* /etc/supervisor/janitoo-tests.conf.d/
-	test -d $(module)/docker/nginx && cp -rf $(module)/docker/nginx/* /etc/nginx/conf.d/
+	-test -d $(module)/docker/config && cp -rf $(module)/docker/config/* /opt/janitoo/etc/
+	-test -d $(module)/docker/supervisor.conf.d && cp -rf $(module)/docker/supervisor.conf.d/* /etc/supervisor/janitoo.conf.d/
+	-test -d $(module)/docker/supervisor-tests.conf.d && cp -rf $(module)/docker/supervisor-tests.conf.d/* /etc/supervisor/janitoo-tests.conf.d/
+	-test -d $(module)/docker/nginx && cp -rf $(module)/docker/nginx/* /etc/nginx/conf.d/
 	@echo
 	@echo "Docker image configured."
 
