@@ -31,9 +31,9 @@ RUN apt-get install -y sudo supervisor && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-COPY docker/supervisor-tests.conf /etc/supervisor/
+COPY docker/supervisord-tests.conf /etc/supervisor/
 COPY docker/supervisor-tests.conf.d/ /etc/supervisor/janitoo-tests.conf.d/
-COPY docker/supervisor.conf /etc/supervisor/
+COPY docker/supervisord.conf /etc/supervisor/
 COPY docker/supervisor.conf.d/ /etc/supervisor/janitoo.conf.d/
 
 COPY docker/auto.sh /root/
