@@ -13,7 +13,12 @@ RUN apt-get update && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN apt-get install -y build-essential libwrap0-dev libc-ares-dev python2.7-dev git vim-nox less && \
+RUN apt-get install -y build-essential && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN apt-get install -y libwrap0-dev libc-ares-dev python2.7-dev git vim-nox less && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
