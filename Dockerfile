@@ -66,6 +66,7 @@ RUN ln -s janitoo/Makefile.all Makefile && \
 RUN make clone module=janitoo_pki && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_mosquitto && \
+    make clone module=janitoo_mysql && \
     apt-get clean && \
     mkdir -p /var/log/gunicorn||true && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
