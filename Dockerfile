@@ -67,6 +67,9 @@ RUN make clone module=janitoo_pki && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_mosquitto && \
     make clone module=janitoo_mysql && \
+    make clone module=janitoo_mysql_client && \
+    make clone module=janitoo_postgresql && \
+    make clone module=janitoo_postgresql_client && \
     apt-get clean && \
     mkdir -p /var/log/gunicorn||true && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
