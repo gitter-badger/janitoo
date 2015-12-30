@@ -186,6 +186,14 @@ install-all:
 	@echo
 	@echo "Installation for users finished."
 
+uninstall:
+	make -C $(module) uninstall
+
+uninstall-all:
+	for module in ${SUBMODULES};do make -C $$module uninstall; done
+	@echo
+	@echo "Uninstallation finished."
+
 deps-all:
 	for module in ${SUBMODULES};do make -C $$module install; done
 	@echo
