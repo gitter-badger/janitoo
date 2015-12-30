@@ -88,7 +88,6 @@ RUN make clone module=janitoo_postgresql && \
     rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_db && \
-    make clone module=janitoo_db_full && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
