@@ -66,10 +66,22 @@ RUN ln -s janitoo/Makefile.all Makefile && \
 RUN make clone module=janitoo_pki && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_mosquitto && \
-    make clone module=janitoo_mysql && \
+    apt-get clean && \
+    mkdir -p /var/log/gunicorn||true && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN make clone module=janitoo_mysql && \
     make clone module=janitoo_mysql_client && \
-    make clone module=janitoo_postgresql && \
+    make docker-inst module=janitoo_mysql && \
+    apt-get clean && \
+    mkdir -p /var/log/gunicorn||true && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN make clone module=janitoo_postgresql && \
     make clone module=janitoo_postgresql_client && \
+    make docker-inst module=janitoo_postgresql && \
     apt-get clean && \
     mkdir -p /var/log/gunicorn||true && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
@@ -94,7 +106,11 @@ RUN make clone module=janitoo_datalog_rrd && \
 
 RUN make clone module=janitoo_flask && \
     make clone module=janitoo_flask_socketio && \
-    make clone module=janitoo_manager && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN make clone module=janitoo_manager && \
     make clone module=janitoo_manager_proxy && \
     make docker-inst module=janitoo_manager && \
     jnt_dbman  initdb -c /opt/janitoo/etc/janitoo_manager.conf && \
