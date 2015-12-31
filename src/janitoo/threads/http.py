@@ -357,9 +357,9 @@ class BasicResourceComponent(HttpResourceComponent):
             try:
                 source = os.path.join(self.resource_filename('public'), self.path, subdir)
                 logger.debug('[%s] - public source = %s', self.__class__.__name__, source)
+                if not os.path.exists(os.path.join(destination,subdir)):
+                    os.makedirs(os.path.join(destination,subdir))
                 if os.path.isdir(source):
-                    if not os.path.exists(os.path.join(destination,subdir)):
-                        os.makedirs(os.path.join(destination,subdir))
                     copy_tree(source, os.path.join(destination,subdir), preserve_mode=1, preserve_times=1, preserve_symlinks=0, update=0, verbose=0, dry_run=0)
             except:
                 logger.exception('[%s] - Exception in deploy_resource', self.__class__.__name__)
