@@ -13,21 +13,6 @@ RUN apt-get update && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN apt-get install -y build-essential && \
-    apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null||true && \
-    rm -Rf /tmp/* 2>/dev/null||true
-
-RUN apt-get install -y libwrap0-dev libc-ares-dev python2.7-dev && \
-    apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null||true && \
-    rm -Rf /tmp/* 2>/dev/null||true
-
-RUN apt-get install -y git vim-nox less && \
-    apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null||true && \
-    rm -Rf /tmp/* 2>/dev/null||true
-
 RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base && \
     mkdir -p /var/run/sshd && \
     sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
@@ -37,6 +22,21 @@ RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base && \
 
 RUN apt-get install -y sudo supervisor && \
     mkdir -p /var/log/supervisor /etc/supervisord && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN apt-get install -y git vim-nox less && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN apt-get install -y libwrap0-dev libc-ares-dev python2.7-dev && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN apt-get install -y build-essential && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -62,8 +62,6 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-deps && \
     make deps module=janitoo && \
     make develop module=janitoo && \
-    make clone module=janitoo_nosetests && \
-    make clone module=janitoo_nosetests_flask && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -72,7 +70,6 @@ RUN make clone module=janitoo_pki && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_mosquitto && \
     apt-get clean && \
-    mkdir -p /var/log/gunicorn||true && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
@@ -80,7 +77,6 @@ RUN make clone module=janitoo_mysql && \
     make clone module=janitoo_mysql_client && \
     make docker-inst module=janitoo_mysql && \
     apt-get clean && \
-    mkdir -p /var/log/gunicorn||true && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
@@ -88,7 +84,6 @@ RUN make clone module=janitoo_postgresql && \
     make clone module=janitoo_postgresql_client && \
     make docker-inst module=janitoo_postgresql && \
     apt-get clean && \
-    mkdir -p /var/log/gunicorn||true && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
@@ -117,7 +112,7 @@ RUN make clone module=janitoo_flask && \
 RUN make clone module=janitoo_manager && \
     make clone module=janitoo_manager_proxy && \
     make docker-inst module=janitoo_manager && \
-    jnt_dbman  initdb -c /opt/janitoo/etc/janitoo_manager.conf && \
+    jnt_dbman initdb -c /opt/janitoo/etc/janitoo_manager.conf && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
