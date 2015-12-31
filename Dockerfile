@@ -125,7 +125,7 @@ RUN apt-get install -y python-pip lm-sensors && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-VOLUME ["/root/.ssh/", "/etc/nginx/conf.d/", "/var/log", "/etc/mosquitto/", "/var/lib/mosquitto", "/etc/supervisord", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
+VOLUME ["/root/.ssh/", "/etc/nginx/conf.d/", "/var/log", "/etc/mosquitto/", "/var/lib/mosquitto", "/etc/supervisor", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
 
 EXPOSE 22 1883 5005 8080 8085 9001
 
