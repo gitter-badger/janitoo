@@ -52,7 +52,9 @@ COPY docker/rescue.sh /root/
 
 RUN mkdir /opt/janitoo && \
     for dir in src cache cache/janitoo_manager home log run etc init; do mkdir /opt/janitoo/$dir; done && \
-    mkdir /opt/janitoo/src/janitoo
+    mkdir /opt/janitoo/src/janitoo && \
+    ln -s /opt/janitoo/log /var/log/janitoo && \
+    ln -s /opt/janitoo/etc /etc/janitoo
 
 ADD . /opt/janitoo/src/janitoo
 
@@ -125,7 +127,7 @@ RUN apt-get install -y python-pip lm-sensors && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-VOLUME ["/root/.ssh/", "/etc/nginx/conf.d/", "/var/log", "/etc/mosquitto/", "/var/lib/mosquitto", "/etc/supervisor", "/opt/janitoo/home", "/opt/janitoo/log", "/opt/janitoo/etc"]
+VOLUME ["/root/.ssh/", "/etc/nginx/conf.d/", "/var/log", "/etc/mosquitto/", "/var/lib/mosquitto/", "/etc/supervisor/", "/opt/janitoo/home/", "/opt/janitoo/etc/"]
 
 EXPOSE 22 1883 5005 8080 8085 9001
 
