@@ -203,12 +203,16 @@ class Runner(object):
         """
         if is_pidfile_stale(self.pidfile):
             self.pidfile.break_lock()
+        self.pidfile.__enter__()
         message = self.start_message %  os.getpid()
         emit_message(message, sys.stdout)
         try:
             self.app_run()
         except KeyboardInterrupt:
             pass
+        finally:
+            if self.pidfile:
+                self.pidfile.__exit__(None, None, None)
         self.app_shutdown()
 
     def _terminate_daemon_process(self):
