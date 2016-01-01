@@ -140,7 +140,7 @@ commit:
 	make -C $(module) message="$(message)" commit
 
 clone:
-	git clone https://github.com/bibi21000/$(module).git
+	git clone https://github.com/bibi21000/$(module).git || make -C $(module) clone
 	make -C $(module) deps
 	make -C $(module) develop
 
