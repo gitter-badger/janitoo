@@ -10,6 +10,15 @@
     :target: https://coveralls.io/github/bibi21000/janitoo?branch=master
     :alt: Coveralls results
 
+
+.. image:: https://img.shields.io/imagelayers/image-size/bibi21000/janitoo_base/latest.svg
+    :target: https://hub.docker.com/r/bibi21000/janitoo_base/
+    :alt: Docker size
+
+.. image:: https://img.shields.io/imagelayers/layers/bibi21000/janitoo_base/latest.svg
+    :target: https://hub.docker.com/r/bibi21000/janitoo_base/
+    :alt: Docker size
+
 ==================
 Welcome to Janitoo
 ==================
