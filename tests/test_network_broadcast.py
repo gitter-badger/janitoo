@@ -110,6 +110,8 @@ class TestNetworkState(JNTTBase):
 
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.nodes)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.configs)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.basics)
 
     def test_011_broadcast_primary(self):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
@@ -162,3 +164,5 @@ class TestNetworkState(JNTTBase):
 
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.nodes)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.configs)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.basics)
