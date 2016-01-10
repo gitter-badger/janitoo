@@ -110,3 +110,55 @@ class TestNetworkState(JNTTBase):
 
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.nodes)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
+
+    def test_011_broadcast_primary(self):
+        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
+            options = vars(jnt_parse_args())
+            options = JNTOptions(options)
+        section = 'http'
+        thread_uuid = options.get_option(section, 'uuid')
+        if thread_uuid == None:
+            thread_uuid = muuid.uuid1()
+            options.set_option(section, 'uuid', "%s"%thread_uuid)
+        self.nodeman = JNTBusNodeMan(options, HttpBus(options=options, oid=section, product_name="Http server"), section, thread_uuid)
+        print self.nodeman.state
+        #~ hadds = { 0 : HADD%(self.node_add_ctrl,0),
+                     #~ }
+        self.nodeman.start()
+        i = 0
+        while self.nodeman.state != 'ONLINE' and i<120:
+            i += 1
+            print self.nodeman.state
+            time.sleep(1)
+        self.assertEqual(self.nodeman.state, 'ONLINE')
+
+
+        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_network.conf']):
+            options = vars(jnt_parse_args())
+        stopevent = threading.Event()
+        self.network = JNTNetwork(stopevent, JNTOptions(options), is_primary=True, is_secondary=False, do_heartbeat_dispatch=True)
+        print self.network.state
+        hadds = { 0 : HADD%(self.net_add_ctrl,0),
+                     }
+        self.network.boot(hadds)
+        i = 0
+        while self.network.state != 'STARTED' and i<150:
+            i += 1
+            print self.network.state
+            time.sleep(1)
+        print self.network.state
+        self.assertEqual(self.network.state, 'STARTED')
+
+        time.sleep(30)
+
+        print "network.nodes", self.network.nodes
+        print "network.users", self.network.users
+        print "network.configs", self.network.configs
+        print "network.basics", self.network.basics
+        print "network.ystems", self.network.systems
+        print "network.commands", self.network.commands
+
+        print "HADD", HADD%(self.node_add_ctrl,0)
+
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.nodes)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
