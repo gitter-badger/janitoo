@@ -28,6 +28,7 @@ import time
 import unittest
 import threading
 import logging
+from janitoo_nosetests import JNTTBase
 from common import TestJanitoo, SLEEP
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
@@ -36,7 +37,7 @@ from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 import mock
 
-class TestNetworkState(TestJanitoo):
+class TestNetworkState(JNTTBase):
     """Test the network state machine
     """
 

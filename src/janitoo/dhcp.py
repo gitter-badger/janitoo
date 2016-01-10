@@ -1150,7 +1150,7 @@ class JNTNetwork(object):
     def start_dispatch_heartbeat_timer(self):
         """
         """
-        logger.debug("fsm_network : %s", 'start_dispatch_heartbeat_timer')
+        #~ logger.debug("fsm_network : %s", 'start_dispatch_heartbeat_timer')
         if self._test:
             print "start_dispatch_heartbeat_timer"
         else:
@@ -1162,7 +1162,7 @@ class JNTNetwork(object):
         """This function is called when we did nod receive informations on /dhcp/resolv defore timeout. The dhcp server must have send its 'online' status ... so he his dead
         fallback to fail mode
         """
-        logger.debug("fsm_network : %s", 'finish_dispatch_heartbeat_timer')
+        #~ logger.debug("fsm_network : %s", 'finish_dispatch_heartbeat_timer')
         self.stop_dispatch_heartbeat_timer()
         self.start_dispatch_heartbeat_timer()
         timeouts = self.heartbeat_cache.check_heartbeats()
@@ -1194,7 +1194,7 @@ class JNTNetwork(object):
     def stop_dispatch_heartbeat_timer(self):
         """
         """
-        logger.debug("fsm_network : %s", 'stop_dispatch_heartbeat_timer')
+        #~ logger.debug("fsm_network : %s", 'stop_dispatch_heartbeat_timer')
         if self._test:
             print "stop_dispatch_heartbeat_timer"
         else:
@@ -1747,6 +1747,7 @@ class JNTNetwork(object):
         initial_startup = False
         do_emit = False
         self._lock.acquire()
+        #~ print 'nodes data', data
         try:
             if self.broadcast_nodes_timer != None:
                 #This is the initial startup.
@@ -1783,6 +1784,7 @@ class JNTNetwork(object):
         """
         """
         self._lock.acquire()
+        #~ print 'users data', data
         try:
             if self.broadcast_users_timer != None:
                 self.broadcast_users_timer.cancel()
@@ -1825,6 +1827,7 @@ class JNTNetwork(object):
         """
         """
         self._lock.acquire()
+        #~ print 'configs data', data
         try:
             if self.broadcast_configs_timer != None:
                 self.broadcast_configs_timer.cancel()
@@ -1870,6 +1873,7 @@ class JNTNetwork(object):
         """
         """
         self._lock.acquire()
+        #~ print 'basics data', data
         try:
             if self.broadcast_basics_timer != None:
                 self.broadcast_basics_timer.cancel()
@@ -1912,6 +1916,7 @@ class JNTNetwork(object):
         """
         """
         self._lock.acquire()
+        #~ print 'systems data', data
         try:
             if self.broadcast_systems_timer != None:
                 self.broadcast_systems_timer.cancel()
@@ -1941,6 +1946,7 @@ class JNTNetwork(object):
         """
         """
         self._lock.acquire()
+        #~ print 'commands data', data
         try:
             if self.broadcast_commands_timer != None:
                 self.broadcast_commands_timer.cancel()

@@ -79,6 +79,14 @@ class JNTBus(object):
             except:
                 logger.exception('Exception when loading entry_point %s',  entry.name)
 
+    def __del__(self):
+        """
+        """
+        try:
+            self.stop()
+        except:
+            pass
+
     def start(self, mqttc, trigger_thread_reload_cb=None):
         self._trigger_thread_reload_cb = trigger_thread_reload_cb
         self.mqttc = mqttc
