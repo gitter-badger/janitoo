@@ -1044,7 +1044,7 @@ class JNTNetwork(object):
             print "stop_nodes_discover"
         else:
             if self.nodes_mqttc is not None:
-                self.nodes_mqttc.unsubscribe(topic='/nodes/%s/reply/'%self.hadds[0])
+                self.nodes_mqttc.unsubscribe(topic='/nodes/%s/reply/#'%self.hadds[0])
                 self.nodes_mqttc.stop()
                 try:
                     self.nodes_mqttc.join()
@@ -1062,7 +1062,8 @@ class JNTNetwork(object):
             if self.nodes_mqttc is None:
                 self.nodes_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
                 self.nodes_mqttc.connect()
-                self.nodes_mqttc.subscribe(topic='/nodes/%s/reply/'%self.hadds[0], callback=self.on_reply)
+                self.nodes_mqttc.subscribe(topic='/nodes/%s/reply/#'%self.hadds[0], callback=self.on_reply)
+                logger.debug("start_nodes_discover : listen to %s", self.hadds[0])
                 self.nodes_mqttc.start()
         self.emit_nodes()
         self.emit_network()
