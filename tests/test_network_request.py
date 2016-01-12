@@ -101,6 +101,7 @@ class TestNetworkState(JNTTBase):
         stopevent = threading.Event()
         for i in range(0,timeout*10):
             self.nodeman.loop(stopevent)
+            #~ self.network.loop(None, stopevent)
             time.sleep(0.1)
 
         print "network.nodes", self.network.nodes
@@ -159,6 +160,7 @@ class TestNetworkState(JNTTBase):
         stopevent = threading.Event()
         for i in range(0,timeout*10):
             self.nodeman.loop(stopevent)
+            self.network.loop(stopevent)
             time.sleep(0.1)
 
         print "network.nodes", self.network.nodes

@@ -1285,6 +1285,7 @@ class JNTNetwork(object):
         :type message: paho.mqtt.client.MQTTMessage
         """
         #~ logger.debug("[%s] - on_resolv_request %s", self.__class__.__name__, message.payload)
+        #~ logger.debug("[%s] - on_resolv_request %s", self.__class__.__name__, message.payload)
         try:
             data = json_loads(message.payload)
             #~ print data['uuid']
@@ -1384,7 +1385,7 @@ class JNTNetwork(object):
         :param message: The message variable is a MQTTMessage that describes all of the message parameters.
         :type message: paho.mqtt.client.MQTTMessage
         """
-        #~ logger.debug("[%s] - on_reply %s", self.__class__.__name__, message.payload)
+        logger.debug("[%s] - on_reply %s", self.__class__.__name__, message.payload)
         try:
             data = json_loads(message.payload)
             #We should check what value is requested
@@ -1747,7 +1748,7 @@ class JNTNetwork(object):
         initial_startup = False
         do_emit = False
         self._lock.acquire()
-        #~ print 'nodes data', data
+        print 'nodes data', data
         try:
             if self.broadcast_nodes_timer != None:
                 #This is the initial startup.
@@ -1760,6 +1761,7 @@ class JNTNetwork(object):
                 ndata = {'0':data}
             else:
                 ndata = data
+            print "nodes ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
             for knode in ndata.keys():
                 self.nodes[ndata[knode]['hadd']] = {}
                 self.nodes[ndata[knode]['hadd']].update(JNTNode().to_dict())
@@ -1969,32 +1971,34 @@ class JNTNetwork(object):
         finally:
             self._lock.release()
 
-    def loop(self, mqttc, stopevent):
-        """
-        """
-        try:
-            for th in self.threads_timers:
-                if not th.is_alive():
-                    self.threads_timers.remove(th)
-        except:
-            logger.exception("Catched exception in loop")
-        to_polls = []
-        keys = self.polls.keys()
-        for key in keys:
-            if self.polls[key]['next_run'] < datetime.datetime.now():
-                to_polls.append(self.polls[key]['value'])
-        if len(to_polls)>0:
-            logger.debug(u'Found polls in timeout : %s', to_polls)
-        for value in to_polls:
-            self.publish_poll(mqttc, value, self._stopevent)
-            self._stopevent.wait(0.05)
-        try:
-            sleep = float(self.loop_sleep) - 0.05*len(to_polls)
-        except ValueError:
-            sleep = 0
-        if sleep<0:
-            sleep=0.1
-        self._stopevent.wait(sleep)
+    #~ def loop(self, mqttc, stopevent):
+        #~ """
+        #~ """
+        #~ if mqttc is None:
+            #~ mqttc = self.nodes_mqttc
+        #~ try:
+            #~ for th in self.threads_timers:
+                #~ if not th.is_alive():
+                    #~ self.threads_timers.remove(th)
+        #~ except:
+            #~ logger.exception("Catched exception in loop")
+        #~ to_polls = []
+        #~ keys = self.polls.keys()
+        #~ for key in keys:
+            #~ if self.polls[key]['next_run'] < datetime.datetime.now():
+                #~ to_polls.append(self.polls[key]['value'])
+        #~ if len(to_polls)>0:
+            #~ logger.debug(u'Found polls in timeout : %s', to_polls)
+        #~ for value in to_polls:
+            #~ self.publish_poll(mqttc, value, self._stopevent)
+            #~ self._stopevent.wait(0.05)
+        #~ try:
+            #~ sleep = float(self.loop_sleep) - 0.05*len(to_polls)
+        #~ except ValueError:
+            #~ sleep = 0
+        #~ if sleep<0:
+            #~ sleep=0.1
+        #~ self._stopevent.wait(sleep)
 
     @property
     def nodes_count(self):
