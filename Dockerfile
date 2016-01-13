@@ -50,6 +50,7 @@ COPY docker/auto.sh /root/
 COPY docker/shell.sh /root/
 COPY docker/rescue.sh /root/
 COPY docker/halt.sh /root/
+COPY docker/shutdown.sh /root/
 
 RUN mkdir /opt/janitoo && \
     for dir in src cache cache/janitoo_manager home log run etc init; do mkdir /opt/janitoo/$dir; done && \
