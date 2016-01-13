@@ -1749,7 +1749,7 @@ class JNTNetwork(object):
         initial_startup = False
         do_emit = False
         self._lock.acquire()
-        print 'nodes data', data
+        #~ print 'nodes data', data
         try:
             if self.broadcast_nodes_timer != None:
                 #This is the initial startup.
@@ -1762,7 +1762,7 @@ class JNTNetwork(object):
                 ndata = {'0':data}
             else:
                 ndata = data
-            print "nodes ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
+            #~ print "nodes ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
             for knode in ndata.keys():
                 self.nodes[ndata[knode]['hadd']] = {}
                 self.nodes[ndata[knode]['hadd']].update(JNTNode().to_dict())
