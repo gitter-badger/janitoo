@@ -939,7 +939,10 @@ class JNTNetwork(object):
                 self.resolv_mqttc.remove_topic(topic=TOPIC_RESOLV_REPLY%self.hadds[0])
                 self.resolv_mqttc.remove_topic(topic=TOPIC_RESOLV_BROADCAST+'#')
                 self.resolv_mqttc.unsubscribe(topic="%s#"%TOPIC_RESOLV)
-                self.resolv_mqttc.stop()
+                try:
+                    self.resolv_mqttc.stop()
+                except:
+                    logger.exception("Catched exception")
                 if self.resolv_mqttc.is_alive():
                     try:
                         self.resolv_mqttc.join()
@@ -969,7 +972,10 @@ class JNTNetwork(object):
         else:
             if self.resolv_request_mqttc is not None:
                 self.resolv_request_mqttc.unsubscribe(topic="%s#"%TOPIC_RESOLV_REQUEST)
-                self.resolv_request_mqttc.stop()
+                try:
+                    self.resolv_request_mqttc.stop()
+                except:
+                    logger.exception("Catched exception")
                 try:
                     self.resolv_request_mqttc.join()
                 except:
@@ -1021,7 +1027,10 @@ class JNTNetwork(object):
             self.stop_resolv_heartbeat_timer()
             if self.resolv_heartbeat_mqttc is not None:
                 self.resolv_heartbeat_mqttc.unsubscribe(topic="%sheartbeat"%TOPIC_RESOLV)
-                self.resolv_heartbeat_mqttc.stop()
+                try:
+                    self.resolv_heartbeat_mqttc.stop()
+                except:
+                    logger.exception("Catched exception")
                 try:
                     self.resolv_heartbeat_mqttc.join()
                 except:
@@ -1133,7 +1142,10 @@ class JNTNetwork(object):
         else:
             if self.heartbeat_mqttc is not None:
                 self.heartbeat_mqttc.unsubscribe(topic='/dhcp/heartbeat/#')
-                self.heartbeat_mqttc.stop()
+                try:
+                    self.heartbeat_mqttc.stop()
+                except:
+                    logger.exception("Catched exception")
                 try:
                     self.heartbeat_mqttc.join()
                 except:
@@ -1194,7 +1206,10 @@ class JNTNetwork(object):
         else:
             self.stop_dispatch_heartbeat_timer()
             if self.dispatch_heartbeat_mqttc is not None:
-                self.dispatch_heartbeat_mqttc.stop()
+                try:
+                    self.dispatch_heartbeat_mqttc.stop()
+                except:
+                    logger.exception("Catched exception")
                 try:
                     self.dispatch_heartbeat_mqttc.join()
                 except:
@@ -1235,7 +1250,10 @@ class JNTNetwork(object):
         else:
             if self.values_mqttc is not None:
                 self.values_mqttc.unsubscribe(topic='/values/#')
-                self.values_mqttc.stop()
+                try:
+                    self.values_mqttc.stop()
+                except:
+                    logger.exception("Catched exception")
                 try:
                     self.values_mqttc.join()
                 except:
