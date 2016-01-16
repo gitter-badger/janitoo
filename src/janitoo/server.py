@@ -274,6 +274,7 @@ class JNTControllerManager(object):
         """Stop the controller
         """
         logger.info("Stop the controller")
+        self.stop_controller_timer()
         if self.mqtt_controller is not None:
             self.mqtt_controller.unsubscribe(topic=TOPIC_NODES_REQUEST%(self._controller.hadd))
             self.mqtt_controller.stop()
@@ -283,6 +284,7 @@ class JNTControllerManager(object):
                 except:
                     logger.exception("Catched exception")
             self.mqtt_controller = None
+        self.mqtt_controller = None
 
     def start_controller(self, section, options, **kwargs):
         """Start the controller
@@ -316,9 +318,10 @@ class JNTControllerManager(object):
             #The manager is started
             self.heartbeat_controller_timer.cancel()
             self.heartbeat_controller_timer = None
-        self.heartbeat_controller_timer = threading.Timer(self._controller.heartbeat, self.heartbeat_controller)
-        self.heartbeat_controller_timer.start()
-        if self._controller.hadd is not None:
+        if self.mqtt_controller is not None:
+            self.heartbeat_controller_timer = threading.Timer(self._controller.heartbeat, self.heartbeat_controller)
+            self.heartbeat_controller_timer.start()
+        if self._controller.hadd is not None and self.mqtt_controller is not None:
             #~ print self.nodes[node].hadd
             add_ctrl, add_node = self._controller.split_hadd()
             msg = {'add_ctrl':add_ctrl, 'add_node':add_node, 'state':'ONLINE'}

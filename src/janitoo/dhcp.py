@@ -523,6 +523,7 @@ class JNTNetwork(object):
         self.heartbeat_cache.start(None)
         self.emit_nodes()
         self.emit_network()
+        self._stopevent.clear()
         if self.fsm_network is None:
             self.fsm_network = self.create_fsm()
             self.state = 'STOPPED'
@@ -564,13 +565,15 @@ class JNTNetwork(object):
     def stop(self):
         """Stop the network
         """
+        self._stopevent.set()
         for th in self.threads_timers:
             if th.is_alive():
                 th.cancel()
         self.threads_timers = []
         self.stop_resolv_heartbeat_timer()
         self.stop_dispatch_heartbeat_timer()
-        self.fsm_network_stop()
+        if self.fsm_network is not None:
+            self.fsm_network_stop()
         self._lock.acquire()
         try:
             self.nodes = {}
@@ -1092,7 +1095,10 @@ class JNTNetwork(object):
         else:
             if self.heartbeat_discover_mqttc is not None:
                 self.heartbeat_discover_mqttc.unsubscribe(topic='/dhcp/heartbeat/#')
-                self.heartbeat_discover_mqttc.stop()
+                try:
+                    self.heartbeat_discover_mqttc.stop()
+                except:
+                    pass
                 try:
                     self.heartbeat_discover_mqttc.join()
                 except:
