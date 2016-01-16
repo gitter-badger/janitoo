@@ -1048,7 +1048,10 @@ class JNTNetwork(object):
         else:
             if self.nodes_mqttc is not None:
                 self.nodes_mqttc.unsubscribe(topic='/nodes/%s/reply/#'%self.hadds[0])
-                self.nodes_mqttc.stop()
+                try:
+                    self.nodes_mqttc.stop()
+                except:
+                    logger.exception("Catched exception")
                 try:
                     self.nodes_mqttc.join()
                 except:
@@ -1098,7 +1101,7 @@ class JNTNetwork(object):
                 try:
                     self.heartbeat_discover_mqttc.stop()
                 except:
-                    pass
+                    logger.exception("Catched exception")
                 try:
                     self.heartbeat_discover_mqttc.join()
                 except:
