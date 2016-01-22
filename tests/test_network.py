@@ -108,7 +108,7 @@ class TestNetworkState(JNTTBase):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
-        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=20)
+        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=10)
         print net_state.state
         hadds = { 0 : HADD%(self.add_ctrl,0),
                      }
@@ -131,7 +131,7 @@ class TestNetworkState(JNTTBase):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
-        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=20)
+        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=10)
         print net_state.state
         hadds = { 0 : HADD%(self.add_ctrl,0),
                      }
@@ -170,7 +170,7 @@ class TestNetworkState(JNTTBase):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
-        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=20)
+        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=10)
         print net_state.state
         hadds = { 0 : HADD%(self.add_ctrl,0),
                      }
@@ -264,7 +264,7 @@ class TestNetworkState(JNTTBase):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
-        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=True, is_secondary=False, do_heartbeat_dispatch=True, resolv_timeout=20)
+        net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=True, is_secondary=False, do_heartbeat_dispatch=True, resolv_timeout=10)
         print net_state.state
         hadds = { 0 : HADD%(self.add_ctrl,0),
                      }
