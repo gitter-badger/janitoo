@@ -896,15 +896,15 @@ class JNTNetwork(object):
                 #~ self.resolv_mqttc.on_connect = self.resolv_mqttc_on_connect
                 th = threading.Timer(self.request_timeout/4, self.request_resolv_nodes)
                 th.start()
-                th = threading.Timer(self.request_timeout/2, self.request_resolv_systems)
+                th = threading.Timer(2*self.request_timeout/4, self.request_resolv_systems)
                 th.start()
-                th = threading.Timer(self.request_timeout, self.request_resolv_configs)
+                th = threading.Timer(3*self.request_timeout/4, self.request_resolv_configs)
                 th.start()
-                th = threading.Timer(self.request_timeout + self.request_timeout/4, self.request_resolv_basics)
+                th = threading.Timer(4*self.request_timeout/4, self.request_resolv_basics)
                 th.start()
-                th = threading.Timer(self.request_timeout + self.request_timeout/2, self.request_resolv_users)
+                th = threading.Timer(1+self.request_timeout/4, self.request_resolv_users)
                 th.start()
-                th = threading.Timer(self.request_timeout * 2, self.request_resolv_commands)
+                th = threading.Timer(1+2*self.request_timeout/4, self.request_resolv_commands)
                 th.start()
             if self.resolv_timeout_timer is not None:
                 self.resolv_timeout_timer.cancel()
@@ -1457,7 +1457,7 @@ class JNTNetwork(object):
                         logger.warning("Unknown value% in %s", data['uuid'],'on_reply')
                         return
                     if self.is_primary and self.is_started:
-                        th = threading.Timer(0.05, threaded_send_resolv, args = (self._stopevent, self.options, None, data, None))
+                        th = threading.Timer(0.05, threaded_send_resolv, args = (self._stopevent, self.options, data['reply_hadd'], data, None))
                         th.start()
                         self.threads_timers.append(th)
         except:
