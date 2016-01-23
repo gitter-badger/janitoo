@@ -55,9 +55,11 @@ class TestHttpThread(JNTTThread, JNTTThreadCommon):
     """Test the thread
     """
     thread_name = "http"
+    conf_file = "tests/data/test_threads.conf"
 
 class TestEmailThread(JNTTThread, JNTTThreadCommon):
     """Test the thread
     """
     thread_name = "email"
+    conf_file = "tests/data/test_threads.conf"
 
