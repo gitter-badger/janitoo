@@ -1742,33 +1742,34 @@ class JNTNetwork(object):
         if self.heartbeat_cache.has_entry(add_ctrl, add_node) == False:
             #NO. So we ask from some info
             logger.debug("heartbeat from an unknown device %s,%s,%s", add_ctrl, add_node, state)
-            th = threading.Timer(self.request_timeout/3, self.request_node_nodes, [hadd])
+            th = threading.Timer(self.request_timeout/4, self.request_node_nodes, [hadd])
             th.start()
             self.threads_timers.append(th)
-            th = threading.Timer(self.request_timeout/2, self.request_node_systems, [hadd])
+            th = threading.Timer(2*self.request_timeout/4, self.request_node_systems, [hadd])
             th.start()
             self.threads_timers.append(th)
-            th = threading.Timer(self.request_timeout, self.request_node_configs, [hadd])
+            th = threading.Timer(3*self.request_timeout/4, self.request_node_configs, [hadd])
             th.start()
             self.threads_timers.append(th)
-            th = threading.Timer(self.request_timeout+self.request_timeout/4, self.request_node_basics, [hadd])
+            th = threading.Timer(self.request_timeout, self.request_node_basics, [hadd])
             th.start()
             self.threads_timers.append(th)
-            th = threading.Timer(self.request_timeout+self.request_timeout/3, self.request_node_users, [hadd])
+            th = threading.Timer(self.request_timeout+self.request_timeout/4, self.request_node_users, [hadd])
             th.start()
             self.threads_timers.append(th)
-            th = threading.Timer(self.request_timeout+self.request_timeout/2, self.request_node_commands, [hadd])
+            th = threading.Timer(self.request_timeout+2*self.request_timeout/4, self.request_node_commands, [hadd])
             th.start()
             self.threads_timers.append(th)
         else :
             #~ print " node : %s" % self.nodes[hadd]
-            if state != self.heartbeat_cache.get_state(add_ctrl, add_node):
+            if hadd in self.nodes and state != self.heartbeat_cache.get_state(add_ctrl, add_node):
                 node = {}
                 node.update(self.nodes[hadd])
                 node['state'] = state if state != None else 'PENDING'
                 #~ print "   node : %s" % node
                 self.emit_node(node)
-            self.heartbeat_cache.update(add_ctrl, add_node, state=state, heartbeat=self.nodes[hadd]['heartbeat'])
+            if hadd in self.nodes:
+                self.heartbeat_cache.update(add_ctrl, add_node, state=state, heartbeat=self.nodes[hadd]['heartbeat'])
 
     def add_nodes(self, data):
         """

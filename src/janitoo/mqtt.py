@@ -475,14 +475,14 @@ class MQTTClient(threading.Thread):
             #~ rc = self._mqttc.loop_forever()
         while not self._stopevent.isSet():
             self._mqttc.loop(timeout=self.loop_sleep)
-        return 0
+        self._mqttc.disconnect()
+        self._mqttc = None
 
     def stop(self):
         """Stop the mqtt thread
         """
         logger.debug("Stop the client")
         self._stopevent.set( )
-        self._mqttc.disconnect()
 
     def connect(self):
         """Connect to the mqtt broker
