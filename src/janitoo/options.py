@@ -93,10 +93,8 @@ class JNTOptions(object):
                 self._cache[section] = dict(config.items(section))
                 #~ print self._cache[section]
                 return self._cache[section]
-        #~ except ConfigParser.NoSectionError:
         except:
             logger.exception("get_options")
-            pass
         return {}
 
     def get_option(self, section, key, default = None):

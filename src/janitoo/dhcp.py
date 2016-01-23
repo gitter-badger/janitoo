@@ -430,9 +430,9 @@ class JNTNetwork(object):
         self.do_heartbeat_dispatch = kwargs.get('do_heartbeat_dispatch', True)
         self.is_secondary = kwargs.get('is_secondary', False)
         self._is_failed = kwargs.get('is_failed', False)
-        self.broadcast_timeout = kwargs.get('broadcast_timeout', 10)
-        self.resolv_timeout = kwargs.get('resolv_timeout', 15)
-        self.request_timeout = kwargs.get('request_timeout', 10)
+        self.broadcast_timeout = kwargs.get('broadcast_timeout', 3)
+        self.resolv_timeout = kwargs.get('resolv_timeout', 5)
+        self.request_timeout = kwargs.get('request_timeout', 3)
         self._test = kwargs.get('test', False)
         """For tests only"""
 
@@ -517,6 +517,7 @@ class JNTNetwork(object):
         self.loop_sleep = loop_sleep
         options = self.options.get_options('network')
         self.from_dict(options)
+        print self.__dict__
         if self.is_primary and self.is_secondary:
             raise RuntimeError("Can't start in both modes : primary or secondary")
         logger.debug("Start network with options %s" % options)

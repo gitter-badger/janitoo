@@ -37,6 +37,9 @@ from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 import mock
 
+import logging
+#~ logging.basicConfig(filename='/tmp/janitoo_test/log/network.log',level=logging.DEBUG)
+
 class TestNetworkState(JNTTBase):
     """Test the network state machine
     """
@@ -46,6 +49,7 @@ class TestNetworkState(JNTTBase):
     add_ctrl = 111
 
     def test_010_network_sfm_primary(self):
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -56,6 +60,7 @@ class TestNetworkState(JNTTBase):
         net_state.stop()
 
     def test_050_network_sfm_secondary(self):
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -66,6 +71,7 @@ class TestNetworkState(JNTTBase):
         net_state.stop()
 
     def test_060_network_sfm_secondary_fail(self):
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -82,6 +88,7 @@ class TestNetworkState(JNTTBase):
         net_state.stop()
 
     def test_100_network_state_primary(self):
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -105,6 +112,7 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_110_network_state_secondary(self):
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -128,7 +136,8 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_120_network_state_secondary_fail(self):
-        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
+        #~ with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
         net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=10)
@@ -165,8 +174,9 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_130_network_state_secondary_random(self):
-        self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
+        #~ self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
         self.onlyTravisTest()
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -212,8 +222,9 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_131_network_state_secondary_random_more(self):
-        self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
+        #~ self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
         self.onlyTravisTest()
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -259,8 +270,9 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_140_network_state_primary_random(self):
-        self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
+        #~ self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
         self.onlyTravisTest()
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
@@ -306,8 +318,9 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_141_network_state_primary_random_more(self):
-        self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
+        #~ self.skipTest("Pass but freeze on travis. Surely a non stopped thread in the state machine")
         self.onlyTravisTest()
+        logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
