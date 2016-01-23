@@ -137,7 +137,7 @@ class TestNetworkState(JNTTBase):
 
     def test_120_network_state_secondary_fail(self):
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
-        #~ with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
+        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
         net_state = JNTNetwork(stopevent, JNTOptions(options), is_primary=False, is_secondary=True, do_heartbeat_dispatch=False, resolv_timeout=10)
