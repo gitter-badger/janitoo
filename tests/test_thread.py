@@ -32,6 +32,7 @@ from pkg_resources import iter_entry_points
 
 from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
 from janitoo_nosetests.thread import JNTTThread, JNTTThreadCommon
+from janitoo_nosetests.thread import JNTTThreadRun, JNTTThreadRunCommon
 from janitoo_nosetests.component import JNTTComponent, JNTTComponentCommon
 
 from janitoo.utils import json_dumps, json_loads
@@ -51,13 +52,13 @@ COMMAND_DISCOVERY = 0x5000
 assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
-class TestHttpThread(JNTTThread, JNTTThreadCommon):
+class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
     thread_name = "http"
     conf_file = "tests/data/test_threads.conf"
 
-class TestEmailThread(JNTTThread, JNTTThreadCommon):
+class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
     thread_name = "email"
