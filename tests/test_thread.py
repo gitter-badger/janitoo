@@ -53,10 +53,18 @@ assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
 class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the thread
+    """Test the datarrd thread
     """
     thread_name = "http"
     conf_file = "tests/data/test_threads.conf"
+
+    def test_101_thread_start_wait_long_stop(self):
+        time.sleep(60)
+        self.assertDir("/tmp/janitoo_test/home/public/rrd/js")
+        self.assertDir("/tmp/janitoo_test/home/public/rrd/css")
+        self.assertDir("/tmp/janitoo_test/home/public/rrd/images")
+        self.assertFile("/tmp/janitoo_test/home/public/rrd/index.html")
+        self.assertFile("/tmp/janitoo_test/home/public/rrd/js/javascriptrrd.wlibs.js")
 
 class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
