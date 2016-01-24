@@ -60,11 +60,7 @@ class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
 
     def test_101_thread_start_wait_long_stop(self):
         time.sleep(60)
-        self.assertDir("/tmp/janitoo_test/home/public/rrd/js")
-        self.assertDir("/tmp/janitoo_test/home/public/rrd/css")
-        self.assertDir("/tmp/janitoo_test/home/public/rrd/images")
-        self.assertFile("/tmp/janitoo_test/home/public/rrd/index.html")
-        self.assertFile("/tmp/janitoo_test/home/public/rrd/js/javascriptrrd.wlibs.js")
+        self.assertDir("/tmp/janitoo_test/home/public")
 
 class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
