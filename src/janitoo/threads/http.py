@@ -355,7 +355,7 @@ class BasicResourceComponent(HttpResourceComponent):
         """
         for subdir in DEPLOY_DIRS:
             try:
-                source = os.path.join(self.resource_filename('public'), self.path, subdir)
+                source = os.path.join(self.resource_filename('public'), subdir)
                 logger.debug('[%s] - public source = %s', self.__class__.__name__, source)
                 if not os.path.exists(os.path.join(destination,subdir)):
                     os.makedirs(os.path.join(destination,subdir))
