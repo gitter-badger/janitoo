@@ -70,6 +70,7 @@ janitoo_entry_points = {
     "janitoo.values": [
         "ip_ping = janitoo.value_factory.other:make_ip_ping",
         "sensor_temperature = janitoo.value_factory.sensor:make_sensor_temperature",
+        "sensor_altitude = janitoo.value_factory.sensor:make_sensor_altitude",
         "sensor_voltage = janitoo.value_factory.sensor:make_sensor_voltage",
         "sensor_float = janitoo.value_factory.sensor:make_sensor_float",
         "sensor_current = janitoo.value_factory.sensor:make_sensor_current",

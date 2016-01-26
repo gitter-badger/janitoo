@@ -51,6 +51,9 @@ assert(COMMAND_DESC[COMMAND_SENSOR_MULTILEVEL] == 'COMMAND_SENSOR_MULTILEVEL')
 def make_sensor_temperature(**kwargs):
     return JNTValueSensorTemperature(**kwargs)
 
+def make_sensor_altitude(**kwargs):
+    return JNTValueSensorAltitude(**kwargs)
+
 def make_sensor_voltage(**kwargs):
     return JNTValueSensorVoltage(**kwargs)
 
@@ -103,6 +106,18 @@ class JNTValueSensorGeneric(JNTValueFactoryEntry):
         """
         default = kwargs.pop('default', 30)
         return self._create_poll_value(default=default, **kwargs)
+
+class JNTValueSensorAltitude(JNTValueSensorGeneric):
+    def __init__(self, entry_name="sensor_altitude", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'An altitude sensor')
+        label = kwargs.pop('label', 'Alt.')
+        units = kwargs.pop('units', 'm')
+        index = kwargs.pop('index', 0)
+        cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
+        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
+            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
 
 class JNTValueSensorTemperature(JNTValueSensorGeneric):
     def __init__(self, entry_name="sensor_temperature", **kwargs):

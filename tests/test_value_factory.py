@@ -108,6 +108,11 @@ class TestSensorTemperature(TestFactory, BasePoll):
     """
     entry_name='sensor_temperature'
 
+class TestSensorAltitude(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_altitude'
+
 class TestSensorVoltage(TestFactory, BasePoll):
     """Test the value factory
     """
