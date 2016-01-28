@@ -111,7 +111,10 @@ class JNTServer(object):
             th=None
             try:
                 mkth = entry.load()
-                th = mkth(self.options.data)
+                try:
+                    th = mkth(self.options.data)
+                except:
+                    logger.exception("[%s] - Exception when loading thread from entry_point : %s", self.__class__.__name__, entry.name)
             except:
                 logger.exception("[%s] - Exception when loading thread from entry_point : %s", self.__class__.__name__, entry.name)
             if th is not None:

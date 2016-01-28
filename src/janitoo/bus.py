@@ -51,16 +51,27 @@ class JNTBus(object):
         :type oid: str
         """
         self.oid = oid
-        self.factory = {}
-        for entry in iter_entry_points(group='janitoo.components', name=None):
-            if entry.name.startswith('%s.'%self.oid):
+        if not hasattr(self,'factory'):
+            self.factory = {}
+            for entry in iter_entry_points(group='janitoo.components', name=None):
+                if entry.name.startswith('%s.'%self.oid):
+                    try:
+                        self.factory[entry.name] = entry.load()
+                    except:
+                        logger.exception('Exception when loading entry_point %s',  entry.name)
+        if not hasattr(self,'value_factory'):
+            self.value_factory = {}
+            for entrypoint in iter_entry_points(group = 'janitoo.values'):
                 try:
-                    self.factory[entry.name] = entry.load()
+                    self.value_factory[entrypoint.name] = entrypoint.load()
                 except:
                     logger.exception('Exception when loading entry_point %s',  entry.name)
-        self.components = {}
-        self.values = {}
-        self.cmd_classes = [COMMAND_CONTROLLER]
+        if not hasattr(self,'components'):
+            self.components = {}
+        if not hasattr(self,'values'):
+            self.values = {}
+        if not hasattr(self,'cmd_classes'):
+            self.cmd_classes = [COMMAND_CONTROLLER]
         self._trigger_thread_reload_cb = None
         self.mqttc = None
         self.options = kwargs.get('options', None)
@@ -72,12 +83,6 @@ class JNTBus(object):
         self.name = kwargs.get('name', 'Default bus name')
         """The name"""
         self.nodeman = None
-        self.value_factory = {}
-        for entrypoint in iter_entry_points(group = 'janitoo.values'):
-            try:
-                self.value_factory[entrypoint.name] = entrypoint.load()
-            except:
-                logger.exception('Exception when loading entry_point %s',  entry.name)
 
     def __del__(self):
         """
@@ -94,6 +99,7 @@ class JNTBus(object):
     def stop(self):
         for compo in self.components.keys():
             self.components[compo].stop()
+            del self.components[compo]
         self.components = {}
 
     @property
