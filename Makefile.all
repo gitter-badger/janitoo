@@ -145,7 +145,6 @@ clone:
 	make -C $(module) develop
 
 pull:
-
 	git clone $(repo)
 
 commit-all:
@@ -202,6 +201,9 @@ deps-all:
 
 develop:
 	make -C $(module) develop
+
+travis-deps:
+	make -C $(module) travis-deps
 
 develop-all:
 	-make -C janitoo develop
