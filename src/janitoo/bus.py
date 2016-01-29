@@ -92,11 +92,18 @@ class JNTBus(object):
         except:
             pass
 
+    def export_values(self, target):
+        '''Export vales to target'''
+        for value in self.values:
+            target.values[value] = self.values[value]
+
     def start(self, mqttc, trigger_thread_reload_cb=None):
+        """Start the bus"""
         self._trigger_thread_reload_cb = trigger_thread_reload_cb
         self.mqttc = mqttc
 
     def stop(self):
+        """Start the bus and components"""
         for compo in self.components.keys():
             self.components[compo].stop()
             del self.components[compo]
@@ -128,4 +135,11 @@ class JNTBus(object):
         self.nodeman = nodeman
         name = kwargs.pop('name', "%s controller"%self.name)
         self.node = JNTNode(uuid=self.uuid, cmd_classes=self.cmd_classes, hadd=hadd, name="%s controller"%self.name, product_name=self.product_name, product_type=self.product_type, **kwargs)
+        self.check_heartbeat = self.node.check_heartbeat
         return self.node
+
+    def check_heartbeat(self):
+        """Check that the bus is 'available'. Is replaced by the node one when it's creates
+
+        """
+        return False
