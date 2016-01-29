@@ -66,6 +66,9 @@ def make_sensor_percent(**kwargs):
 def make_sensor_frequency(**kwargs):
     return JNTValueSensorFrequency(**kwargs)
 
+def make_sensor_humidity(**kwargs):
+    return JNTValueSensorHumidity(**kwargs)
+
 def make_sensor_rotation_speed(**kwargs):
     return JNTValueSensorRotationSpeed(**kwargs)
 
@@ -107,19 +110,18 @@ class JNTValueSensorGeneric(JNTValueFactoryEntry):
         default = kwargs.pop('default', 30)
         return self._create_poll_value(default=default, **kwargs)
 
-class JNTValueSensorAltitude(JNTValueSensorGeneric):
-    def __init__(self, entry_name="sensor_altitude", **kwargs):
+class JNTValueSensorFloat(JNTValueSensorGeneric):
+    def __init__(self, entry_name="sensor_float", **kwargs):
         """
         """
-        help = kwargs.pop('help', 'An altitude sensor')
-        label = kwargs.pop('label', 'Alt.')
-        units = kwargs.pop('units', 'm')
+        help = kwargs.pop('help', 'A float sensor')
+        label = kwargs.pop('label', 'Float')
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
-        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
+        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, cmd_class=cmd_class, type=0x03, **kwargs)
 
-class JNTValueSensorTemperature(JNTValueSensorGeneric):
+class JNTValueSensorTemperature(JNTValueSensorFloat):
     def __init__(self, entry_name="sensor_temperature", **kwargs):
         """
         """
@@ -129,9 +131,21 @@ class JNTValueSensorTemperature(JNTValueSensorGeneric):
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
-            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
+            index=index, cmd_class=cmd_class, **kwargs)
 
-class JNTValueSensorVoltage(JNTValueSensorGeneric):
+class JNTValueSensorAltitude(JNTValueSensorFloat):
+    def __init__(self, entry_name="sensor_altitude", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'An altitude sensor')
+        label = kwargs.pop('label', 'Alt.')
+        units = kwargs.pop('units', 'm')
+        index = kwargs.pop('index', 0)
+        cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
+        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
+            index=index, cmd_class=cmd_class, **kwargs)
+
+class JNTValueSensorVoltage(JNTValueSensorFloat):
     def __init__(self, entry_name="sensor_voltage", **kwargs):
         """
         """
@@ -141,9 +155,9 @@ class JNTValueSensorVoltage(JNTValueSensorGeneric):
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
-            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
+            index=index, cmd_class=cmd_class, **kwargs)
 
-class JNTValueSensorCurrent(JNTValueSensorGeneric):
+class JNTValueSensorCurrent(JNTValueSensorFloat):
     def __init__(self, entry_name="sensor_current", **kwargs):
         """
         """
@@ -153,9 +167,9 @@ class JNTValueSensorCurrent(JNTValueSensorGeneric):
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
-            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
+            index=index, cmd_class=cmd_class, **kwargs)
 
-class JNTValueSensorPercent(JNTValueSensorGeneric):
+class JNTValueSensorPercent(JNTValueSensorFloat):
     def __init__(self, entry_name="sensor_percent", **kwargs):
         """
         """
@@ -165,9 +179,9 @@ class JNTValueSensorPercent(JNTValueSensorGeneric):
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
-            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
+            index=index, cmd_class=cmd_class, **kwargs)
 
-class JNTValueSensorRotationSpeed(JNTValueSensorGeneric):
+class JNTValueSensorRotationSpeed(JNTValueSensorFloat):
     def __init__(self, entry_name="sensor_rotation_speed", **kwargs):
         """
         """
@@ -177,9 +191,9 @@ class JNTValueSensorRotationSpeed(JNTValueSensorGeneric):
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
-            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
+            index=index, cmd_class=cmd_class, **kwargs)
 
-class JNTValueSensorFrequency(JNTValueSensorGeneric):
+class JNTValueSensorFrequency(JNTValueSensorFloat):
     def __init__(self, entry_name="sensor_frequency", **kwargs):
         """
         """
@@ -189,7 +203,19 @@ class JNTValueSensorFrequency(JNTValueSensorGeneric):
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
-            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
+            index=index, cmd_class=cmd_class, **kwargs)
+
+class JNTValueSensorHumidity(JNTValueSensorFloat):
+    def __init__(self, entry_name="sensor_humidity", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'An humidity sensor')
+        label = kwargs.pop('label', 'humidity')
+        units = kwargs.pop('units', '%')
+        index = kwargs.pop('index', 0)
+        cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
+        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
+            index=index, cmd_class=cmd_class, **kwargs)
 
 class JNTValueSensorString(JNTValueSensorGeneric):
     def __init__(self, entry_name="sensor_string", **kwargs):
@@ -202,17 +228,6 @@ class JNTValueSensorString(JNTValueSensorGeneric):
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, cmd_class=cmd_class, type=0x08, **kwargs)
 
-class JNTValueSensorInteger(JNTValueSensorGeneric):
-    def __init__(self, entry_name="sensor_integer", **kwargs):
-        """
-        """
-        help = kwargs.pop('help', 'An integer sensor')
-        label = kwargs.pop('label', 'Integer')
-        index = kwargs.pop('index', 0)
-        cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
-        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
-            index=index, cmd_class=cmd_class, type=0x04, **kwargs)
-
 class JNTValueSensorByte(JNTValueSensorGeneric):
     def __init__(self, entry_name="sensor_byte", **kwargs):
         """
@@ -224,20 +239,18 @@ class JNTValueSensorByte(JNTValueSensorGeneric):
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, cmd_class=cmd_class, type=0x02, **kwargs)
 
-class JNTValueSensorOrientation(JNTValueSensorGeneric):
-    def __init__(self, entry_name="sensor_orientation", **kwargs):
+class JNTValueSensorInteger(JNTValueSensorGeneric):
+    def __init__(self, entry_name="sensor_integer", **kwargs):
         """
         """
-        help = kwargs.pop('help', 'An orientation sensor')
-        label = kwargs.pop('label', 'Orientation')
-        units = kwargs.pop('units', '°')
+        help = kwargs.pop('help', 'An integer sensor')
+        label = kwargs.pop('label', 'Integer')
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
-            units=units,
             index=index, cmd_class=cmd_class, type=0x04, **kwargs)
 
-class JNTValueSensorMemory(JNTValueSensorGeneric):
+class JNTValueSensorMemory(JNTValueSensorInteger):
     def __init__(self, entry_name="sensor_memory", **kwargs):
         """
         """
@@ -248,15 +261,17 @@ class JNTValueSensorMemory(JNTValueSensorGeneric):
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             units=units,
-            index=index, cmd_class=cmd_class, type=0x04, **kwargs)
+            index=index, cmd_class=cmd_class, **kwargs)
 
-class JNTValueSensorFloat(JNTValueSensorGeneric):
-    def __init__(self, entry_name="sensor_float", **kwargs):
+class JNTValueSensorOrientation(JNTValueSensorInteger):
+    def __init__(self, entry_name="sensor_orientation", **kwargs):
         """
         """
-        help = kwargs.pop('help', 'A float sensor')
-        label = kwargs.pop('label', 'Float')
+        help = kwargs.pop('help', 'An orientation sensor')
+        label = kwargs.pop('label', 'Orientation')
+        units = kwargs.pop('units', '°')
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
-            index=index, cmd_class=cmd_class, type=0x03, **kwargs)
+            units=units,
+            index=index, cmd_class=cmd_class, **kwargs)

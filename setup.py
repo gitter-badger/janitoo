@@ -76,6 +76,7 @@ janitoo_entry_points = {
         "sensor_current = janitoo.value_factory.sensor:make_sensor_current",
         "sensor_percent = janitoo.value_factory.sensor:make_sensor_percent",
         "sensor_frequency = janitoo.value_factory.sensor:make_sensor_frequency",
+        "sensor_humidity = janitoo.value_factory.sensor:make_sensor_humidity",
         "sensor_rotation_speed = janitoo.value_factory.sensor:make_sensor_rotation_speed",
         "sensor_string = janitoo.value_factory.sensor:make_sensor_string",
         "sensor_integer = janitoo.value_factory.sensor:make_sensor_integer",

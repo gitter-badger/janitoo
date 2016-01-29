@@ -133,6 +133,11 @@ class TestSensorFrequency(TestFactory, BasePoll):
     """
     entry_name='sensor_frequency'
 
+class TestSensorHumidity(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_humidity'
+
 class TestSensorRotationSpeed(TestFactory, BasePoll):
     """Test the value factory
     """
