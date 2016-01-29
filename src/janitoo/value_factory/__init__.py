@@ -230,6 +230,8 @@ class JNTValueFactoryEntry(JNTValue):
                     i += 1
             if index is None:
                 index = self.index
+            if index not in self.instances:
+                self.instances[index] = {}
             if self._data is None:
                 self.instances[index]['data'] = self.default
             return self.instances[index]['data']
