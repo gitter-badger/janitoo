@@ -395,14 +395,25 @@ class TestNodeManagerState(TestJanitoo):
             print node_state.state
             time.sleep(1)
         self.assertEqual(node_state.state, 'ONLINE')
+        try:
 
-        node = bus.find_node('resource1')
-        self.assertTrue('rrd1' in node.name)
+            node = node_state.find_node('resource1')
+            self.assertTrue('rrd1' in node.name)
+            node = node_state.find_node('resourcebad')
+            self.assertEqual(node, None)
+            value = node_state.find_value('resource1', 'heartbeat')
+            self.assertTrue('resource1' in value.node_uuid)
+            self.assertEqual('heartbeat',value.uuid)
+            value = node_state.find_value('resourcebad', 'heartbeat')
+            self.assertEqual(value, None)
+            value = node_state.find_value('resource1', 'badbeat')
+            self.assertEqual(value, None)
 
-        node_state.stop()
-        i = 0
-        while node_state.state != 'OFFLINE' and i<120:
-            i += 1
-            print node_state.state
-            time.sleep(1)
-        self.assertEqual(node_state.state, 'OFFLINE')
+        finally:
+            node_state.stop()
+            i = 0
+            while node_state.state != 'OFFLINE' and i<120:
+                i += 1
+                print node_state.state
+                time.sleep(1)
+            self.assertEqual(node_state.state, 'OFFLINE')

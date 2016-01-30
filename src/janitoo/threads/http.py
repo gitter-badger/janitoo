@@ -191,7 +191,7 @@ class HttpBus(JNTBus):
         :param int bus_id: the SMBus id (see Raspberry Pi documentation)
         :param kwargs: parameters transmitted to :py:class:`smbus.SMBus` initializer
         """
-        JNTBus.__init__(self, **kwargs)
+        JNTBus.__init__(self, oid='http', **kwargs)
         self._lock =  threading.Lock()
         self._server = None
         if 'home_dir' in self.options.data and self.options.data['home_dir'] is not None:

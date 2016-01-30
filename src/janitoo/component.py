@@ -103,29 +103,6 @@ class JNTComponent(object):
                 check_hearbeat_cb=cb_check_hearbeat, **kwargs)
         return  self.node
 
-    def find_node(self, node_uuid):
-        """Find a node usinf its uuid
-        """
-        nodes = [ node for node in [ compo.node for compo in self.components if compo.node.uuid == node_uuid ] ]
-        if len(nodes)>1:
-            logger.warning("Found 2 nodes %s with uuid %s. Returning the fisrt one.", nodes, node_uuid)
-        if len(nodes)==0:
-            return None
-        return nodes[0]
-
-    def find_value(self, node_uuid, value_uuid):
-        """Find a value usinf its uuid and the node one
-        """
-        nodes = [ node for node in [ compo.node for compo in self.components if compo.node.uuid == node_uuid ] ]
-        if len(nodes)>1:
-            logger.warning("Found 2 nodes %s with uuid %s. Returning the fisrt one.", nodes, node_uuid)
-        values = [ value for value in [ node.values for node in nodes ] if value.uuid == value_uuid]
-        if len(values)>1:
-            logger.warning("Found 2 valus %s with uuid %s. Returning the fisrt one.", nodes, value_uuid)
-        if len(nodes)==0:
-            return None
-        return nodes[0]
-
     def value_poll_get(self, node_uuid, index, prefix=''):
         """
         """

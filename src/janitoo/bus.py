@@ -143,3 +143,4 @@ class JNTBus(object):
 
         """
         return False
+

@@ -1156,6 +1156,38 @@ class JNTNodeMan(object):
         if node.uuid in self.heartbeats:
             del self.heartbeats[node.uuid]
 
+    def find_node(self, node_uuid):
+        """Find a node usinf its uuid
+        """
+        nuuid='%s__%s'%(self.section, node_uuid)
+        nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].uuid == nuuid ]
+        if len(nodes)>1:
+            logger.warning("Found 2 nodes %s with uuid %s. Returning the fisrt one.", nodes, node_uuid)
+        if len(nodes)==0:
+            return None
+        return nodes[0]
+
+    def find_value(self, node_uuid, value_uuid):
+        """Find a value usinf its uuid and the node one
+        """
+        nuuid='%s__%s'%(self.section, node_uuid)
+        nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].uuid == nuuid ]
+        if len(nodes)>1:
+            logger.warning("Found 2 nodes %s with uuid %s. Use the fisrt one.", nodes, node_uuid)
+        if len(nodes)==0:
+            return None
+        vuuid='%s'%(value_uuid)
+        print nodes[0].uuid
+        for node in nodes:
+            for value in node.values:
+                print node.values[value].uuid
+        values = [ nodes[0].values[value] for value in nodes[0].values if nodes[0].values[value].uuid == vuuid]
+        if len(values)>1:
+            logger.warning("Found 2 valus %s with uuid %s. Returning the fisrt one.", nodes, value_uuid)
+        if len(values)==0:
+            return None
+        return values[0]
+
 class JNTBusNodeMan(JNTNodeMan):
     """The node manager
     """
