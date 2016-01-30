@@ -451,4 +451,4 @@ class HttpThread(JNTBusThread):
         """Build the bus
         """
         self.section = 'http'
-        self.bus = HttpBus(options=self.options, oid=self.section, product_name="Http server")
+        self.bus = HttpBus(options=self.options, product_name="Http server")
