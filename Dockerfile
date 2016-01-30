@@ -63,7 +63,7 @@ ADD . /opt/janitoo/src/janitoo
 WORKDIR /opt/janitoo/src
 
 RUN ln -s janitoo/Makefile.all Makefile && \
-    make docker-deps && \
+    make docker-inst && \
     make deps module=janitoo && \
     make develop module=janitoo && \
     apt-get clean && \
