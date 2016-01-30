@@ -1401,6 +1401,12 @@ class JNTBusNodeMan(JNTNodeMan):
         #~ self.build_bus_components('i2c', components, self._i2c_bus)
         #~ logger.info('Load %s component(s)', len(components))
 
+    def loop(self, stopevent):
+        """
+        """
+        JNTNodeMan.loop(self, stopevent)
+        self.bus.loop(stopevent)
+
 class JNTNode(object):
     def __init__(self, uuid="a_unik_identifier_for_the_node_on_the_controller", **kwargs):
         """

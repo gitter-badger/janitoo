@@ -116,6 +116,13 @@ class JNTBus(object):
         """
         return "%s" % self.oid
 
+    def loop(self, stopevent):
+        """Retrieve data
+        Don't do long task in loop. Use a separated thread to not perturbate the nodeman
+
+        """
+        pass
+
     def add_component(self, oid, addr, **kwargs):
         """Return an uuid for the bus
 
