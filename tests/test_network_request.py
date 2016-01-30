@@ -85,7 +85,7 @@ class TestNetworkState(JNTTBase):
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
             options.set_option(section, 'uuid', "%s"%thread_uuid)
-        self.nodeman = JNTBusNodeMan(options, HttpBus(options=options, oid=section, product_name="Http server"), section, thread_uuid)
+        self.nodeman = JNTBusNodeMan(options, HttpBus(options=options, product_name="Http server"), section, thread_uuid)
         print self.nodeman.state
         #~ hadds = { 0 : HADD%(self.node_add_ctrl,0),
                      #~ }
@@ -144,7 +144,7 @@ class TestNetworkState(JNTTBase):
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
             options.set_option(section, 'uuid', "%s"%thread_uuid)
-        self.nodeman = JNTBusNodeMan(options, HttpBus(options=options, oid=section, product_name="Http server"), section, thread_uuid)
+        self.nodeman = JNTBusNodeMan(options, HttpBus(options=options, product_name="Http server"), section, thread_uuid)
         print self.nodeman.state
         #~ hadds = { 0 : HADD%(self.node_add_ctrl,0),
                      #~ }
