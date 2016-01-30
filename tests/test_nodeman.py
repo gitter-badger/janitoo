@@ -373,3 +373,36 @@ class TestNodeManagerState(TestJanitoo):
         self.assertEqual(res['data'], 40.14)
         self.stopClient()
         self.mqtthearbeat = None
+
+    def test_301_busnode_find_helpers(self):
+        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_bus.conf']):
+            options = vars(jnt_parse_args())
+            options = JNTOptions(options)
+        bus = HttpBus(options=options)
+        section = 'http'
+        thread_uuid = options.get_option(section, 'uuid')
+        if thread_uuid == None:
+            thread_uuid = muuid.uuid1()
+            options.set_option(section, 'uuid', "%s"%thread_uuid)
+        node_state = JNTBusNodeMan(options, bus, section, thread_uuid)
+        print node_state.state
+        hadds = { 0 : HADD%(self.add_ctrl,0),
+                     }
+        node_state.start()
+        i = 0
+        while node_state.state != 'ONLINE' and i<120:
+            i += 1
+            print node_state.state
+            time.sleep(1)
+        self.assertEqual(node_state.state, 'ONLINE')
+
+        node = bus.find_node('resource1')
+        self.assertTrue('rrd1' in node.name)
+
+        node_state.stop()
+        i = 0
+        while node_state.state != 'OFFLINE' and i<120:
+            i += 1
+            print node_state.state
+            time.sleep(1)
+        self.assertEqual(node_state.state, 'OFFLINE')
