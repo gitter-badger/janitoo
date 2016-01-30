@@ -205,6 +205,9 @@ develop:
 travis-deps:
 	make -C $(module) travis-deps
 
+docker-deps:
+	make -C $(module) docker-deps
+
 develop-all:
 	-make -C janitoo develop
 	-make -C janitoo_packaging develop
@@ -218,18 +221,12 @@ develop-all:
 tests:
 	make -C $(module) tests
 
-docker-deps:
-	@echo "Install Docker dependencies."
+docker-inst:
+	@echo "Configure Docker image."
 	@echo
 	sudo apt-get install -y python-pip git python2.7-dev
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
 	pip install git+git://github.com/bibi21000/janitoo_nosetests_flask@master
-	@echo
-	@echo "Docker dependencies installed."
-
-docker-inst:
-	@echo "Configure Docker image."
-	@echo
 	-test -d $(module)/docker/config && cp -rf $(module)/docker/config/* /opt/janitoo/etc/
 	-test -d $(module)/docker/supervisor.conf.d && cp -rf $(module)/docker/supervisor.conf.d/* /etc/supervisor/janitoo.conf.d/
 	-test -d $(module)/docker/supervisor-tests.conf.d && cp -rf $(module)/docker/supervisor-tests.conf.d/* /etc/supervisor/janitoo-tests.conf.d/
