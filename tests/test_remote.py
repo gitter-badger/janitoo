@@ -61,6 +61,7 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
     conf_file = "tests/data/test_remote.conf"
 
     def test_101_values_config(self):
+        self.thread.start()
         time.sleep(60)
         print self.thread.bus.nodeman.nodes
         print self.thread.bus.nodeman.find_node('node0')
