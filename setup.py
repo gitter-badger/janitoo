@@ -62,7 +62,7 @@ janitoo_entry_points = {
         "http = janitoo.threads.http:make_thread",
         "email = janitoo.threads.email:make_thread",
         "scenes = janitoo.threads.scenes:make_thread",
-        "remote = janitoo.threads.remote:make_remote",
+        "remote = janitoo.threads.remote:make_thread",
     ],
     "janitoo.components": [
         "scenes.scene = janitoo.threads.scenes:make_scene",
