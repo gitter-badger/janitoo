@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Unittests for Janitoo-Roomba Server.
+"""Unittests for Janitoo Server.
 """
 __license__ = """
     This file is part of Janitoo.
@@ -29,10 +29,11 @@ import unittest
 import threading
 import logging
 from pkg_resources import iter_entry_points
+import mock
 
+from janitoo_nosetests import JNTTBase
 from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
 from janitoo_nosetests.thread import JNTTThread, JNTTThreadCommon
-from janitoo_nosetests.thread import JNTTThreadRun, JNTTThreadRunCommon
 from janitoo_nosetests.component import JNTTComponent, JNTTComponentCommon
 
 from janitoo.utils import json_dumps, json_loads
@@ -41,6 +42,12 @@ from janitoo.utils import TOPIC_HEARTBEAT
 from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
 from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST
 from janitoo.utils import TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_SYSTEM, TOPIC_VALUES_BASIC
+from janitoo.runner import jnt_parse_args
+from janitoo.options import JNTOptions
+from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
+
+from janitoo_raspberry_1wire.bus_1wire import OnewireBus
+import janitoo_raspberry_1wire.components as components
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -52,31 +59,9 @@ COMMAND_DISCOVERY = 0x5000
 assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
-JNTTThreadRun.skipDockerTest()
 
-class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the datarrd thread
+class TestRemoteNodeComponent(JNTTComponent, JNTTComponentCommon):
+    """Test the component
     """
-    thread_name = "http"
-    conf_file = "tests/data/test_threads.conf"
+    component_name = "remote.node"
 
-    def test_101_thread_start_wait_long_stop(self):
-        self.skipTest("Fail on docker")
-        time.sleep(60)
-        self.assertDir("/tmp/janitoo_test/home/public")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/js")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/css")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/images")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/doc")
-
-class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the thread
-    """
-    thread_name = "email"
-    conf_file = "tests/data/test_threads.conf"
-
-class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the thread
-    """
-    thread_name = "remote"
-    conf_file = "tests/data/test_threads.conf"

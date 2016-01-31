@@ -62,10 +62,12 @@ janitoo_entry_points = {
         "http = janitoo.threads.http:make_thread",
         "email = janitoo.threads.email:make_thread",
         "scenes = janitoo.threads.scenes:make_thread",
+        "remote = janitoo.threads.remote:make_remote",
     ],
     "janitoo.components": [
         "scenes.scene = janitoo.threads.scenes:make_scene",
         "http.resource = janitoo.threads.http:make_http_resource",
+        "remote.node = janitoo.threads.remote:make_remote_node",
     ],
     "janitoo.values": [
         "ip_ping = janitoo.value_factory.other:make_ip_ping",

@@ -92,10 +92,12 @@ class JNTBus(object):
         except:
             pass
 
-    def export_values(self, target):
+    def export_values(self, target, prefix=''):
         '''Export vales to target'''
-        for value in self.values:
-            target.values[value] = self.values[value]
+        for value in self.values.keys():
+            target.values['%s%s'%(prefix, value)] = self.values[value]
+            self.values['%s%s'%(prefix, value)] = self.values[value]
+            self.values[value].uuid = '%s%s'%(prefix, value)
 
     def start(self, mqttc, trigger_thread_reload_cb=None):
         """Start the bus"""
