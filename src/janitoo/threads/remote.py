@@ -47,6 +47,7 @@ from janitoo.value import JNTValue
 from janitoo.component import JNTComponent
 from janitoo.bus import JNTBus
 from janitoo.dhcp import HeartbeatMessage
+from janitoo.mqtt import MQTTClient
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -98,14 +99,28 @@ class RemoteNodeComponent(JNTComponent):
             label='rhadd',
             default=None,
         )
-        uuid="users"
+        uuid="users_read"
         self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The users values to listen to : value_uuid:index',
             label='users',
             default=None,
         )
-        uuid="basics"
+        uuid="users_write"
+        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+            node_uuid=self.uuid,
+            help='The users values to listen to : value_uuid:index',
+            label='users',
+            default=None,
+        )
+        uuid="basics_read"
+        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+            node_uuid=self.uuid,
+            help='The basics values to listen to : value_uuid:index',
+            label='basics',
+            default=None,
+        )
+        uuid="basics_write"
         self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The basics values to listen to : value_uuid:index',
@@ -133,6 +148,12 @@ class RemoteNodeComponent(JNTComponent):
         except:
             logger.exception("[%s] - start", self.__class__.__name__)
         JNTComponent.start(self, mqttc)
+        which = 'users_read'
+        max_index = self.values[which].get_max_index()+1
+        logger.exception("[%s] - found %s %s", self.__class__.__name__, max_index, 'users_read')
+        #~ print max_index
+        #~ for index in range(max_index):
+            #~ print index
         return True
 
     def stop(self):

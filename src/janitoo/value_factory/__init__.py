@@ -128,6 +128,8 @@ class JNTValueFactoryEntry(JNTValue):
                         stopped = True
                 except:
                     logger.exception('Exception when retrieving %s_%s_%s for node %s'%(self.uuid, 'config', i, node_uuid))
+        if index not in self.instances:
+            return None
         return self.instances[index]['config']
 
     def _create_poll_value(self, **kwargs):
@@ -191,6 +193,22 @@ class JNTValueFactoryEntry(JNTValue):
             except:
                 logger.exception('Exception when retrieving %s_%s_%s for node %s'%(self.uuid, 'poll', index, node_uuid))
         return self.instances[index]['poll']
+
+    def get_length(self, node_uuid=None):
+        """Returns the number of defindes instances
+        """
+        ret = []
+        i=0
+        stopped = False
+        while not stopped :
+            if i in self.instances and \
+               ( ('config' in self.instances[i] and self.instances[i]['config'] is not None) or \
+                 ('data' in self.instances[i] and self.instances[i]['data'] is not None) ):
+                ret.append(self.instances[i])
+                i += 1
+            else:
+                stopped = True
+        return len(ret)
 
     def get_max_index(self, node_uuid=None):
         """

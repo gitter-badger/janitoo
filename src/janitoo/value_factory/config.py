@@ -101,6 +101,19 @@ class JNTValueConfigGeneric(JNTValueFactoryEntry):
             self.instances[index]['data'] = None
             logger.exception('Exception when writing %s_%s for node %s'%(self.uuid, index, node_uuid))
 
+    #~ def _get_data(self, node_uuid, index):
+        #~ """
+        #~ """
+        #~ if index not in self.instances:
+            #~ self.instances[index] = {}
+        #~ if 'data' not in self.instances[index]:
+            #~ self.instances[index]['data'] = None
+        #~ if self.instances[index]['data'] is None:
+            #~ try:
+                #~ self.instances[index]['data'] = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, index))
+            #~ except:
+                #~ logger.exception('Exception when retrieving %s_%s for node %s'%(self.uuid, index, node_uuid))
+        #~ return self.instances[index]['data']
     def _get_data(self, node_uuid, index):
         """
         """
@@ -108,6 +121,24 @@ class JNTValueConfigGeneric(JNTValueFactoryEntry):
             self.instances[index] = {}
         if 'data' not in self.instances[index]:
             self.instances[index]['data'] = None
+        if index == 0:
+            i = 0
+            stop = False
+            while not stop:
+                #~ logger.debug('index %s, instances %s'%(i, self.instances))
+                if i not in self.instances or 'data' not in self.instances[i]:
+                    try:
+                        data = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, i))
+                        if data is not None:
+                            if i not in self.instances:
+                                self.instances[i] = {}
+                            self.instances[i]['data'] = data
+                        else:
+                            stop = True
+                    except:
+                        logger.exception('Catched exception when retrieving %s_%s for node %s'%(self.uuid, i, node_uuid))
+                        stop = True
+                i += 1
         if self.instances[index]['data'] is None:
             try:
                 self.instances[index]['data'] = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, index))
