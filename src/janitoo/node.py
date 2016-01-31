@@ -1129,7 +1129,7 @@ class JNTNodeMan(object):
             return
         if value.hadd not in self.polls:
             self.polls[value.hadd] = {}
-        if value.uuid not in self.polls or timeout:
+        if value.uuid not in self.polls[value.hadd] or timeout:
             if timeout is None:
                 timeout = self.config_timeout
             self.polls[value.hadd][value.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=timeout), 'value':value}
@@ -1182,10 +1182,10 @@ class JNTNodeMan(object):
         if len(nodes)==0:
             return None
         vuuid='%s'%(value_uuid)
-        print nodes[0].uuid
-        for node in nodes:
-            for value in node.values:
-                print node.values[value].uuid
+        #~ print nodes[0].uuid
+        #~ for node in nodes:
+            #~ for value in node.values:
+                #~ print node.values[value].uuid
         values = [ nodes[0].values[value] for value in nodes[0].values if nodes[0].values[value].uuid == vuuid]
         if len(values)>1:
             logger.warning("Found 2 valus %s with uuid %s. Returning the fisrt one.", nodes, value_uuid)

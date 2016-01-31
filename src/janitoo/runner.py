@@ -212,7 +212,10 @@ class Runner(object):
             pass
         finally:
             if self.pidfile:
-                self.pidfile.__exit__(None, None, None)
+                try:
+                    self.pidfile.__exit__(None, None, None)
+                except:
+                    pass
         self.app_shutdown()
 
     def _terminate_daemon_process(self):

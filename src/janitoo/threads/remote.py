@@ -39,11 +39,14 @@ from pkg_resources import get_distribution, DistributionNotFound, resource_filen
 
 from janitoo.thread import JNTBusThread, BaseThread
 from janitoo.options import get_option_autostart
-from janitoo.utils import HADD
+from janitoo.utils import HADD, HADD_SEP, hadd_split
+from janitoo.utils import  TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_SYSTEM, TOPIC_VALUES_BASIC, TOPIC_HEARTBEAT_NODE
+
 from janitoo.node import JNTNode
 from janitoo.value import JNTValue
 from janitoo.component import JNTComponent
 from janitoo.bus import JNTBus
+from janitoo.dhcp import HeartbeatMessage
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -67,9 +70,9 @@ def make_thread(options):
         return None
 
 def make_remote_node(**kwargs):
-    return RemoteComponent(**kwargs)
+    return RemoteNodeComponent(**kwargs)
 
-class RemoteComponent(JNTComponent):
+class RemoteNodeComponent(JNTComponent):
     """ A resource ie /rrd """
 
     def __init__(self, bus=None, addr=None, **kwargs):
@@ -83,21 +86,97 @@ class RemoteComponent(JNTComponent):
         JNTComponent.__init__(self, oid=oid, bus=bus, addr=addr, name=name,
                 product_name=product_name, product_type=product_type, product_manufacturer="Janitoo", **kwargs)
         logger.debug("[%s] - __init__ node uuid:%s", self.__class__.__name__, self.uuid)
-        self.mqttc = None
+        self.mqttc_heartbeat = None
+        self.mqttc_users = None
+        self.mqttc_basics = None
+        self.state = 'OFFLINE'
+        self.remote_hadd = (None,None)
+        uuid="remote_hadd"
+        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+            node_uuid=self.uuid,
+            help='HADD of the remote node that we will listen to',
+            label='rhadd',
+            default=None,
+        )
+        uuid="users"
+        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+            node_uuid=self.uuid,
+            help='The users values to listen to : value_uuid:index',
+            label='users',
+            default=None,
+        )
+        uuid="basics"
+        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+            node_uuid=self.uuid,
+            help='The basics values to listen to : value_uuid:index',
+            label='basics',
+            default=None,
+        )
 
     def start(self, mqttc):
         """Start the component.
-
         """
+        self.state = 'BOOT'
+        hadd = self.values['remote_hadd'].data
+        if hadd is None:
+            logger.debug("[%s] - No HADD", self.__class__.__name__)
+            return False
+        self.remote_hadd = hadd_split(hadd)
+        if self.remote_hadd[0] is None or self.remote_hadd[1] is None:
+            logger.warning("[%s] - Bad HADD %s", self.__class__.__name__, hadd)
+            return False
+        try:
+            self.mqttc_heartbeat = MQTTClient(options=self.options.data)
+            self.mqttc_heartbeat.connect()
+            self.mqttc_heartbeat.subscribe(topic=TOPIC_HEARTBEAT_NODE%(hadd), callback=self.on_heartbeat)
+            self.mqttc_heartbeat.start()
+        except:
+            logger.exception("[%s] - start", self.__class__.__name__)
         JNTComponent.start(self, mqttc)
         return True
 
     def stop(self):
         """Stop the component.
-
         """
+        if self.mqttc_heartbeat is not None:
+            try:
+                hadd = HADD%(self.remote_hadd[0], self.remote_hadd[1])
+                self.mqttc_heartbeat.unsubscribe(topic=TOPIC_HEARTBEAT_NODE%(hadd))
+                self.mqttc_heartbeat.stop()
+                if self.mqttc_heartbeat.is_alive():
+                    self.mqttc_heartbeat.join()
+                self.mqttc_heartbeat = None
+            except:
+                logger.exception("[%s] - stop", self.__class__.__name__)
         JNTComponent.stop(self)
         return True
+
+    def check_heartbeat(self):
+        """Check that the component is 'available'
+
+        """
+        #~ print "it's me %s : %s" % (self.values['upsname'].data, self._ups_stats_last)
+        if self.mqttc_heartbeat is not None:
+            return self.state
+        return False
+
+    def on_heartbeat(self, client, userdata, message):
+        """On request
+
+        :param client: the Client instance that is calling the callback.
+        :type client: paho.mqtt.client.Client
+        :param userdata: user data of any type and can be set when creating a new client instance or with user_data_set(userdata).
+        :type userdata: all
+        :param message: The message variable is a MQTTMessage that describes all of the message parameters.
+        :type message: paho.mqtt.client.MQTTMessage
+        """
+        hb = HeartbeatMessage(message)
+        add_ctrl, add_node, state = hb.get_heartbeat()
+        if add_ctrl is None or add_node is None:
+            return
+        if (add_ctrl == self.remote_hadd[0]) and \
+           (add_node == self.remote_hadd[1] or add_node == -1) :
+               self.state = state
 
 class RemoteBus(JNTBus):
     """A pseudo-bus
@@ -108,52 +187,6 @@ class RemoteBus(JNTBus):
         :param kwargs: parameters transmitted to :py:class:`smbus.SMBus` initializer
         """
         JNTBus.__init__(self, oid=oid, **kwargs)
-
-        uuid="actions"
-        self.values[uuid] = self.value_factory['action_list'](options=self.options, uuid=uuid,
-            node_uuid=self.uuid,
-            help='The action on the HTTP server',
-            label='Actions',
-            list_items=['start', 'stop', 'reload'],
-            set_data_cb=self.set_action,
-            is_writeonly = True,
-            cmd_class=COMMAND_WEB_CONTROLLER,
-            genre=0x01,
-        )
-
-    def check_heartbeat(self):
-        """Check that the component is 'available'
-
-        """
-        #~ print "it's me %s : %s" % (self.values['upsname'].data, self._ups_stats_last)
-        if self._server is not None:
-            return self._server.is_alive()
-        return False
-
-    def set_action(self, node_uuid, index, data):
-        """Act on the server
-        """
-        params = {}
-        if data == "start":
-            if self.mqttc is not None:
-                self.start(self.mqttc)
-        elif data == "stop":
-            self.stop()
-        elif data == "reload":
-            if self._server is not None:
-                self._server.trigger_reload()
-
-    def start(self, mqttc, trigger_thread_reload_cb=None):
-        JNTBus.start(self, mqttc, trigger_thread_reload_cb)
-        self._server = HttpServerThread("http_server", self.options.data)
-        self._server.config(host=self.values["host"].data, port=self.values["port"].data)
-        self._server.start()
-
-    def stop(self):
-        if self._server is not None:
-            self._server.stop()
-            self._server = None
-        JNTBus.stop(self)
 
 class RemoteThread(JNTBusThread):
     """The remote thread

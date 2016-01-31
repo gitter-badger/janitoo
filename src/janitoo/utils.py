@@ -36,6 +36,7 @@ CADD = "%0.4d/"
 HADD_SEP = "/"
 
 TOPIC_HEARTBEAT = "/dhcp/heartbeat/#"
+TOPIC_HEARTBEAT_NODE = "/dhcp/heartbeat/%s/#"
 TOPIC_RESOLV_REQUEST = "/dhcp/resolv/request/"
 TOPIC_RESOLV_REPLY = "/dhcp/resolv/reply/%s"
 TOPIC_RESOLV_BROADCAST = "/dhcp/resolv/broadcast/"
