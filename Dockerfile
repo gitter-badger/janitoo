@@ -77,11 +77,6 @@ RUN make clone module=janitoo_pki && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN make clone module=janitoo_db && \
-    apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null||true && \
-    rm -Rf /tmp/* 2>/dev/null||true
-
 RUN make clone module=janitoo_mysql && \
     make clone module=janitoo_mysql_client && \
     make docker-inst module=janitoo_mysql && \
@@ -92,6 +87,11 @@ RUN make clone module=janitoo_mysql && \
 RUN make clone module=janitoo_postgresql && \
     make clone module=janitoo_postgresql_client && \
     make docker-inst module=janitoo_postgresql && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN make clone module=janitoo_db && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true

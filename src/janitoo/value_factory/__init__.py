@@ -231,8 +231,13 @@ class JNTValueFactoryEntry(JNTValue):
             if index is None:
                 index = self.index
             if index not in self.instances:
-                self.instances[index] = {}
-            if self._data is None:
+                self.instances[index] = {'data':None, 'config':None}
+            if self.instances[index]['data'] is None and self.type == 0x03:
+                #It's a confiig, try to retrieve option from config
+                self.instances[index]['data'] = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, index))
+            if self._data is not None:
+                self.instances[index]['data'] = self._data
+            if self.instances[index]['data'] is None:
                 self.instances[index]['data'] = self.default
             return self.instances[index]['data']
         except:
@@ -268,6 +273,8 @@ class JNTValueFactoryEntry(JNTValue):
             self.instances[index]['data'] = data
             if index == 0:
                 self._data = data
+            if self.type == 0x03:
+                self.options.set_option(node_uuid, '%s_%s'%(self.uuid, index), data)
             #~ print index, self.instances[index]['data']
         except:
             logger.exception('Exception when setting %s_%s_%s for node %s'%(self.uuid, 'data', index, node_uuid))

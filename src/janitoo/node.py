@@ -935,10 +935,11 @@ class JNTNodeMan(object):
         if self.state != 'ONLINE':
             return
         to_polls = []
-        keys = self.polls.keys()
-        for key in keys:
-            if self.polls[key]['next_run'] < datetime.datetime.now():
-                to_polls.append(self.polls[key]['value'])
+        nodes = self.polls.keys()
+        for node in nodes:
+            for key in self.polls[node]:
+                if self.polls[node][key]['next_run'] < datetime.datetime.now():
+                    to_polls.append(self.polls[node][key]['value'])
         if len(to_polls)>0:
             logger.debug('Found polls in timeout : [ %s ]', ', '.join(str(e.uuid) for e in to_polls))
         for value in to_polls:
@@ -1126,20 +1127,24 @@ class JNTNodeMan(object):
         if value.poll_delay == 0:
             self.remove_poll(value)
             return
+        if value.hadd not in self.polls:
+            self.polls[value.hadd] = {}
         if value.uuid not in self.polls or timeout:
             if timeout is None:
                 timeout = self.config_timeout
-            self.polls[value.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=timeout), 'value':value}
+            self.polls[value.hadd][value.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=timeout), 'value':value}
         else:
-            self.polls[value.uuid]['next_run'] = datetime.datetime.now()+datetime.timedelta(seconds=value.poll_delay)
+            self.polls[value.hadd][value.uuid]['next_run'] = datetime.datetime.now()+datetime.timedelta(seconds=value.poll_delay)
         value.is_polled= True
 
     def remove_poll(self, value):
         """
         """
-        if value.uuid in self.polls:
+        if value.hadd in self.polls and value.uuid in self.polls[value.hadd]:
             #~ value.is_polled= False
-            del self.polls[value.uuid]
+            del self.polls[value.hadd][value.uuid]
+        if len(self.polls[value.hadd]) == 0:
+            del self.polls[value.hadd]
 
     def add_heartbeat(self, node):
         """
