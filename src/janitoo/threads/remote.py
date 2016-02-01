@@ -79,7 +79,7 @@ class RemoteNodeComponent(JNTComponent):
     def __init__(self, bus=None, addr=None, **kwargs):
         """
         """
-        oid = kwargs.pop('oid', 'repote.node')
+        oid = kwargs.pop('oid', 'remote.node')
         name = kwargs.pop('name', "Remote node")
         product_name = kwargs.pop('product_name', "Remote node")
         product_type = kwargs.pop('product_type', "Software")

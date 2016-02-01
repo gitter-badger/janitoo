@@ -150,12 +150,6 @@ class JNTServer(object):
                 gc.collect()
                 self.gc_next_run = datetime.datetime.now() + datetime.timedelta(seconds=self.gc_delay)
         self.post_loop()
-
-    def stop(self):
-        """Stop the server. Must be called at begin if overloaded in the children class
-        """
-        logger.info("[%s] - Stop the server", self.__class__.__name__)
-        self._stopevent.set( )
         for th in self._threads:
             th.stop()
         for th in self._threads:
@@ -163,6 +157,12 @@ class JNTServer(object):
                 th.join()
             self._threads.remove(th)
         self._threads = []
+
+    def stop(self):
+        """Stop the server. Must be called at begin if overloaded in the children class
+        """
+        logger.info("[%s] - Stop the server", self.__class__.__name__)
+        self._stopevent.set( )
 
     def reload_threads(self):
         """Reload the threads
@@ -296,7 +296,7 @@ class JNTControllerManager(object):
         cmd_classes = kwargs.pop('cmd_classes', [])
         if not COMMAND_CONTROLLER in cmd_classes:
             cmd_classes.append(COMMAND_CONTROLLER)
-        self._controller = JNTNode( uuid=section, options=options, cmd_classes=cmd_classes, **kwargs)
+        self._controller = JNTNode( uuid=section, options=options, cmd_classes=cmd_classes, oid='controller', **kwargs)
         self._controller.add_internal_system_values()
         self._controller.add_internal_config_values()
         self._controller.hadd_get(section, None)

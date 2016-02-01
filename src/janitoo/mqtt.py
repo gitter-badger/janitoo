@@ -352,7 +352,7 @@ class MQTTClient(threading.Thread):
         """
         self._mqttc.publish(topic, payload, qos, retain)
 
-    def publish_heartbeat(self, add_ctrl, add_node, state='online', qos=0, retain=False):
+    def publish_heartbeat(self, add_ctrl, add_node, state='ONLINE', qos=0, retain=False):
         """Publish an heartbeat for the node add_ctrl, add_node.
 
         This causes a message to be sent to the broker and subsequently from
@@ -373,7 +373,7 @@ class MQTTClient(threading.Thread):
         """
         self.publish(topic="/dhcp/heartbeat/"+HADD%(add_ctrl, add_node), payload=state, qos=qos, retain=retain)
 
-    def publish_heartbeat_controller(self, add_ctrl, state='online', qos=0, retain=False):
+    def publish_heartbeat_controller(self, add_ctrl, state='ONLINE', qos=0, retain=False):
         """Publish an heartbeat for the controller add_ctrl and all its nodes.
 
         This causes a message to be sent to the broker and subsequently from
@@ -414,6 +414,7 @@ class MQTTClient(threading.Thread):
         :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
         :type retain: bool
         """
+        #Deprecated. We must send the heart to /dhcp/heartbeat/0011/0001
         self.publish(topic="/dhcp/heartbeat/", payload=json_dumps(msg), qos=qos, retain=retain)
 
     def publish_heartbeat_resolv_msg(self, msg, qos=0, retain=False):

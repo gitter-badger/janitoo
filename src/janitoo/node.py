@@ -223,8 +223,7 @@ class JNTNodeMan(object):
                 for node in self.nodes:
                     if self.nodes[node].hadd is not None:
                         add_ctrl, add_node = self.nodes[node].split_hadd()
-                        msg = {'add_ctrl':add_ctrl, 'add_node':add_node, 'state':'OFFLINE'}
-                        self.mqtt_heartbeat.publish_heartbeat_msg(msg)
+                        self.mqtt_heartbeat.publish_heartbeat(int(add_ctrl), int(add_node), 'OFFLINE')
                 try:
                     self.mqtt_heartbeat.stop()
                     if self.mqtt_heartbeat.is_alive():
@@ -978,10 +977,10 @@ class JNTNodeMan(object):
                 else:
                     state = 'OFFLINE'
                 #~ print "node : %s/%s, state : %s"%(add_ctrl, add_node, state)
-                msg = {'add_ctrl':add_ctrl, 'add_node':add_node, 'state':state}
+                #~ msg = {'add_ctrl':add_ctrl, 'add_node':add_node, 'state':state}
                 mqt = mqttc if mqttc is not None else self.mqtt_heartbeat
                 if mqt is not None:
-                    mqt.publish_heartbeat_msg(msg)
+                    mqt.publish_heartbeat(int(add_ctrl), int(add_node), state)
                 if stopevent is not None:
                     stopevent.wait(0.02)
 
@@ -1160,6 +1159,12 @@ class JNTNodeMan(object):
         """
         if node.uuid in self.heartbeats:
             del self.heartbeats[node.uuid]
+
+    def find_nodes(self, node_oid):
+        """Find a node usinf its uuid
+        """
+        nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].oid == node_oid ]
+        return nodes
 
     def find_node(self, node_uuid):
         """Find a node usinf its uuid
@@ -1410,7 +1415,10 @@ class JNTBusNodeMan(JNTNodeMan):
         """
         """
         JNTNodeMan.loop(self, stopevent)
-        self.bus.loop(stopevent)
+        try:
+            self.bus.loop(stopevent)
+        except:
+            logger.exception("Exception in nodeman loop")
 
 class JNTNode(object):
     def __init__(self, uuid="a_unik_identifier_for_the_node_on_the_controller", **kwargs):
@@ -1419,6 +1427,8 @@ class JNTNode(object):
         """
         self.uuid = uuid
         """The UUID of the node"""
+        self.oid = kwargs.get('oid', 'generic')
+        """The oid of the component associated to the node"""
         self.cmd_classes = kwargs.get('cmd_classes', [])
         """The command classes implemented by the node"""
         self.name = kwargs.get('name', 'Default name')

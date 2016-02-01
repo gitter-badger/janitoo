@@ -69,13 +69,13 @@ class JNTComponent(object):
         """Retrieve data
 
         """
-        raise NotImplementedError()
-
+        pass
+        
     def check_heartbeat(self):
         """Check that the component is 'available'
 
         """
-        raise NotImplementedError()
+        return False
 
     def start(self, mqttc):
         """Start the component. Can be used to start a thread to acquire data.
@@ -100,7 +100,7 @@ class JNTComponent(object):
             cb_check_hearbeat = None
         self.node = JNTNode(uuid=self.uuid, cmd_classes=self.cmd_classes, hadd=hadd,
                 name=self.name, product_name=self.product_name, product_type=self.product_type, product_manufacturer=self.product_manufacturer,
-                check_hearbeat_cb=cb_check_hearbeat, **kwargs)
+                check_hearbeat_cb=cb_check_hearbeat, oid=self.oid, **kwargs)
         return  self.node
 
     def value_poll_get(self, node_uuid, index, prefix=''):

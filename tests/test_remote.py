@@ -42,6 +42,8 @@ from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
 from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST
 from janitoo.utils import TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_SYSTEM, TOPIC_VALUES_BASIC
 
+from janitoo.threads.remote import RemoteBus
+
 ##############################################################
 #Check that we are in sync with the official command classes
 #Must be implemented for non-regression
@@ -71,7 +73,7 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
 
     def test_101_values_config(self):
         self.thread.start()
-        timeout = 60
+        timeout = 45
         i = 0
         while i< timeout*10000 and not self.thread.nodeman.is_started:
             time.sleep(0.0001)
@@ -79,8 +81,14 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
         print self.thread.bus.nodeman.nodes
         print self.thread.bus.nodeman.find_node('node0')
         print self.thread.bus.nodeman.find_node('node1')
+        print self.thread.bus.nodeman.find_node('node3')
         print self.thread.bus.nodeman.find_value('node0','users_read').instances
         print self.thread.bus.nodeman.find_value('node1','users_read').instances
+        self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node1'))
+        self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node0'))
+        self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node3'))
         self.assertEqual(2, self.thread.bus.nodeman.find_value('node1','users_read').get_length())
         self.assertEqual(1, self.thread.bus.nodeman.find_value('node0','users_read').get_length())
         self.assertEqual(0, self.thread.bus.nodeman.find_value('node3','users_read').get_length())
+        self.assertEqual(4, len(self.thread.bus.find_components('remote.node')))
+        self.assertEqual(4, len(self.thread.bus.find_values('remote.node','users_read')))

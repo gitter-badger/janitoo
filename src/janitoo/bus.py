@@ -138,12 +138,33 @@ class JNTBus(object):
         self.components[addr] = compo
         return compo
 
+    def find_components(self, component_oid):
+        """Find components using an oid 
+        """
+        components = [ self.components[addr] for addr in self.components if self.components[addr].oid == component_oid ]
+        return components
+
+    def find_values(self, component_oid, value_uuid):
+        """Find a value using its uuid and the component oid
+        """
+        components = self.find_components(component_oid)
+        if len(components)==0:
+            return []
+        vuuid='%s'%(value_uuid)
+        res = []
+        for component in components:
+            if component.node is not None:
+                for value in component.node.values:
+                    if component.node.values[value].uuid == value_uuid:
+                        res.append(component.node.values[value])
+        return res
+
     def create_node(self, nodeman, hadd, **kwargs):
         """Create a node associated to this bus
         """
         self.nodeman = nodeman
         name = kwargs.pop('name', "%s controller"%self.name)
-        self.node = JNTNode(uuid=self.uuid, cmd_classes=self.cmd_classes, hadd=hadd, name="%s controller"%self.name, product_name=self.product_name, product_type=self.product_type, **kwargs)
+        self.node = JNTNode(uuid=self.uuid, cmd_classes=self.cmd_classes, hadd=hadd, name="%s controller"%self.name, product_name=self.product_name, product_type=self.product_type, oid=self.oid, **kwargs)
         self.check_heartbeat = self.node.check_heartbeat
         return self.node
 
