@@ -60,9 +60,22 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
     thread_name = "remote"
     conf_file = "tests/data/test_remote.conf"
 
+    #~ def test_051_nodeman_started(self):
+        #~ timeout = 90
+        #~ i = 0
+        #~ while i< timeout*10000 and not self.thread.nodeman.is_started:
+            #~ time.sleep(0.0001)
+            #~ i += 1
+        #~ self.assertTrue(self.thread.nodeman.is_started)
+        
+
     def test_101_values_config(self):
         self.thread.start()
-        time.sleep(60)
+        timeout = 60
+        i = 0
+        while i< timeout*10000 and not self.thread.nodeman.is_started:
+            time.sleep(0.0001)
+            i += 1
         print self.thread.bus.nodeman.nodes
         print self.thread.bus.nodeman.find_node('node0')
         print self.thread.bus.nodeman.find_node('node1')
