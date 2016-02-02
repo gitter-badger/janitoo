@@ -203,6 +203,7 @@ VALUE_DESC = {
     0x14 : {'label':'Password', 'doc':"A password"},
     0x15 : {'label':'Json', 'doc':"A JSON representation of a complex type"},
     0x16 : {'label':'Array', 'doc':"An array repsented as values separated by pipe"},
+    0x17 : {'label':'Var', 'doc':"A variable type used by remote values."},
     0x20 : {'label':'HADD', 'doc':"An hadd ie 1111/0000"},
     0x21 : {'label':'IP', 'doc':"An ip adress ie 192.168.1.1"},
     0x30 : {'label':'RGB', 'doc':"RGB color represented as bytes separated by # : bbb#bbb#bbb"},

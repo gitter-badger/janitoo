@@ -65,8 +65,8 @@ class JNTComponent(object):
         """
         return "%s" % (self._addr)
 
-    def loop(self):
-        """Retrieve data
+    def loop(self, stopevent):
+        """loop
 
         """
         pass

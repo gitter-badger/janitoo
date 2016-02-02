@@ -153,6 +153,16 @@ class TestSensorInteger(TestFactory, BasePoll):
     """
     entry_name='sensor_integer'
 
+class TestRreadValue(TestFactory, BaseConfig, BasePoll):
+    """Test the value factory
+    """
+    entry_name='rread_value'
+
+class TestRwriteValue(TestFactory, BaseConfig):
+    """Test the value factory
+    """
+    entry_name='rwrite_value'
+
 class TestIpPing(TestFactory, BaseConfig, BasePoll):
     """Test the value factory
     """

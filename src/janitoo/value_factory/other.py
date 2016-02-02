@@ -42,7 +42,9 @@ from janitoo.classes import COMMAND_DESC
 COMMAND_CONFIGURATION = 0x0070
 COMMAND_SENSOR_BINARY = 0x0030
 COMMAND_SENSOR_MULTILEVEL = 0x0031
+COMMAND_BASIC = 0x0020
 
+assert(COMMAND_DESC[COMMAND_BASIC] == 'COMMAND_BASIC')
 assert(COMMAND_DESC[COMMAND_CONFIGURATION] == 'COMMAND_CONFIGURATION')
 assert(COMMAND_DESC[COMMAND_SENSOR_BINARY] == 'COMMAND_SENSOR_BINARY')
 assert(COMMAND_DESC[COMMAND_SENSOR_MULTILEVEL] == 'COMMAND_SENSOR_MULTILEVEL')
@@ -50,6 +52,12 @@ assert(COMMAND_DESC[COMMAND_SENSOR_MULTILEVEL] == 'COMMAND_SENSOR_MULTILEVEL')
 
 def make_ip_ping(**kwargs):
     return JNTValueIpPing(**kwargs)
+
+def make_value_rread(**kwargs):
+    return JNTValueRRead(**kwargs)
+
+def make_value_rwrite(**kwargs):
+    return JNTValueRWrite(**kwargs)
 
 class JNTValueIpPing(JNTValueFactoryEntry):
     """
@@ -95,3 +103,80 @@ class JNTValueIpPing(JNTValueFactoryEntry):
         except :
             logger.exception('[%s] - Exception when pinging (%s)', self.__class__.__name__, self.instances[index]['config'])
             return False
+
+class JNTValueRRead(JNTValueFactoryEntry):
+    """
+    """
+    def __init__(self, entry_name="rread_value", **kwargs):
+        help = kwargs.pop('help', 'A read value located on a remote node')
+        label = kwargs.pop('label', 'Remote')
+        index = kwargs.pop('index', 0)
+        #We will update 
+        cmd_class = kwargs.pop('cmd_class', COMMAND_BASIC)
+        JNTValueFactoryEntry.__init__(self, entry_name=entry_name, help=help, label=label,
+            index=index, cmd_class=cmd_class, genre=0x02, type=0x17, is_writeonly=False, is_readonly=True, **kwargs)
+
+    def create_config_value(self, **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'The value to listen to. Ie value_id|index|CMD_CLASS')
+        return self._create_config_value(type=0x08, help=help)
+
+    def get_rread(self, node_uuid=None, index=None):
+        """
+        """
+        try:
+            if node_uuid is None:
+                node_uuid = self.node_uuid
+            if index is None:
+                index = self.index
+            if index not in self.instances or self.instances[index]['config'] is None:
+                logger.warning('[%s] - Pinging an unknown instance %s on node %s', self.__class__.__name__, index, node_uuid)
+                return False
+            if os.system('ping -c 2 -w 2 ' + self.instances[index]['config'] + '> /dev/null 2>&1'):
+                self.instances[index]['data'] = False
+                return False
+            self.instances[index]['data'] = True
+            return True
+        except :
+            logger.exception('[%s] - Exception when pinging (%s)', self.__class__.__name__, self.instances[index]['config'])
+            return False
+
+class JNTValueRWrite(JNTValueFactoryEntry):
+    """
+    """
+    def __init__(self, entry_name="rwrite_value", **kwargs):
+        help = kwargs.pop('help', 'A write value located on a remote node')
+        label = kwargs.pop('label', 'Rwrite')
+        index = kwargs.pop('index', 0)
+        #We will update 
+        cmd_class = kwargs.pop('cmd_class', COMMAND_BASIC)
+        JNTValueFactoryEntry.__init__(self, entry_name=entry_name, help=help, label=label,
+            index=index, cmd_class=cmd_class, genre=0x02, type=0x17, is_writeonly=True, is_readonly=False, **kwargs)
+
+    def create_config_value(self, **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'The value to listen to. Ie value_id|index|CMD_CLASS|value_activate|value_deactivate')
+        return self._create_config_value(type=0x08, help=help)
+
+    def set_rwrite(self, node_uuid=None, index=None, data=None):
+        """
+        """
+        try:
+            if node_uuid is None:
+                node_uuid = self.node_uuid
+            if index is None:
+                index = self.index
+            if index not in self.instances or self.instances[index]['config'] is None:
+                logger.warning('[%s] - Pinging an unknown instance %s on node %s', self.__class__.__name__, index, node_uuid)
+                return False
+            if os.system('ping -c 2 -w 2 ' + self.instances[index]['config'] + '> /dev/null 2>&1'):
+                self.instances[index]['data'] = False
+                return False
+            self.instances[index]['data'] = True
+            return True
+        except :
+            logger.exception('[%s] - Exception when pinging (%s)', self.__class__.__name__, self.instances[index]['config'])
+            return False
+    
