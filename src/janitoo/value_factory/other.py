@@ -33,6 +33,7 @@ from janitoo.classes import GENRE_DESC, VALUE_DESC
 from janitoo.utils import json_dumps
 from janitoo.value import JNTValue
 from janitoo.value_factory import JNTValueFactoryEntry
+from janitoo.value_factory.config import JNTValueConfigString
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -104,79 +105,56 @@ class JNTValueIpPing(JNTValueFactoryEntry):
             logger.exception('[%s] - Exception when pinging (%s)', self.__class__.__name__, self.instances[index]['config'])
             return False
 
-class JNTValueRRead(JNTValueFactoryEntry):
+class JNTValueRRead(JNTValueConfigString):
     """
     """
     def __init__(self, entry_name="rread_value", **kwargs):
         help = kwargs.pop('help', 'A read value located on a remote node')
         label = kwargs.pop('label', 'Remote')
-        index = kwargs.pop('index', 0)
-        #We will update 
-        cmd_class = kwargs.pop('cmd_class', COMMAND_BASIC)
-        JNTValueFactoryEntry.__init__(self, entry_name=entry_name, help=help, label=label,
-            index=index, cmd_class=cmd_class, genre=0x02, type=0x17, is_writeonly=False, is_readonly=True, **kwargs)
+        #We will update
+        JNTValueConfigString.__init__(self, entry_name=entry_name, help=help, label=label, **kwargs)
 
-    def create_config_value(self, **kwargs):
+    def get_value_config(self, node_uuid=None, index=None):
         """
-        """
-        help = kwargs.pop('help', 'The value to listen to. Ie value_id|index|CMD_CLASS')
-        return self._create_config_value(type=0x08, help=help)
-
-    def get_rread(self, node_uuid=None, index=None):
-        """
+        conf = switch|0
         """
         try:
             if node_uuid is None:
                 node_uuid = self.node_uuid
             if index is None:
                 index = self.index
-            if index not in self.instances or self.instances[index]['config'] is None:
-                logger.warning('[%s] - Pinging an unknown instance %s on node %s', self.__class__.__name__, index, node_uuid)
-                return False
-            if os.system('ping -c 2 -w 2 ' + self.instances[index]['config'] + '> /dev/null 2>&1'):
-                self.instances[index]['data'] = False
-                return False
-            self.instances[index]['data'] = True
-            return True
+            data = self._get_data(node_uuid, index).split('|')
+            if len(data) == 1:
+                return [ data[0], '0' ]
+            if len(data) > 2:
+                return None
+            return data
         except :
-            logger.exception('[%s] - Exception when pinging (%s)', self.__class__.__name__, self.instances[index]['config'])
-            return False
+            logger.exception('[%s] - Exception when reading (%s)', self.__class__.__name__, self.instances[index]['data'])
+            return None
 
-class JNTValueRWrite(JNTValueFactoryEntry):
+class JNTValueRWrite(JNTValueConfigString):
     """
     """
     def __init__(self, entry_name="rwrite_value", **kwargs):
         help = kwargs.pop('help', 'A write value located on a remote node')
         label = kwargs.pop('label', 'Rwrite')
-        index = kwargs.pop('index', 0)
-        #We will update 
-        cmd_class = kwargs.pop('cmd_class', COMMAND_BASIC)
-        JNTValueFactoryEntry.__init__(self, entry_name=entry_name, help=help, label=label,
-            index=index, cmd_class=cmd_class, genre=0x02, type=0x17, is_writeonly=True, is_readonly=False, **kwargs)
+        #We will update
+        JNTValueConfigString.__init__(self, entry_name=entry_name, help=help, label=label, **kwargs)
 
-    def create_config_value(self, **kwargs):
+    def get_value_config(self, node_uuid=None, index=None):
         """
-        """
-        help = kwargs.pop('help', 'The value to listen to. Ie value_id|index|CMD_CLASS|value_activate|value_deactivate')
-        return self._create_config_value(type=0x08, help=help)
-
-    def set_rwrite(self, node_uuid=None, index=None, data=None):
-        """
+        conf = switch|0|0x0025|1|0
         """
         try:
             if node_uuid is None:
                 node_uuid = self.node_uuid
             if index is None:
                 index = self.index
-            if index not in self.instances or self.instances[index]['config'] is None:
-                logger.warning('[%s] - Pinging an unknown instance %s on node %s', self.__class__.__name__, index, node_uuid)
-                return False
-            if os.system('ping -c 2 -w 2 ' + self.instances[index]['config'] + '> /dev/null 2>&1'):
-                self.instances[index]['data'] = False
-                return False
-            self.instances[index]['data'] = True
-            return True
+            data = self._get_data(node_uuid, index).split('|')
+            if len(data) != 5:
+                return None
+            return data
         except :
-            logger.exception('[%s] - Exception when pinging (%s)', self.__class__.__name__, self.instances[index]['config'])
-            return False
-    
+            logger.exception('[%s] - Exception when reading (%s)', self.__class__.__name__, self.instances[index]['data'])
+            return None

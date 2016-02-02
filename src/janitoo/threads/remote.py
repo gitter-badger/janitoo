@@ -100,28 +100,28 @@ class RemoteNodeComponent(JNTComponent):
             default=None,
         )
         uuid="users_read"
-        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+        self.values[uuid] = self.value_factory['rread_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The users values to listen to : value_uuid:index',
             label='users',
             default=None,
         )
         uuid="users_write"
-        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+        self.values[uuid] = self.value_factory['rwrite_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The users values to listen to : value_uuid:index',
             label='users',
             default=None,
         )
         uuid="basics_read"
-        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+        self.values[uuid] = self.value_factory['rread_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The basics values to listen to : value_uuid:index',
             label='basics',
             default=None,
         )
         uuid="basics_write"
-        self.values[uuid] = self.value_factory['config_string'](options=self.options, uuid=uuid,
+        self.values[uuid] = self.value_factory['rwrite_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The basics values to listen to : value_uuid:index',
             label='basics',
