@@ -91,7 +91,7 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
         self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node3'))
         self.assertEqual(2, self.thread.bus.nodeman.find_value('node1','users_read').get_length())
         self.assertEqual(1, self.thread.bus.nodeman.find_value('node0','users_read').get_length())
-        self.assertEqual(0, self.thread.bus.nodeman.find_value('node3','users_read').get_length())
+        self.assertEqual(3, self.thread.bus.nodeman.find_value('node3','users_read').get_length())
         self.assertEqual(4, len(self.thread.bus.find_components('remote.node')))
         self.assertEqual(4, len(self.thread.bus.find_values('remote.node','users_read')))
 
