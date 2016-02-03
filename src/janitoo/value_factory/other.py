@@ -106,13 +106,30 @@ class JNTValueIpPing(JNTValueFactoryEntry):
             return False
 
 class JNTValueRRead(JNTValueConfigString):
-    """
+    """Should be extend to a SensorString + config (as value_factory) to avoid use of get cache, ...
     """
     def __init__(self, entry_name="rread_value", **kwargs):
         help = kwargs.pop('help', 'A read value located on a remote node')
         label = kwargs.pop('label', 'Remote')
         #We will update
         JNTValueConfigString.__init__(self, entry_name=entry_name, help=help, label=label, **kwargs)
+        self._cache = {}
+
+    def get_cache(self, node_uuid=None, index=None):
+        """
+        """
+        if index is None:
+            index = self.index
+        if index in self._cache:
+            return self._cache[index]
+        return None
+
+    def set_cache(self, node_uuid=None, index=None, data = None):
+        """
+        """
+        if index is None:
+            index = self.index
+        self._cache[index] = data
 
     def get_value_config(self, node_uuid=None, index=None):
         """
@@ -123,7 +140,12 @@ class JNTValueRRead(JNTValueConfigString):
                 node_uuid = self.node_uuid
             if index is None:
                 index = self.index
-            data = self._get_data(node_uuid, index).split('|')
+            data = self._get_data(node_uuid, index)
+            #~ print data
+            if data is None:
+                return None
+            data = data.split('|')
+            #~ print ' length', len(data)
             if len(data) == 1:
                 return [ data[0], '0' ]
             if len(data) > 2:
@@ -134,13 +156,30 @@ class JNTValueRRead(JNTValueConfigString):
             return None
 
 class JNTValueRWrite(JNTValueConfigString):
-    """
+    """Should be extend to a SensorString + config (as value_factory) to avoid use of get cache, ...
     """
     def __init__(self, entry_name="rwrite_value", **kwargs):
         help = kwargs.pop('help', 'A write value located on a remote node')
         label = kwargs.pop('label', 'Rwrite')
         #We will update
         JNTValueConfigString.__init__(self, entry_name=entry_name, help=help, label=label, **kwargs)
+        self._cache = {}
+
+    def get_cache(self, node_uuid=None, index=None):
+        """
+        """
+        if index is None:
+            index = self.index
+        if index in self._cache:
+            return self._cache[index]
+        return None
+
+    def set_cache(self, node_uuid=None, index=None, data = None):
+        """
+        """
+        if index is None:
+            index = self.index
+        self._cache[index] = data
 
     def get_value_config(self, node_uuid=None, index=None):
         """
@@ -149,9 +188,16 @@ class JNTValueRWrite(JNTValueConfigString):
         try:
             if node_uuid is None:
                 node_uuid = self.node_uuid
+            #~ print "node_uuid ", node_uuid
             if index is None:
                 index = self.index
-            data = self._get_data(node_uuid, index).split('|')
+            #~ print "index ", index
+            data = self._get_data(node_uuid, index)
+            #~ print "data ", data
+            if data is None:
+                return None
+            data = data.split('|')
+            #~ print ' length', len(data)
             if len(data) != 5:
                 return None
             return data

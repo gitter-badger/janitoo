@@ -126,19 +126,25 @@ class JNTValueConfigGeneric(JNTValueFactoryEntry):
             stop = False
             while not stop:
                 #~ logger.debug('index %s, instances %s'%(i, self.instances))
-                if i not in self.instances or 'data' not in self.instances[i]:
+                if i not in self.instances or 'data' not in self.instances[i] or self.instances[i]['data'] is None:
                     try:
+                        #~ print "index, node_uuid", node_uuid, index
+                        #~ print "instance", i, self.instances
+                        #~ print 'uuid : %s_%s'%(self.uuid, i)
                         data = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, i))
+                        #~ print "data2", data
                         if data is not None:
                             if i not in self.instances:
                                 self.instances[i] = {}
                             self.instances[i]['data'] = data
                         else:
                             stop = True
+                        #~ logger.debug('index %s, instances %s'%(i, self.instances))
                     except:
-                        logger.exception('Catched exception when retrieving %s_%s for node %s'%(self.uuid, i, node_uuid))
+                        logger.exception('Catched exception when retrieving %s_%s for self.instances[i]["data"] %s'%(self.uuid, i, self.instances[i]['data']))
                         stop = True
                 i += 1
+        #~ print "last", self.instances[index]['data']
         if self.instances[index]['data'] is None:
             try:
                 self.instances[index]['data'] = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, index))

@@ -103,28 +103,28 @@ class RemoteNodeComponent(JNTComponent):
         self.values[uuid] = self.value_factory['rread_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The users values to listen to : value_uuid:index',
-            label='users',
+            label='rusers',
             default=None,
         )
         uuid="users_write"
         self.values[uuid] = self.value_factory['rwrite_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The users values to listen to : value_uuid:index',
-            label='users',
+            label='wusers',
             default=None,
         )
         uuid="basics_read"
         self.values[uuid] = self.value_factory['rread_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The basics values to listen to : value_uuid:index',
-            label='basics',
+            label='rbasics',
             default=None,
         )
         uuid="basics_write"
         self.values[uuid] = self.value_factory['rwrite_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
             help='The basics values to listen to : value_uuid:index',
-            label='basics',
+            label='wbasics',
             default=None,
         )
 
@@ -150,7 +150,7 @@ class RemoteNodeComponent(JNTComponent):
         JNTComponent.start(self, mqttc)
         which = 'users_read'
         max_index = self.values[which].get_max_index()+1
-        logger.exception("[%s] - found %s %s", self.__class__.__name__, max_index, 'users_read')
+        logger.warning("[%s] - found %s %s", self.__class__.__name__, max_index, 'users_read')
         #~ print max_index
         #~ for index in range(max_index):
             #~ print index
