@@ -148,6 +148,11 @@ class TestSensorString(TestFactory, BasePoll):
     """
     entry_name='sensor_string'
 
+class TestSensorList(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_list'
+
 class TestSensorInteger(TestFactory, BasePoll):
     """Test the value factory
     """

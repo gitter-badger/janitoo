@@ -83,6 +83,7 @@ janitoo_entry_points = {
         "sensor_humidity = janitoo.value_factory.sensor:make_sensor_humidity",
         "sensor_rotation_speed = janitoo.value_factory.sensor:make_sensor_rotation_speed",
         "sensor_string = janitoo.value_factory.sensor:make_sensor_string",
+        "sensor_list = janitoo.value_factory.sensor:make_sensor_list",
         "sensor_integer = janitoo.value_factory.sensor:make_sensor_integer",
         "sensor_byte = janitoo.value_factory.sensor:make_sensor_byte",
         "sensor_orientation = janitoo.value_factory.sensor:make_sensor_orientation",

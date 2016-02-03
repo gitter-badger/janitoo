@@ -81,6 +81,9 @@ def make_sensor_byte(**kwargs):
 def make_sensor_string(**kwargs):
     return JNTValueSensorString(**kwargs)
 
+def make_sensor_list(**kwargs):
+    return JNTValueSensorList(**kwargs)
+
 def make_sensor_orientation(**kwargs):
     return JNTValueSensorOrientation(**kwargs)
 
@@ -227,6 +230,20 @@ class JNTValueSensorString(JNTValueSensorGeneric):
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, cmd_class=cmd_class, type=0x08, **kwargs)
+
+class JNTValueSensorList(JNTValueSensorGeneric):
+    def __init__(self, entry_name="sensor_list", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A list sensor')
+        label = kwargs.pop('label', 'List')
+        index = kwargs.pop('index', 0)
+        list_items = kwargs.pop('list_items', 0)
+        cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
+        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
+            index=index, cmd_class=cmd_class, type=0x05,
+            list_items=list_items,
+            **kwargs)
 
 class JNTValueSensorByte(JNTValueSensorGeneric):
     def __init__(self, entry_name="sensor_byte", **kwargs):
