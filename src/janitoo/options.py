@@ -250,6 +250,8 @@ def get_option_autostart(options, section):
 def string_to_bool(data):
     """Convert a string to bool
     """
+    if type(data) == type(True):
+        return data
     data = data.strip().upper()
     if data == "0" or data == "FALSE" or data == 'OFF' or data == 'NO':
         return False
