@@ -39,6 +39,7 @@ ARCHDIR      = ${ARCHBASE}/${ARCHNAME}
 DOCKIP       = 127.0.0.1
 
 SUBMODULES   = $(shell find . -iname jani\* -type d -maxdepth 1|sort)
+COREMODULES   = janitoo janitoo_db janitoo_flask janitoo_flask_socketio janitoo_manager janitoo_manager_proxy janitoo_datalog_rrd janitoo_thermal janitoo_hostsensor janitoo_layouts janitoo_dhcp
 
 -include Makefile.local
 
@@ -245,7 +246,9 @@ tests-all:
 coverage-check:coverage-collect
 	@echo "Check coverage for janitoo."
 	@echo
-	cd .coverage && coverage xml --fail-under=65 -o ../docs/tools/coverage.full.xml
+	cd .coverage && coverage xml -o ../docs/tools/coverage.full.xml
+	cd .coverage && coverage report
+	cd .coverage_core && coverage report --fail-under=60
 	@echo
 	@echo "Coverage for janitoo collected."
 
@@ -257,13 +260,19 @@ coverage-collect:
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage/coverage._$$target"; done
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage/coverage._$$target" ".coverage/.coverage._$$target"; done
 	cd .coverage && coverage combine
-	cd .coverage && coverage report --fail-under=59
+	-rm -rf .coverage_core
+	-mkdir -p .coverage_core
+	-for module in ${COREMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage_core/coverage._$$target"; done
+	-for module in ${COREMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage_core/coverage._$$target" ".coverage_core/.coverage._$$target"; done
+	cd .coverage_core && coverage combine
 	@echo
 	@echo "Coverage for janitoo collected."
 
 coverage-all: coverage-collect
 	-mkdir -p docs/tools/coverage
+	-mkdir -p docs/tools/coverage_core
 	-mkdir -p docs/tools/nosetests
+	cd .coverage_core && coverage html -d ../docs/tools/coverage_core/
 	cd .coverage && coverage html -d ../docs/tools/coverage/
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/build/docs/html/tools/nosetests/index.html "docs/tools/nosetests/$$target.html"; done
 	@echo
