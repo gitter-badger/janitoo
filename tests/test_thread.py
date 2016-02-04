@@ -42,6 +42,8 @@ from janitoo.utils import TOPIC_NODES, TOPIC_NODES_REPLY, TOPIC_NODES_REQUEST
 from janitoo.utils import TOPIC_BROADCAST_REPLY, TOPIC_BROADCAST_REQUEST
 from janitoo.utils import TOPIC_VALUES_USER, TOPIC_VALUES_CONFIG, TOPIC_VALUES_SYSTEM, TOPIC_VALUES_BASIC
 
+import janitoo.thread
+
 ##############################################################
 #Check that we are in sync with the official command classes
 #Must be implemented for non-regression
@@ -79,3 +81,10 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
     """
     thread_name = "remote"
     conf_file = "tests/data/test_threads.conf"
+
+class TestHourlyTimerThread(JNTTThreadRun, JNTTThreadRunCommon):
+    """Test the thread
+    """
+    thread_name = "http"
+    conf_file = "tests/data/test_threads_hourly.conf"
+
