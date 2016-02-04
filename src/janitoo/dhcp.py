@@ -517,7 +517,7 @@ class JNTNetwork(object):
         self.loop_sleep = loop_sleep
         options = self.options.get_options('network')
         self.from_dict(options)
-        print self.__dict__
+        #print self.__dict__
         if self.is_primary and self.is_secondary:
             raise RuntimeError("Can't start in both modes : primary or secondary")
         logger.debug("Start network with options %s" % options)

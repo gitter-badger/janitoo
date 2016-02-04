@@ -357,7 +357,7 @@ class BasicResourceComponent(HttpResourceComponent):
             try:
                 source = os.path.join(self.resource_filename('public'), subdir)
                 logger.debug('[%s] - public source = %s', self.__class__.__name__, source)
-                print '[%s] - public source = %s' % (self.__class__.__name__, source)
+                #~ print '[%s] - public source = %s' % (self.__class__.__name__, source)
                 if not os.path.exists(os.path.join(destination,subdir)):
                     os.makedirs(os.path.join(destination,subdir))
                 if os.path.isdir(source):
