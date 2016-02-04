@@ -52,8 +52,6 @@ COMMAND_DISCOVERY = 0x5000
 assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
-JNTTThreadRun.skipDockerTest()
-
 class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the datarrd thread
     """
