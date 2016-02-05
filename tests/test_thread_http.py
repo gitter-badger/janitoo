@@ -54,14 +54,18 @@ COMMAND_DISCOVERY = 0x5000
 assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
-class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the thread
+class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
+    """Test the datarrd thread
     """
-    thread_name = "email"
+    thread_name = "http"
     conf_file = "tests/data/test_threads.conf"
 
-class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the thread
-    """
-    thread_name = "remote"
-    conf_file = "tests/data/test_threads.conf"
+    def test_101_thread_start_wait_long_stop(self):
+        #~ self.skipTest("Fail on docker")
+        self.thread.start()
+        time.sleep(60)
+        self.assertDir("/tmp/janitoo_test/home/public")
+        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/js")
+        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/css")
+        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/images")
+        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/doc")

@@ -68,7 +68,7 @@ class JNTNodeMan(object):
         State(name='SYSTEM', on_enter=['start_controller_reply', 'start_controller_reply_system'], on_exit=['stop_controller_reply_system']),
         State(name='CONFIG', on_enter=['start_controller_reply_config'], on_exit=['stop_controller_reply_config']),
         State(name='INIT', on_enter=['start_nodes_init'], on_exit=['stop_nodes_init', 'stop_controller_reply']),
-        State(name='ONLINE', on_enter=['start_broadcast_request', 'start_nodes_request'], on_exit=['stop_broadcast_request', 'stop_nodes_request']),
+        State(name='ONLINE', on_enter=['start_broadcast_request', 'start_nodes_request', 'start_hourly_timer'], on_exit=['stop_broadcast_request', 'stop_nodes_request', 'stop_hourly_timer']),
         State(name='OFFLINE', on_enter=['stop_heartbeat_sender']),
     ]
 
@@ -126,12 +126,15 @@ class JNTNodeMan(object):
         self.fsm_state = None
         self.state = "OFFLINE"
         self.trigger_reload = None
+        self.hourly_timer = None
+        self._hourly_jobs = None
 
     def __del__(self):
         """
         """
         try:
             self.stop()
+            self._hourly_jobs = None
         except:
             pass
 
@@ -148,6 +151,7 @@ class JNTNodeMan(object):
         self.loop_sleep = loop_sleep
         self.fsm_state = self.create_fsm()
         self.fsm_state_start()
+        self._hourly_jobs = []
 
     def create_fsm(self):
         """
@@ -170,6 +174,7 @@ class JNTNodeMan(object):
     def stop(self):
         """
         """
+        self.stop_hourly_timer()
         self.fsm_state_stop()
 
     @property
@@ -192,6 +197,7 @@ class JNTNodeMan(object):
         self.polls = {}
         self.heartbeats = {}
         self.fsm_state = None
+        self._hourly_jobs = []
 
     def start_heartbeat_sender(self):
         """
@@ -1197,6 +1203,61 @@ class JNTNodeMan(object):
         if len(values)==0:
             return None
         return values[0]
+
+    def start_hourly_timer(self):
+        """Stop the thread
+        """
+        logger.debug("start_hourly_timer %s", self.__class__.__name__)
+        if self.hourly_timer is not None:
+            self.hourly_timer.cancel()
+            self.hourly_timer = None
+        hourly = False
+        try:
+            hourly = string_to_bool(self.options.get_option(self.section, 'hourly_timer', default = False))
+        except:
+            logger.warning("[%s] - C'ant get hourly_timer from configuration file. Disable it", self.__class__.__name__)
+            hourly = False
+        if hourly == True:
+            self.hourly_timer = threading.Timer(60*60, self.do_hourly_timer)
+            self.hourly_timer.start()
+
+    def stop_hourly_timer(self):
+        """Stop the thread
+        """
+        logger.debug("stop_hourly_timer %s", self.__class__.__name__)
+        if self.hourly_timer is not None:
+            self.hourly_timer.cancel()
+            self.hourly_timer = None
+
+    def add_hourly_job(self, callback):
+        """Add an hourly job.
+        """
+        logger.debug("add_hourly_job %s", self.__class__.__name__)
+        self._hourly_jobs.append(callback)
+
+    def remove_hourly_job(self, callback):
+        """Remove an hourly job.
+        """
+        logger.debug("remove_hourly_job %s", self.__class__.__name__)
+        if callback in self._hourly_jobs:
+            self._hourly_jobs.remove(callback)
+
+    def do_hourly_timer(self):
+        """Do the thread
+        """
+        self.stop_hourly_timer()
+        self.start_hourly_timer()
+        logger.debug("Start do_hourly_timer %s", self.__class__.__name__)
+        try:
+            self.options.set_option(self.section, 'hourly_timer_lastrun', datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
+        except:
+            logger.warning("[%s] - C'ant save hourly_timer_lastrun in configuration file.", self.__class__.__name__)
+        for job in self._hourly_jobs:
+            try:
+                job()
+            except:
+                logger.exception("exception in do_hourly_timer : %s", self.__class__.__name__)
+        logger.debug("Finish do_hourly_timer %s", self.__class__.__name__)
 
 class JNTBusNodeMan(JNTNodeMan):
     """The node manager

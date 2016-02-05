@@ -155,7 +155,6 @@ class JNTThread(BaseThread):
         if self.uuid == None:
             self.uuid = muuid.uuid1()
             self.options.set_option(self.section, 'uuid', self.uuid)
-        self.hourly_timer = None
         self.nodeman = self.create_nodeman()
         self.mqtt_nodes = None
         self.mqtt_broadcast = None
@@ -168,42 +167,6 @@ class JNTThread(BaseThread):
         """Return the nodeman state
         """
         return self.nodeman.state
-
-    def start_hourly_timer(self):
-        """Stop the thread
-        """
-        logger.debug("start_hourly_timer %s", self.__class__.__name__)
-        if self.hourly_timer is not None:
-            self.hourly_timer.cancel()
-            self.hourly_timer = None
-        hourly = False
-        try:
-            hourly = string_to_bool(self.options.get_option(self.section, 'hourly_timer', default = False))
-        except:
-            logger.warning("[%s] - C'ant get hourly_timer from configuration file. Disable it", self.__class__.__name__)
-            hourly = False
-        if hourly == True:
-            self.hourly_timer = threading.Timer(60*60, self.do_hourly_timer)
-            self.hourly_timer.start()
-
-    def stop_hourly_timer(self):
-        """Stop the thread
-        """
-        logger.debug("stop_hourly_timer %s", self.__class__.__name__)
-        if self.hourly_timer is not None:
-            self.hourly_timer.cancel()
-            self.hourly_timer = None
-
-    def do_hourly_timer(self):
-        """Do the thread
-        """
-        self.stop_hourly_timer()
-        self.start_hourly_timer()
-        logger.debug("do_hourly_timer %s", self.__class__.__name__)
-        try:
-            pass
-        except:
-            logger.exception("exception %s", self.__class__.__name__)
 
     #~ def boot(self):
         #~ """configure the HADD address. The node manager is not available.
@@ -233,46 +196,14 @@ class JNTThread(BaseThread):
                 logger.exception('[%s] - Exception in pre_loop', self.__class__.__name__)
                 self._stopevent.set()
             self.nodeman.start(self.trigger_reload, self.loop_sleep)
-            self.start_hourly_timer()
             while not self._reloadevent.isSet() and not self._stopevent.isSet():
                 self.nodeman.loop(self._reloadevent)
             try:
                 self.post_loop()
             except:
                 logger.exception('[%s] - Exception in post_loop', self.__class__.__name__)
-            self.stop_hourly_timer()
             self.nodeman.stop()
-            #~ self.mqtt_nodes.stop()
-            #~ self.mqtt_nodes.unsubscribe(topic='/nodes/%s'%(HADD %(self.add_ctrl,0)))
-            #~ self.mqtt_nodes.unsubscribe(topic='/nodes/#')
-            #self.mqtt_nodes = None
         self.nodeman = None
-
-    def mqtt_on_message(self, client, userdata, message):
-        """On generic message
-
-        :param client: the Client instance that is calling the callback.
-        :type client: paho.mqtt.client.Client
-        :param userdata: user data of any type and can be set when creating a new client instance or with user_data_set(userdata).
-        :type userdata: all
-        :param message: The message variable is a MQTTMessage that describes all of the message parameters.
-        :type message: paho.mqtt.client.MQTTMessage
-        """
-        logger.debug("[%s] - mqtt_on_message %s", self.__class__.__name__, message)
-        #~ print "mqtt_on_message Ok : %s" % message
-
-    def mqtt_on_message2(self, client, userdata, message):
-        """On generic message
-
-        :param client: the Client instance that is calling the callback.
-        :type client: paho.mqtt.client.Client
-        :param userdata: user data of any type and can be set when creating a new client instance or with user_data_set(userdata).
-        :type userdata: all
-        :param message: The message variable is a MQTTMessage that describes all of the message parameters.
-        :type message: paho.mqtt.client.MQTTMessage
-        """
-        #~ print "mqtt_on_message2 Ok : %s" % message
-        logger.debug("[%s] - mqtt_on_message2 %s", self.__class__.__name__, message)
 
 class JNTBusThread(JNTThread):
     def __init__(self, options={}):

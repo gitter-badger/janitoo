@@ -54,14 +54,9 @@ COMMAND_DISCOVERY = 0x5000
 assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
-class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
+class TestHourlyTimerThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
-    thread_name = "email"
-    conf_file = "tests/data/test_threads.conf"
+    thread_name = "http"
+    conf_file = "tests/data/test_threads_hourly.conf"
 
-class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the thread
-    """
-    thread_name = "remote"
-    conf_file = "tests/data/test_threads.conf"
