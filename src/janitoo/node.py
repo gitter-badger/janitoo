@@ -1207,7 +1207,6 @@ class JNTNodeMan(object):
     def start_hourly_timer(self):
         """Stop the thread
         """
-        logger.debug("start_hourly_timer %s", self.__class__.__name__)
         if self.hourly_timer is not None:
             self.hourly_timer.cancel()
             self.hourly_timer = None
@@ -1218,6 +1217,7 @@ class JNTNodeMan(object):
             logger.warning("[%s] - C'ant get hourly_timer from configuration file. Disable it", self.__class__.__name__)
             hourly = False
         if hourly == True:
+            logger.debug("start_hourly_timer %s", self.__class__.__name__)
             self.hourly_timer = threading.Timer(60*60, self.do_hourly_timer)
             self.hourly_timer.start()
 
