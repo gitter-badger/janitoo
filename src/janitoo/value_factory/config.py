@@ -265,7 +265,7 @@ class JNTValueConfigArray(JNTValueConfigGeneric):
         help = kwargs.pop('help', 'An array of strings separated by |')
         label = kwargs.pop('label', 'Array')
         index = kwargs.pop('index', 0)
-        get_data_cb = kwargs.pop('get_data_cb', self._get_data_float)
+        get_data_cb = kwargs.pop('get_data_cb', self._get_data_list)
         JNTValueConfigGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             get_data_cb=get_data_cb,
             index=index, type=0x16, **kwargs)
