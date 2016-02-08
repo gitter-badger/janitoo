@@ -30,6 +30,8 @@ import threading
 import logging
 from pkg_resources import iter_entry_points
 import mock
+import ConfigParser
+from ConfigParser import RawConfigParser
 
 from janitoo_nosetests import JNTTBase
 
@@ -42,6 +44,25 @@ class TestFactory(JNTTBase):
     """
     prog = 'test'
     entry_name = 'generic'
+
+    def get_main_value(self, node_uuid='test_node'):
+        print "entry_name ", self.entry_name
+        entry_points = { }
+        for entrypoint in iter_entry_points(group = 'janitoo.values'):
+            entry_points[entrypoint.name] = entrypoint.load()
+        options = {}
+        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_value_factory.conf']):
+            options = vars(jnt_parse_args())
+        return entry_points[self.entry_name](options=JNTOptions(options), node_uuid=node_uuid)
+
+    def assertSetgetConfig(self, node_uuid, data=10):
+        main_value = self.get_main_value(node_uuid=node_uuid)
+        main_value.set_data_index(node_uuid=node_uuid, index=0, data=data)
+        self.assertEqual(data, main_value.get_data_index(node_uuid=node_uuid, index=0))
+        config = RawConfigParser()
+        config.read(['tests/data/test_value_factory.conf'])
+        opt = config.get(node_uuid, 'value_entry_uuid_0')
+        self.assertEqual(opt, "%s"%main_value.get_data_index(node_uuid=node_uuid, index=0))
 
 class BaseFactory():
     """Test the value factory
@@ -57,15 +78,8 @@ class BasePoll(BaseFactory):
     """Test the value factory
     """
     def test_020_value_entry_poll(self):
-        print "entry_name ", self.entry_name
-        entry_points = { }
         node_uuid='test_node'
-        for entrypoint in iter_entry_points(group = 'janitoo.values'):
-            entry_points[entrypoint.name] = entrypoint.load()
-        options = {}
-        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_value_factory.conf']):
-            options = vars(jnt_parse_args())
-        main_value = entry_points[self.entry_name](options=JNTOptions(options), node_uuid=node_uuid)
+        main_value = self.get_main_value(node_uuid=node_uuid)
         self.assertFalse(main_value.is_writeonly)
         print main_value
         poll_value = main_value.create_poll_value()
@@ -84,17 +98,10 @@ class BasePoll(BaseFactory):
 class BaseConfig(BaseFactory):
     """Test the value factory
     """
+
     def test_030_value_entry_config(self):
-        #~ self.skipTest("Pass but freeze nosetests")
-        print "entry_name ", self.entry_name
-        entry_points = { }
         node_uuid='test_node'
-        for entrypoint in iter_entry_points(group = 'janitoo.values'):
-            entry_points[entrypoint.name] = entrypoint.load()
-        options = {}
-        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_value_factory.conf']):
-            options = vars(jnt_parse_args())
-        main_value = entry_points[self.entry_name](options=JNTOptions(options), node_uuid=node_uuid)
+        main_value = self.get_main_value(node_uuid=node_uuid)
         print main_value
         config_value = main_value.create_config_value()
         print config_value
@@ -102,21 +109,6 @@ class BaseConfig(BaseFactory):
         self.assertEqual('0', main_value.get_config(node_uuid, 0))
         main_value.set_config(node_uuid, 0, '5')
         self.assertEqual('5', main_value.get_config(node_uuid, 0))
-
-    def test_031_value_entry_config_setget_data_index(self):
-        #~ self.skipTest("Pass but freeze nosetests")
-        print "entry_name ", self.entry_name
-        entry_points = { }
-        node_uuid='test_node'
-        for entrypoint in iter_entry_points(group = 'janitoo.values'):
-            entry_points[entrypoint.name] = entrypoint.load()
-        options = {}
-        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_value_factory.conf']):
-            options = vars(jnt_parse_args())
-        main_value = entry_points[self.entry_name](options=JNTOptions(options), node_uuid=node_uuid)
-        print main_value
-        main_value.set_data_index(node_uuid=node_uuid, index=0, data=10)
-        self.assertEqual(10, main_value.get_data_index(node_uuid=node_uuid, index=0))
 
 class TestSensorTemperature(TestFactory, BasePoll):
     """Test the value factory
@@ -213,6 +205,10 @@ class TestConfigString(TestFactory):
     """
     entry_name='config_string'
 
+    def test_101_setget_data_config(self):
+        node_uuid='test_node'
+        self.assertSetgetConfig(node_uuid=node_uuid, data = 'A string')
+
 class TestConfigPassword(TestFactory):
     """Test the value factory
     """
@@ -222,6 +218,38 @@ class TestConfigInteger(TestFactory):
     """Test the value factory
     """
     entry_name='config_integer'
+
+    def test_101_setget_data_config(self):
+        node_uuid='test_node'
+        self.assertSetgetConfig(node_uuid=node_uuid, data = 10)
+
+class TestConfigList(TestFactory):
+    """Test the value factory
+    """
+    entry_name='config_list'
+
+    def test_101_setget_data_config(self):
+        node_uuid='test_node'
+        self.assertSetgetConfig(node_uuid=node_uuid, data = 'A string|Another string')
+
+class TestConfigBoolean(TestFactory):
+    """Test the value factory
+    """
+    entry_name='config_boolean'
+
+    def test_101_setget_data_config(self):
+        node_uuid='test_node'
+        self.assertSetgetConfig(node_uuid=node_uuid, data = True)
+        self.assertSetgetConfig(node_uuid=node_uuid, data = False)
+
+class TestConfigFloat(TestFactory):
+    """Test the value factory
+    """
+    entry_name='config_float'
+
+    def test_101_setget_data_config(self):
+        node_uuid='test_node'
+        self.assertSetgetConfig(node_uuid=node_uuid, data = 18.28)
 
 class TestActionString(TestFactory):
     """Test the value factory
