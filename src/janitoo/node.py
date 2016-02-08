@@ -177,7 +177,6 @@ class JNTNodeMan(object):
         """
         """
         self.stop_hourly_timer()
-        self.bus.stop()
         self.fsm_state_stop()
 
     @property
@@ -1297,6 +1296,12 @@ class JNTBusNodeMan(JNTNodeMan):
         #~ """Stop the bus
         #~ """
         #~ self.bus.stop()
+
+    def stop(self):
+        """
+        """
+        self.bus.stop()
+        JNTNodeMan.stop(self)
 
     def after_controller_reply_config(self):
         """Start the bus
