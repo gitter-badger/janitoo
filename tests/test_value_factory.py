@@ -155,15 +155,35 @@ class TestSensorString(TestFactory, BasePoll):
     """
     entry_name='sensor_string'
 
+class TestSensorFloat(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_float'
+
 class TestSensorList(TestFactory, BasePoll):
     """Test the value factory
     """
     entry_name='sensor_list'
 
+class TestSensorByte(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_byte'
+
 class TestSensorInteger(TestFactory, BasePoll):
     """Test the value factory
     """
     entry_name='sensor_integer'
+
+class TestSensorMemory(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_memory'
+
+class TestSensorOrientation(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_orientation'
 
 class TestRreadValue(TestFactory, BaseConfig, BasePoll):
     """Test the value factory
