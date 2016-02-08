@@ -291,9 +291,9 @@ class JNTValueFactoryEntry(JNTValue):
             self.instances[index]['data'] = data
             if index == 0:
                 self._data = data
-            print "Ok"
+            #~ print "Ok"
             if self.genre == 0x03:
-                print "Ok", '%s_%s'%(self.uuid, index)
+                #~ print "Ok", '%s_%s'%(self.uuid, index)
                 self.options.set_option(node_uuid, '%s_%s'%(self.uuid, index), data)
             #~ print index, self.instances[index]['data']
         except:
