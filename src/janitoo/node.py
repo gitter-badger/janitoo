@@ -128,6 +128,7 @@ class JNTNodeMan(object):
         self.trigger_reload = None
         self.hourly_timer = None
         self._hourly_jobs = None
+        self._daily_jobs = None
 
     def __del__(self):
         """
@@ -152,6 +153,7 @@ class JNTNodeMan(object):
         self.fsm_state = self.create_fsm()
         self.fsm_state_start()
         self._hourly_jobs = []
+        self._daily_jobs = []
 
     def create_fsm(self):
         """
@@ -175,6 +177,7 @@ class JNTNodeMan(object):
         """
         """
         self.stop_hourly_timer()
+        self.bus.stop()
         self.fsm_state_stop()
 
     @property
@@ -1239,8 +1242,21 @@ class JNTNodeMan(object):
         """Remove an hourly job.
         """
         logger.debug("remove_hourly_job %s", self.__class__.__name__)
-        if callback in self._hourly_jobs:
+        if self._hourly_jobs is not None and callback in self._hourly_jobs:
             self._hourly_jobs.remove(callback)
+
+    def add_daily_job(self, callback):
+        """Add an daily job.
+        """
+        logger.debug("add_daily_job %s", self.__class__.__name__)
+        self._daily_jobs.append(callback)
+
+    def remove_daily_job(self, callback):
+        """Remove an daily job.
+        """
+        logger.debug("remove_daily_job %s", self.__class__.__name__)
+        if self._daily_jobs is not None and callback in self._daily_jobs:
+            self._daily_jobs.remove(callback)
 
     def do_hourly_timer(self):
         """Do the thread
@@ -1249,14 +1265,24 @@ class JNTNodeMan(object):
         self.start_hourly_timer()
         logger.debug("Start do_hourly_timer %s", self.__class__.__name__)
         try:
-            self.options.set_option(self.section, 'hourly_timer_lastrun', datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
+            self.options.set_option(self.section, 'hourly_timer_lastrun', datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
         except:
-            logger.warning("[%s] - C'ant save hourly_timer_lastrun in configuration file.", self.__class__.__name__)
+            logger.exception("[%s] - C'ant save hourly_timer_lastrun in configuration file.", self.__class__.__name__)
         for job in self._hourly_jobs:
             try:
                 job()
             except:
-                logger.exception("exception in do_hourly_timer : %s", self.__class__.__name__)
+                logger.exception("exception in hourly timers : %s", self.__class__.__name__)
+        if datetime.datetime.now().hour == 0:
+            try:
+                self.options.set_option(self.section, 'daily_timer_lastrun', datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
+            except:
+                logger.exception("[%s] - C'ant save daily_timer_lastrun in configuration file.", self.__class__.__name__)
+            for job in self._daily_jobs:
+                try:
+                    job()
+                except:
+                    logger.exception("exception in do daily timers : %s", self.__class__.__name__)
         logger.debug("Finish do_hourly_timer %s", self.__class__.__name__)
 
 class JNTBusNodeMan(JNTNodeMan):
@@ -1331,7 +1357,6 @@ class JNTBusNodeMan(JNTNodeMan):
     def after_fsm_stop(self):
         """
         """
-        self.bus.stop()
         JNTNodeMan.after_fsm_stop(self)
 
     def get_nodes_hadds_from_local_config(self):
