@@ -1266,7 +1266,7 @@ class JNTNodeMan(object):
         try:
             self.options.set_option(self.section, 'hourly_timer_lastrun', datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
         except:
-            logger.exception("[%s] - C'ant save hourly_timer_lastrun in configuration file.", self.__class__.__name__)
+            logger.exception("[%s] - Can't save hourly_timer_lastrun in configuration file.", self.__class__.__name__)
         for job in self._hourly_jobs:
             try:
                 job()
@@ -1276,7 +1276,7 @@ class JNTNodeMan(object):
             try:
                 self.options.set_option(self.section, 'daily_timer_lastrun', datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
             except:
-                logger.exception("[%s] - C'ant save daily_timer_lastrun in configuration file.", self.__class__.__name__)
+                logger.exception("[%s] - Can't save daily_timer_lastrun in configuration file.", self.__class__.__name__)
             for job in self._daily_jobs:
                 try:
                     job()
@@ -1291,11 +1291,6 @@ class JNTBusNodeMan(JNTNodeMan):
         JNTNodeMan.__init__(self, options, section, thread_uuid, **kwargs)
         self.bus = bus
         self.uuid = thread_uuid
-
-    #~ def stop_bus(self):
-        #~ """Stop the bus
-        #~ """
-        #~ self.bus.stop()
 
     def stop(self):
         """
