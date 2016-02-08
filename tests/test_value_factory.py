@@ -110,81 +110,6 @@ class BaseConfig(BaseFactory):
         main_value.set_config(node_uuid, 0, '5')
         self.assertEqual('5', main_value.get_config(node_uuid, 0))
 
-class TestSensorTemperature(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_temperature'
-
-class TestSensorAltitude(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_altitude'
-
-class TestSensorVoltage(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_voltage'
-
-class TestSensorCurrent(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_current'
-
-class TestSensorPercent(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_percent'
-
-class TestSensorFrequency(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_frequency'
-
-class TestSensorHumidity(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_humidity'
-
-class TestSensorRotationSpeed(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_rotation_speed'
-
-class TestSensorString(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_string'
-
-class TestSensorFloat(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_float'
-
-class TestSensorList(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_list'
-
-class TestSensorByte(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_byte'
-
-class TestSensorInteger(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_integer'
-
-class TestSensorMemory(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_memory'
-
-class TestSensorOrientation(TestFactory, BasePoll):
-    """Test the value factory
-    """
-    entry_name='sensor_orientation'
-
 class TestRreadValue(TestFactory, BaseConfig, BasePoll):
     """Test the value factory
     """
@@ -201,15 +126,8 @@ class TestIpPing(TestFactory, BaseConfig, BasePoll):
     entry_name='ip_ping'
 
     def test_100_value_entry_config(self):
-        print "entry_name ", self.entry_name
-        entry_points = { }
         node_uuid='test_node'
-        for entrypoint in iter_entry_points(group = 'janitoo.values'):
-            entry_points[entrypoint.name] = entrypoint.load()
-        options = {}
-        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_value_factory.conf']):
-            options = vars(jnt_parse_args())
-        main_value = entry_points[self.entry_name](options=JNTOptions(options), node_uuid=node_uuid)
+        main_value = self.get_main_value(node_uuid=node_uuid)
         print main_value
         config_value = main_value.create_config_value()
         print config_value
@@ -219,66 +137,6 @@ class TestIpPing(TestFactory, BaseConfig, BasePoll):
         main_value.set_config(node_uuid, 0, '192.168.24.5')
         self.assertEqual('192.168.24.5', main_value.get_config(node_uuid, 0))
         self.assertFalse(main_value.ping_ip(node_uuid, 0))
-
-class TestConfigString(TestFactory):
-    """Test the value factory
-    """
-    entry_name='config_string'
-
-    def test_101_setget_data_config(self):
-        node_uuid='test_node'
-        self.assertSetgetConfig(node_uuid=node_uuid, data = 'A string')
-
-class TestConfigPassword(TestFactory):
-    """Test the value factory
-    """
-    entry_name='config_password'
-
-class TestConfigInteger(TestFactory):
-    """Test the value factory
-    """
-    entry_name='config_integer'
-
-    def test_101_setget_data_config(self):
-        node_uuid='test_node'
-        self.assertSetgetConfig(node_uuid=node_uuid, data = 10)
-
-class TestConfigList(TestFactory):
-    """Test the value factory
-    """
-    entry_name='config_list'
-
-    def test_101_setget_data_config(self):
-        node_uuid='test_node'
-        self.assertSetgetConfig(node_uuid=node_uuid, data = 'A string')
-
-class TestConfigArray(TestFactory):
-    """Test the value factory
-    """
-    entry_name='config_array'
-
-    def test_101_setget_data_config(self):
-        node_uuid='test_node'
-        self.assertSetgetConfig(node_uuid=node_uuid, data = 'A string|Another string')
-
-class TestConfigBoolean(TestFactory):
-    """Test the value factory
-    """
-    entry_name='config_boolean'
-
-    def test_101_setget_data_config(self):
-        node_uuid='test_node'
-        self.assertSetgetConfig(node_uuid=node_uuid, data = True)
-        self.assertSetgetConfig(node_uuid=node_uuid, data = False)
-
-class TestConfigFloat(TestFactory):
-    """Test the value factory
-    """
-    entry_name='config_float'
-
-    def test_101_setget_data_config(self):
-        node_uuid='test_node'
-        self.assertSetgetConfig(node_uuid=node_uuid, data = 18.28)
 
 class TestActionString(TestFactory):
     """Test the value factory
