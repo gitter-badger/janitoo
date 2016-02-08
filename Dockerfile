@@ -96,10 +96,10 @@ RUN make clone module=janitoo_postgresql && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN make clone module=janitoo_dhcp && \
-    apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null||true && \
-    rm -Rf /tmp/* 2>/dev/null||true
+#RUN make clone module=janitoo_dhcp && \
+#    apt-get clean && \
+#    rm -Rf /root/.cache/* 2>/dev/null||true && \
+#    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_layouts && \
     apt-get clean && \
