@@ -103,6 +103,21 @@ class BaseConfig(BaseFactory):
         main_value.set_config(node_uuid, 0, '5')
         self.assertEqual('5', main_value.get_config(node_uuid, 0))
 
+    def test_031_value_entry_config_setget_data_index(self):
+        #~ self.skipTest("Pass but freeze nosetests")
+        print "entry_name ", self.entry_name
+        entry_points = { }
+        node_uuid='test_node'
+        for entrypoint in iter_entry_points(group = 'janitoo.values'):
+            entry_points[entrypoint.name] = entrypoint.load()
+        options = {}
+        with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_value_factory.conf']):
+            options = vars(jnt_parse_args())
+        main_value = entry_points[self.entry_name](options=JNTOptions(options), node_uuid=node_uuid)
+        print main_value
+        main_value.set_data_index(node_uuid=node_uuid, index=0, data=10)
+        self.assertEqual(10, main_value.get_data_index(node_uuid=node_uuid, index=0))
+
 class TestSensorTemperature(TestFactory, BasePoll):
     """Test the value factory
     """
