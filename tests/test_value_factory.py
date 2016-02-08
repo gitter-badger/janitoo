@@ -230,6 +230,15 @@ class TestConfigList(TestFactory):
 
     def test_101_setget_data_config(self):
         node_uuid='test_node'
+        self.assertSetgetConfig(node_uuid=node_uuid, data = 'A string')
+
+class TestConfigArray(TestFactory):
+    """Test the value factory
+    """
+    entry_name='config_array'
+
+    def test_101_setget_data_config(self):
+        node_uuid='test_node'
         self.assertSetgetConfig(node_uuid=node_uuid, data = 'A string|Another string')
 
 class TestConfigBoolean(TestFactory):
