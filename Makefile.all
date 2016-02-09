@@ -39,7 +39,7 @@ ARCHDIR      = ${ARCHBASE}/${ARCHNAME}
 DOCKIP       = 127.0.0.1
 
 SUBMODULES   = $(shell find . -iname jani\* -type d -maxdepth 1|sort)
-COREMODULES   = janitoo janitoo_db janitoo_flask janitoo_flask_socketio janitoo_manager janitoo_manager_proxy janitoo_datalog_rrd janitoo_thermal janitoo_hostsensor janitoo_layouts janitoo_dhcp
+COREMODULES   = janitoo janitoo_db janitoo_flask janitoo_flask_socketio janitoo_manager janitoo_manager_proxy janitoo_datalog_rrd janitoo_thermal janitoo_hostsensor janitoo_layouts
 
 -include Makefile.local
 
@@ -248,7 +248,7 @@ coverage-check:coverage-collect
 	@echo
 	cd .coverage && coverage xml -o ../docs/tools/coverage.full.xml
 	cd .coverage && coverage report
-	cd .coverage_core && coverage report --fail-under=60
+	cd .coverage_core && coverage report --fail-under=66
 	@echo
 	@echo "Coverage for janitoo collected."
 
