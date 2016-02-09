@@ -100,6 +100,9 @@ janitoo_entry_points = {
         "action_integer = janitoo.value_factory.action:make_action_integer",
         "action_list = janitoo.value_factory.action:make_action_list",
         "action_boolean = janitoo.value_factory.action:make_action_boolean",
+        "sensor_basic_float = janitoo.value_factory.basic:make_sensor_float",
+        "sensor_basic_integer = janitoo.value_factory.basic:make_sensor_integer",
+        "sensor_basic_byte = janitoo.value_factory.basic:make_sensor_byte",
     ],
 }
 
