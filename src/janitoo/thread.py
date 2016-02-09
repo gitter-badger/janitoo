@@ -101,7 +101,7 @@ class BaseThread(threading.Thread):
             try:
                 self.config_timeout_delay = int(timeout)
             except ValueError:
-                logger.warning("[%s] - C'ant set timeout_delay to %s seconds", self.__class__.__name__, timeout)
+                logger.warning("[%s] - C'ant set timeout_delay to %s seconds in trigger_reload", self.__class__.__name__, timeout)
         if self.config_timeout_timer is not None:
             self.config_timeout_timer.cancel()
             self.config_timeout_timer = None
@@ -124,7 +124,7 @@ class BaseThread(threading.Thread):
         try:
             self.loop_sleep = float(self.options.get_option(self.section, 'loop_sleep'))
         except:
-            logger.warning("[%s] - C'ant set loop_sleep from configuration file. Using default valuse %s", self.__class__.__name__, self.loop_sleep)
+            logger.info("[%s] - Can't set loop_sleep from configuration file. Using default valuse %s", self.__class__.__name__, self.loop_sleep)
 
     def post_loop(self):
         """Launch after finishing the run loop. The node manager is still available.

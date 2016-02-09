@@ -65,7 +65,6 @@ class JNTServer(object):
         if 'conf_file' in self.options.data and self.options.data['conf_file'] is not None:
             logging_fileConfig(self.options.data['conf_file'])
         self.loop_sleep = 0.25
-        loop_sleep = self.options.get_option('system','loop_sleep')
         self.gc_delay = 0
         self.slow_start = 0.05
 
@@ -87,13 +86,13 @@ class JNTServer(object):
             try:
                 self.loop_sleep = int(loop_sleep)
             except:
-                logger.exception("[%s] - Exception when retrieving value of loop_sleep. Use default value instead", self.__class__.__name__)
+                logger.info("[%s] - Can't set loop_sleep from configuration file. Using default valuse %s", self.__class__.__name__, self.loop_sleep)
         gc_delay = self.options.get_option('system','gc_delay')
         if gc_delay is not None:
             try:
                 self.gc_delay = int(gc_delay)
             except:
-                logger.exception("[%s] - Exception when retrieving value of loop_sleep. Use default value instead", self.__class__.__name__)
+                logger.info("[%s] - Can't set gc_delay from configuration file. Using default valuse %s", self.__class__.__name__, self.gc_delay)
         if self.gc_delay>0:
             self.gc_next_run = datetime.datetime.now() + datetime.timedelta(seconds=self.gc_delay)
         slow_start = self.options.get_option('system','slow_start')
@@ -101,7 +100,7 @@ class JNTServer(object):
             try:
                 self.slow_start = int(slow_start)
             except:
-                logger.exception("[%s] - Exception when retrieving value of slow_start. Use default value instead", self.__class__.__name__)
+                logger.info("[%s] - Can't set slow_start from configuration file. Using default valuse %s", self.__class__.__name__, self.slow_start)
         self.start_threads()
 
     def start_threads(self):
@@ -122,7 +121,6 @@ class JNTServer(object):
         for th in self._threads:
             th.start()
             self._stopevent.wait(self.slow_start)
-        logger.info("[%s] - Loaded thread(s) from entry_point : %s", self.__class__.__name__, self._threads)
         if len(self._threads) == 0:
             logger.error("[%s] - Can't find a thread to launch in the config file", self.__class__.__name__)
             raise JanitooException(message="Can't find a thread to launch in the config file")
