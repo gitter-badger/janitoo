@@ -177,6 +177,9 @@ COMMAND_DESC = {
         0x3000: 'COMMAND_BUTTON',
         0x3010: 'COMMAND_NOTIFY',
 
+#motor
+        0x3100: 'COMMAND_MOTOR',
+
 #System command
         0x5000: 'COMMAND_DISCOVERY'
     }
