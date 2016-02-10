@@ -325,8 +325,7 @@ class JNTControllerManager(object):
         if self._controller.hadd is not None and self.mqtt_controller is not None:
             #~ print self.nodes[node].hadd
             add_ctrl, add_node = self._controller.split_hadd()
-            msg = {'add_ctrl':add_ctrl, 'add_node':add_node, 'state':'ONLINE'}
-            self.mqtt_controller.publish_heartbeat_msg(msg)
+            self.mqtt_controller.publish_heartbeat(int(add_ctrl), int(add_node), 'ONLINE')
             values = [ k for k in self._controller.values if self._controller.values[k].is_polled ]
             for value in values:
                 self.publish_poll(self.mqtt_controller, self._controller.values[value])
