@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 
 import datetime
 import threading
+import random
 from transitions import Machine, State
 
 import janitoo.value
@@ -119,6 +120,7 @@ class JNTNodeMan(object):
         self.request_nodes_config_response = False
         self.nodes_config_response = None
         self.config_timeout = 8
+        self.slow_start = 0
         self._controller = None
         self._controller_hadd = None
         self._requests = {'request_info_nodes' : self.request_info_nodes, 'request_info_users' : self.request_info_users, 'request_info_configs' : self.request_info_configs,
@@ -136,6 +138,7 @@ class JNTNodeMan(object):
         try:
             self.stop()
             self._hourly_jobs = None
+            self._daily_jobs = None
         except:
             pass
 
@@ -144,7 +147,7 @@ class JNTNodeMan(object):
         """
         pass
 
-    def start(self, trigger_reload=None, loop_sleep=0.1):
+    def start(self, trigger_reload=None, loop_sleep=0.1, slow_start=0):
         """
         """
         if trigger_reload is not None:
@@ -154,6 +157,7 @@ class JNTNodeMan(object):
         self.fsm_state_start()
         self._hourly_jobs = []
         self._daily_jobs = []
+        self.slow_start = slow_start
 
     def create_fsm(self):
         """
@@ -1139,7 +1143,7 @@ class JNTNodeMan(object):
         if value.uuid not in self.polls[value.hadd] or timeout:
             if timeout is None:
                 timeout = self.config_timeout
-            self.polls[value.hadd][value.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=timeout), 'value':value}
+            self.polls[value.hadd][value.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=timeout+random.random()*(1+self.slow_start)), 'value':value}
         else:
             self.polls[value.hadd][value.uuid]['next_run'] = datetime.datetime.now()+datetime.timedelta(seconds=value.poll_delay)
         value.is_polled= True
@@ -1158,7 +1162,7 @@ class JNTNodeMan(object):
         """
         #~ print "heartbeats = %s" % self.heartbeats
         if node.uuid not in self.heartbeats:
-            self.heartbeats[node.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=self.config_timeout)}
+            self.heartbeats[node.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=self.config_timeout+random.random()*(1+self.slow_start))}
         else:
             self.heartbeats[node.uuid]['next_run'] = datetime.datetime.now()+datetime.timedelta(seconds=node.heartbeat)
 

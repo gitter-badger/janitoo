@@ -94,7 +94,7 @@ class JNTOptions(object):
                 #~ print self._cache[section]
                 return self._cache[section]
         except:
-            logger.exception("get_options")
+            logger.exception("Catched exception")
         return {}
 
     def get_option(self, section, key, default = None):

@@ -69,6 +69,7 @@ class BaseThread(threading.Thread):
         self.config_timeout_timer = None
         self.config_timeout_delay = 3
         self.loop_sleep = 0.1
+        self.slow_start = 0.5
         if hasattr(self,'options') == False:
             self.options = JNTOptions(options)
         self.uuid = None
@@ -124,7 +125,11 @@ class BaseThread(threading.Thread):
         try:
             self.loop_sleep = float(self.options.get_option(self.section, 'loop_sleep'))
         except:
-            logger.info("[%s] - Can't set loop_sleep from configuration file. Using default valuse %s", self.__class__.__name__, self.loop_sleep)
+            logger.info("[%s] - Can't set loop_sleep from configuration file. Using default value %s", self.__class__.__name__, self.loop_sleep)
+        try:
+            self.slow_start = int(self.options.get_option('system','slow_start'))
+        except:
+            logger.info("[%s] - Can't set slow_start from configuration file. Using default value %s", self.__class__.__name__, self.slow_start)
 
     def post_loop(self):
         """Launch after finishing the run loop. The node manager is still available.
@@ -195,7 +200,7 @@ class JNTThread(BaseThread):
             except:
                 logger.exception('[%s] - Exception in pre_loop', self.__class__.__name__)
                 self._stopevent.set()
-            self.nodeman.start(self.trigger_reload, self.loop_sleep)
+            self.nodeman.start(self.trigger_reload, loop_sleep=self.loop_sleep, slow_start=self.slow_start)
             while not self._reloadevent.isSet() and not self._stopevent.isSet():
                 self.nodeman.loop(self._reloadevent)
             try:
