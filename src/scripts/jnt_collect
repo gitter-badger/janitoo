@@ -25,34 +25,49 @@ __email__ = 'bibi21000@gmail.com'
 __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 
 from pkg_resources import iter_entry_points
+import argparse
 
-def collect(key):
-    print "-------------------------------------------------------------------------------"
-    print "Group : %s" %key
+def collect(key, output='txt'):
+    if output == 'txt':
+        print "-------------------------------------------------------------------------------"
+        print "Group : %s" %key
     collected = []
     for entrypoint in iter_entry_points(group = key):
         collected.append("%s" %(entrypoint))
     collected.sort()
     for coll in collected:
-        print " %s" %(coll)
-    print ""
+        if output=='txt':
+            print " %s" %(coll)
+        elif output=='short':
+            print "%s" %(coll.split(' = ')[0])
+        else:
+            print "%s" %(coll.replace(' = ','='))
+    if output=='txt':
+        print ""
 
-print "==============================================================================="
-collect("janitoo.threads")
-collect("janitoo.components")
-collect("janitoo.values")
+CORE = ["janitoo.threads", "janitoo.components", "janitoo.values", "janitoo.models"]
 
-print "==============================================================================="
-collect("janitoo.models")
+FLASK = ["janitoo_flask.blueprint", "janitoo_flask.menu_left", "janitoo_flask.listener", "janitoo_flask.network"]
 
-print "==============================================================================="
-collect("janitoo_flask.blueprint")
-collect("janitoo_flask.menu_left")
-collect("janitoo_flask.listener")
-collect("janitoo_flask.network")
+MANAGER = ["janitoo_manager.blueprint", "janitoo_manager.menu_left", "janitoo_manager.listener", "janitoo_manager.network"]
 
-print "==============================================================================="
-collect("janitoo_manager.blueprint")
-collect("janitoo_manager.menu_left")
-collect("janitoo_manager.listener")
-collect("janitoo_manager.network")
+def jnt_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o', '--output', action='store', help='The format (txt, raw, ...)', choices=['txt', 'raw'], default='txt')
+    parser.add_argument('-t', '--type', action='store', help='The type of entry-point', choices=['all']+CORE+FLASK+MANAGER, default='all')
+
+    #~ subparsers = parser.add_subparsers(dest='command', help='commands')
+
+    return parser
+
+def main():
+    parser = jnt_parser()
+    args = parser.parse_args()
+    if args.type == "all":
+        for mod in CORE+FLASK+MANAGER:
+            collect(mod, output=args.output)
+    else:
+        collect(args.type, output=args.output)
+if __name__ == '__main__':
+    main()
+

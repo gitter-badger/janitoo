@@ -1318,7 +1318,7 @@ class JNTBusNodeMan(JNTNodeMan):
         """
         node = None
         #~ print uuid
-        logger.warning("[%s] - Create node for component %s in factory", self.__class__.__name__, uuid)
+        logger.info("[%s] - Create node for component %s in factory", self.__class__.__name__, uuid)
         if uuid in self.bus.components:
             compo = self.bus.components[uuid]
             node = compo.create_node(hadd)
