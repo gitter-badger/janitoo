@@ -64,6 +64,15 @@ class TestConfigInteger(TestFactory):
         node_uuid='test_node'
         self.assertSetgetConfig(node_uuid=node_uuid, data = 10)
 
+class TestConfigByte(TestFactory):
+    """Test the value factory
+    """
+    entry_name='config_byte'
+
+    def test_101_setget_data_config(self):
+        node_uuid='test_node'
+        self.assertSetgetConfig(node_uuid=node_uuid, data = 10)
+
 class TestConfigList(TestFactory):
     """Test the value factory
     """

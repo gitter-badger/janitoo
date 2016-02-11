@@ -57,6 +57,9 @@ def make_config_password(**kwargs):
 def make_config_integer(**kwargs):
     return JNTValueConfigInteger(**kwargs)
 
+def make_config_byte(**kwargs):
+    return JNTValueConfigByte(**kwargs)
+
 def make_config_float(**kwargs):
     return JNTValueConfigFloat(**kwargs)
 
@@ -212,8 +215,8 @@ class JNTValueConfigInteger(JNTValueConfigGeneric):
     def __init__(self, entry_name="config_integer", **kwargs):
         """
         """
-        help = kwargs.pop('help', 'A float')
-        label = kwargs.pop('label', 'Float')
+        help = kwargs.pop('help', 'An integer')
+        label = kwargs.pop('label', 'Int')
         index = kwargs.pop('index', 0)
         get_data_cb = kwargs.pop('get_data_cb', self._get_data_integer)
         JNTValueConfigGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
@@ -233,12 +236,37 @@ class JNTValueConfigInteger(JNTValueConfigGeneric):
             logger.exception('Exception when retrieving %s_%s for node %s'%(self.uuid, index, node_uuid))
         return self.instances[index]['data']
 
+class JNTValueConfigByte(JNTValueConfigGeneric):
+    def __init__(self, entry_name="config_byte", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A byte')
+        label = kwargs.pop('label', 'Byte')
+        index = kwargs.pop('index', 0)
+        get_data_cb = kwargs.pop('get_data_cb', self._get_data_byte)
+        JNTValueConfigGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
+            get_data_cb=get_data_cb,
+            index=index, type=0x02, **kwargs)
+
+    def _get_data_byte(self, node_uuid, index):
+        """
+        """
+        try:
+            data = self._get_data(node_uuid, index)
+            if data is not None:
+                self.instances[index]['data'] = int(data)
+            else:
+                self.instances[index]['data'] = None
+        except:
+            logger.exception('Exception when retrieving %s_%s for node %s'%(self.uuid, index, node_uuid))
+        return self.instances[index]['data']
+
 class JNTValueConfigFloat(JNTValueConfigGeneric):
-    def __init__(self, entry_name="config_integer", **kwargs):
+    def __init__(self, entry_name="config_float", **kwargs):
         """
         """
-        help = kwargs.pop('help', 'An integer')
-        label = kwargs.pop('label', 'integer')
+        help = kwargs.pop('help', 'A float')
+        label = kwargs.pop('label', 'Float')
         index = kwargs.pop('index', 0)
         get_data_cb = kwargs.pop('get_data_cb', self._get_data_float)
         JNTValueConfigGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
