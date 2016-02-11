@@ -70,11 +70,13 @@ class JNTComponent(object):
 
         """
         pass
-        
+
     def check_heartbeat(self):
         """Check that the component is 'available'
 
         """
+        if self._bus is not None:
+            return self._bus.check_heartbeat()
         return False
 
     def start(self, mqttc):

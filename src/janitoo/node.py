@@ -1012,7 +1012,6 @@ class JNTNodeMan(object):
         else:
             self.add_poll(value, timeout=self.config_timeout)
 
-
     #~ def call_value_set_data(self, value, data=None):
         #~ """
         #~ """
