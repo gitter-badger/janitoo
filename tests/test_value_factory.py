@@ -63,6 +63,7 @@ class TestFactory(JNTTBase):
         config.read(['tests/data/test_value_factory.conf'])
         opt = config.get(node_uuid, 'value_entry_uuid_0')
         self.assertEqual(opt, "%s"%main_value.get_data_index(node_uuid=node_uuid, index=0))
+        self.assertEqual(type(data), type(main_value.get_data_index(node_uuid=node_uuid, index=0)))
 
 class BaseFactory():
     """Test the value factory
