@@ -133,8 +133,9 @@ class JNTComponent(object):
         '''Retrieve a bus's private value. Take care of exported buses
         This is the preferred way to retrieve a value of the bus
         '''
+        #~ logger.debug('_bus %s'%self._bus)
         if self._bus is not None:
-            self._bus.get_bus_value(value_uuid)
+            return self._bus.get_bus_value(value_uuid)
         return None
 
     def resource_filename(self, path='public'):

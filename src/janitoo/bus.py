@@ -46,6 +46,9 @@ assert(COMMAND_DESC[COMMAND_CONTROLLER] == 'COMMAND_CONTROLLER')
 class JNTBus(object):
     def __init__(self, oid='generic', **kwargs):
         """Initialise the bus
+        A bus can define values to configure itself.
+        A bus can agregate other bus. Values from the buss are exported to the master.
+        So they must be prefixed by the oid of the bus (in a hard way not usinf self.oid)
 
         :param oid: The oid implemented by the bus.
         :type oid: str
@@ -83,7 +86,6 @@ class JNTBus(object):
         self.name = kwargs.get('name', 'Default bus name')
         """The name"""
         self.nodeman = None
-        self._export_prefix = None
 
     def __del__(self):
         """
@@ -97,20 +99,18 @@ class JNTBus(object):
         '''Retrieve a bus's private value. Take care of exported buses
         This is the preferred way to retrieve a value of the bus
         '''
-        if self._export_prefix is not None:
-            value_uuid = "%s%s"%(self._export_prefix, value_uuid)
-        logger.debug("[%s] - Look for value %s on the bus (prefix %s)", self.__class__.__name__, value_uuid, self._export_prefix)
+        #~ if self._export_prefix is not None:
+            #~ value_uuid = "%s%s"%(self._export_prefix, value_uuid)
+        #~ logger.debug("[%s] - Look for value %s on bus %s", self.__class__.__name__, value_uuid, self)
         if value_uuid in self.values:
             return self.values[value_uuid]
         return None
 
-    def export_values(self, target, prefix=''):
+    def export_values(self, target):
         '''Export vales to target'''
-        self._export_prefix = prefix
+        logger.debug("[%s] - Export values %s to bus %s", self.__class__.__name__, self.values, target)
         for value in self.values.keys():
-            target.values['%s%s'%(prefix, value)] = self.values[value]
-            self.values['%s%s'%(prefix, value)] = self.values[value]
-            self.values[value].uuid = '%s%s'%(prefix, value)
+            target.values['%s'%(value)] = self.values[value]
 
     def start(self, mqttc, trigger_thread_reload_cb=None):
         """Start the bus"""
