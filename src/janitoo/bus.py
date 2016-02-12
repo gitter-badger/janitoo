@@ -83,6 +83,7 @@ class JNTBus(object):
         self.name = kwargs.get('name', 'Default bus name')
         """The name"""
         self.nodeman = None
+        self._export_prefix = None
 
     def __del__(self):
         """
@@ -92,8 +93,20 @@ class JNTBus(object):
         except:
             pass
 
+    def get_bus_value(self, value_uuid):
+        '''Retrieve a bus's private value. Take care of exported buses
+        This is the preferred way to retrieve a value of the bus
+        '''
+        if self._export_prefix is not None:
+            value_uuid = "%s%s"%(self._export_prefix, value_uuid)
+        logger.debug("[%s] - Look for value %s on the bus (prefix %s)", self.__class__.__name__, value_uuid, self._export_prefix)
+        if value_uuid in self.values:
+            return self.values[value_uuid]
+        return None
+
     def export_values(self, target, prefix=''):
         '''Export vales to target'''
+        self._export_prefix = prefix
         for value in self.values.keys():
             target.values['%s%s'%(prefix, value)] = self.values[value]
             self.values['%s%s'%(prefix, value)] = self.values[value]
@@ -139,7 +152,7 @@ class JNTBus(object):
         return compo
 
     def find_components(self, component_oid):
-        """Find components using an oid 
+        """Find components using an oid
         """
         components = [ self.components[addr] for addr in self.components if self.components[addr].oid == component_oid ]
         return components

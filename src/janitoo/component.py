@@ -129,6 +129,14 @@ class JNTComponent(object):
         except ValueError:
             pass
 
+    def get_bus_value(self, value_uuid):
+        '''Retrieve a bus's private value. Take care of exported buses
+        This is the preferred way to retrieve a value of the bus
+        '''
+        if self._bus is not None:
+            self._bus.get_bus_value(value_uuid)
+        return None
+
     def resource_filename(self, path='public'):
         """Needed to publish static files
         """
