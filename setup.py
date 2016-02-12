@@ -134,7 +134,7 @@ setup(
     packages = find_packages('src', exclude=["scripts", "docs", "config"]),
     include_package_data=True,
     data_files = data_files,
-    scripts=['src/scripts/jnt_collect', 'src/scripts/jnt_spy_root'],
+    scripts=['src/scripts/jnt_collect', 'src/scripts/jnt_spy', 'src/scripts/jnt_query'],
     package_dir = { '': 'src' },
     keywords = "core, official",
     install_requires=[

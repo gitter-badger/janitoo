@@ -1,0 +1,112 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Spyer for Janitoo
+"""
+__license__ = """
+    This file is part of Janitoo.
+
+    Janitoo is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Janitoo is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Janitoo. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+__author__ = 'Sébastien GALLET aka bibi21000'
+__email__ = 'bibi21000@gmail.com'
+__copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
+
+import sys
+import argparse
+
+import paho.mqtt.client as mqtt
+
+import janitoo.utils as jnt_utils
+import janitoo.classes as jnt_classes
+from janitoo.mqtt import MQTTBasic
+
+def on_connect(mqttc, obj, flags, rc, debug=False):
+    if debug:
+        print("!!!!!! Connect rc : "+str(rc))
+
+def on_message(mqttc, obj, msg, debug=False):
+    if debug:
+        print(msg.topic+" "+str(msg.qos)+" "+str(msg.payload))
+
+def on_subscribe(mqttc, obj, mid, granted_qos, debug=False):
+    if debug:
+        print("!!!!!! Subscribed to "+str(obj)+" : "+str(mid)+" "+str(granted_qos))
+        print("!!!!!! Type Ctrl+C 2 times to exit !!!!!! ")
+
+def on_log(mqttc, obj, level, string, debug=False):
+    if debug:
+        print("###### Log : "+str(string))
+
+def jnt_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', action='store', help='The host of the mosquitto server', default='127.0.0.1')
+    parser.add_argument('--port', action='store', help='The port of the mosquitto server', default='1883')
+    parser.add_argument('--hadd', action='store', help='The hadd of the node to call to', default=None)
+    parser.add_argument('--vuuid', action='store', help='The value id', default='9999/9990')
+    parser.add_argument('--myhadd', action='store', help='The hadd we will use to receive response', default='9999/9990')
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode', default=False)
+
+    subparsers = parser.add_subparsers(dest='command', help='commands')
+
+    query_parser = subparsers.add_parser('query', help='Query a node')
+
+    cmdclasses_parser = subparsers.add_parser('cmds', help='Show all available command classes for values')
+    genre_parser = subparsers.add_parser('genres', help='Show all available genres for values')
+    type_parser = subparsers.add_parser('types', help='Show all available types for values')
+    caps_parser = subparsers.add_parser('caps', help='Show all available capabilties for a node')
+
+    return parser
+
+def main():
+    parser = jnt_parser()
+    args = parser.parse_args()
+
+    if args.command == "cmds":
+        for cmd in jnt_classes.COMMAND_DESC:
+            print(jnt_classes.COMMAND_DESC[cmd])
+    elif args.command == "genres":
+        for gnr in jnt_classes.GENRE_DESC:
+            print("0x%02x"%gnr, jnt_classes.GENRE_DESC[gnr])
+    elif args.command == "types":
+        for gnr in jnt_classes.VALUE_DESC:
+            print("0x%02x"%gnr, jnt_classes.VALUE_DESC[gnr])
+    elif args.command == "caps":
+        for gnr in jnt_classes.CAPABILITY_DESC:
+            print jnt_classes.CAPABILITY_DESC[gnr]
+    elif args.command == "query":
+
+        if args.hadd is None:
+            raise RuntimeError('Specify a node hadd. Maybe we can broadcast here')
+        mqttc = MQTTBasic()
+        mqttc.on_message = on_message
+        mqttc.on_connect = on_connect
+        mqttc.on_subscribe = on_subscribe
+        # Uncomment to enable debug messages
+        #mqttc.on_log = on_log
+        mqttc.connect(args.host, args.port, 60)
+        print(">>>>>> Subscribe to "+str(args.topic))
+        mqttc.subscribe(jnt_utils.TOPIC_NODES_REPLY%args.myhadd, 0)
+
+        mqttc.publish(jnt_utils.TOPIC_NODES_REQUEST%args.hadd, '')
+
+        msg = { 'cmd_class': COMMAND_DISCOVERY, 'genre':0x04, 'uuid':'request_info_nodes', 'reply_hadd':self.hadds[0]}
+        self.heartbeat_discover_mqttc.publish(TOPIC_NODES_REQUEST%hadd, json_dumps(msg))
+
+        mqttc.loop_forever()
+
+if __name__ == '__main__':
+    main()
+

@@ -45,10 +45,14 @@ __copyright__ = "Copyright © 2013-2014 Sébastien GALLET aka bibi21000"
 import logging
 logger = logging.getLogger(__name__)
 import threading
-import paho.mqtt.client as mqtt
+from paho.mqtt.client import Client
 import uuid as muuid
 
 from janitoo.utils import JanitooNotImplemented, HADD, json_dumps
+
+class MQTTBasic(Client):
+    """A grandmother for mqtt """
+    pass
 
 class MQTTClient(threading.Thread):
     def __init__(self, clientid=None, options={}, loop_sleep=0.15):
@@ -61,7 +65,7 @@ class MQTTClient(threading.Thread):
         self._stopevent = threading.Event()
         self.options = options
         self.loop_sleep = loop_sleep
-        self._mqttc = mqtt.Client(clientid)
+        self._mqttc = MQTTBasic(clientid)
         self._mqttc.on_connect = self.mqtt_on_connect
         self._mqttc.on_publish = self.mqtt_on_publish
         self._mqttc.on_subscribe = self.mqtt_on_subscribe
