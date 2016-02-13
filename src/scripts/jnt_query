@@ -76,7 +76,7 @@ def jnt_parser():
 
     node_parser = subparsers.add_parser('node', help='Request infos from a node')
     node_parser.add_argument('--vuuid', action='store', help='The value id (request)',
-            choices=['request_info_nodes', 'request_info_users', 'request_info_configs', 'request_info_systems', 'request_info_basics', 'request_info_commands'],
+            choices=jnt_utils.NETWORK_REQUESTS,
             default='request_info_nodes')
     node_parser.add_argument('--hadd', action='store', help='The hadd of the node to request info', default=None)
     node_parser.add_argument('--host', action='store', help='The host of the mosquitto server', default='127.0.0.1')
@@ -86,7 +86,7 @@ def jnt_parser():
 
     network_parser = subparsers.add_parser('network', help='Request infos from network (broadcast)')
     network_parser.add_argument('--vuuid', action='store', help='The value id (request)',
-            choices=['request_info_nodes', 'request_info_users', 'request_info_configs', 'request_info_systems', 'request_info_basics', 'request_info_commands'],
+            choices=jnt_utils.NETWORK_REQUESTS,
             default='request_info_nodes')
     network_parser.add_argument('--host', action='store', help='The host of the mosquitto server', default='127.0.0.1')
     network_parser.add_argument('--port', action='store', help='The port of the mosquitto server', default='1883')

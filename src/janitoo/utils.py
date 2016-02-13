@@ -53,6 +53,8 @@ TOPIC_VALUES_CONFIG = "/values/config/%s"
 TOPIC_VALUES_SYSTEM = "/values/system/%s"
 TOPIC_VALUES_BASIC = "/values/basic/%s"
 
+NETWORK_REQUESTS = ['request_info_nodes', 'request_info_users', 'request_info_configs', 'request_info_systems', 'request_info_basics', 'request_info_commands']
+
 def deprecated(func):
     """This is a decorator which can be used to mark functions
     as deprecated. It will result in a warning being emmitted
