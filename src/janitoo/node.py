@@ -1330,9 +1330,9 @@ class JNTBusNodeMan(JNTNodeMan):
                     value = compo.values[keyv]
                     self.add_value_to_node(value.uuid, node, value)
             else:
-                logger.warning("[%s] - Can't create node for component %s in factory", self.__class__.__name__, self.bus.components[uuid])
+                logger.exception("[%s] - Can't create node for component %s in factory", self.__class__.__name__, self.bus.components[uuid])
         else:
-            logger.warning("[%s] - Can't create node because can't find component %s in components %s", self.__class__.__name__, uuid, self.bus.components)
+            logger.exception("[%s] - Can't create node because can't find component %s in components %s", self.__class__.__name__, uuid, self.bus.components)
         return node
 
     def after_config_node(self, uuid):
@@ -1347,7 +1347,7 @@ class JNTBusNodeMan(JNTNodeMan):
                 logger.exception("[%s] - Can't start component %s", self.__class__.__name__, uuid)
         else:
             if uuid != self._controller.uuid:
-                logger.warning("[%s] - Can't start component because can't find %s in components", self.__class__.__name__, uuid)
+                logger.exception("[%s] - Can't start component because can't find %s in components", self.__class__.__name__, uuid)
 
     #~ def get_nodes_system_from_local_config(self):
         #~ """ Retrieve hadds from local storage
@@ -1375,7 +1375,7 @@ class JNTBusNodeMan(JNTNodeMan):
             options = self.options.get_options(uuid)
             #~ print "option ", uuid, options
             if 'hadd' not in options:
-                logger.warning("[%s] - Found component %s  without hadd in local config", self.__class__.__name__, uuid)
+                logger.exception("[%s] - Found component %s  without hadd in local config", self.__class__.__name__, uuid)
             else:
                 res[uuid] = options['hadd']
         #~ print res
