@@ -33,6 +33,8 @@ import mock
 import ConfigParser
 from ConfigParser import RawConfigParser
 
+sys.path.insert(0,os.path.dirname(__name__))
+
 from janitoo_nosetests import JNTTBase
 
 from janitoo.runner import Runner, jnt_parse_args

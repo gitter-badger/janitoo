@@ -6,9 +6,8 @@ ARCHBASE      = archive
 BUILDDIR      = build
 DISTDIR       = dists
 NOSE          = $(shell which nosetests)
-NOSEOPTS      = --verbosity=2
-#NOSECOVER     = --cover-package=janitoo,janitoo_db,janitoo_dhcp,janitoo_pi,janitoo_roomba,janitoo_samsung,janitoo_buses,janitoo_web,janitoo_admin,janitoo_datalog,janitoo_events,janitoo_events_earth --cover-min-percentage= --with-coverage --cover-inclusive --cover-tests --cover-html --cover-html-dir=docs/html/functional/coverage --with-html --html-file=docs/html/functional/nosetests/nosetests.html
-NOSECOVER     =
+#~ NOSEOPTS      = --verbosity=2
+NOSECOVER     = --verbosity=2 --with-coverage --cover-inclusive --cover-tests --cover-html --cover-html-dir=${BUILDDIR}/docs/html/tools/coverage --with-html --html-file=${BUILDDIR}/docs/html/tools/nosetests/index.html
 PYLINT        = $(shell which pylint)
 PYLINTOPTS    = --max-line-length=140 --max-args=9 --extension-pkg-whitelist=zmq --ignored-classes=zmq --min-public-methods=0
 
@@ -145,6 +144,9 @@ clone:
 	make -C $(module) deps
 	make -C $(module) develop
 
+clone-all:
+	for module in ${SUBMODULES};do git clone https://github.com/bibi21000/$(module).git || make -C $(module) clone; make -C $(module) deps; make -C $(module) develop; done
+
 pull:
 	git clone $(repo)
 
@@ -222,6 +224,16 @@ develop-all:
 tests:
 	make -C $(module) tests
 
+tests-all:
+	-netcat -zv 127.0.0.1 1-9999 2>&1|grep succeeded
+	export JANITOO_ALLTESTS=1
+	-mkdir -p ${BUILDDIR}/docs/html/tools/coverage
+	-mkdir -p ${BUILDDIR}/docs/html/tools/nosetests
+	$(NOSE) $(NOSEOPTS) $(NOSECOVER) */tests
+	unset JANITOO_ALLTESTS
+	@echo
+	@echo "Tests for janitoo finished."
+
 docker-inst:
 	@echo "Configure Docker image."
 	@echo
@@ -234,14 +246,6 @@ docker-inst:
 	-test -d $(module)/docker/nginx && cp -rf $(module)/docker/nginx/* /etc/nginx/conf.d/
 	@echo
 	@echo "Docker image configured."
-
-tests-all:
-	-netcat -zv 127.0.0.1 1-9999 2>&1|grep succeeded
-	export JANITOO_ALLTESTS=1
-	for module in ${SUBMODULES};do make -C $$module tests; done
-	unset JANITOO_ALLTESTS
-	@echo
-	@echo "Tests for janitoo finished."
 
 coverage-check:coverage-collect
 	@echo "Check coverage for janitoo."
