@@ -70,6 +70,24 @@ leases_states = {
     'UNKNOWN' : -1, #Hummm ... we don' know.
     }
 
+def normalize_request_info_values(data):
+    """ """
+    if 'uuid' in data:
+        ndata = {'0': {'0':data}}
+    elif 'uuid' in data[data.keys()[0]]:
+        ndata = {'0':data}
+    else:
+        ndata = data
+    return ndata
+
+def normalize_request_info_nodes(data):
+    """ """
+    if 'hadd' in data:
+        ndata = {'0':data}
+    else:
+        ndata = data
+    return ndata
+
 class CacheManager(object):
 
     def __init__(self):
@@ -1787,10 +1805,7 @@ class JNTNetwork(object):
                 self.broadcast_nodes_timer = None
                 self.broadcast_nodes_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_nodes_discover)
                 self.broadcast_nodes_timer.start()
-            if 'hadd' in data:
-                ndata = {'0':data}
-            else:
-                ndata = data
+            ndata = normalize_request_info_nodes(data)
             #~ print "nodes ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
             for knode in ndata.keys():
                 self.nodes[ndata[knode]['hadd']] = {}
@@ -1823,12 +1838,7 @@ class JNTNetwork(object):
                 self.broadcast_users_timer = None
                 self.broadcast_users_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_users_discover)
                 self.broadcast_users_timer.start()
-            if 'uuid' in data:
-                ndata = {'0': {'0':data}}
-            elif 'uuid' in data[data.keys()[0]]:
-                ndata = {'0':data}
-            else:
-                ndata = data
+            ndata = normalize_request_info_values(data)
             #~ print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
             for nval in ndata:
                 for kval in ndata[nval]:
@@ -1866,12 +1876,7 @@ class JNTNetwork(object):
                 self.broadcast_configs_timer = None
                 self.broadcast_configs_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_configs_discover)
                 self.broadcast_configs_timer.start()
-            if 'uuid' in data:
-                ndata = {'0': {'0':data}}
-            elif 'uuid' in data[data.keys()[0]]:
-                ndata = {'0':data}
-            else:
-                ndata = data
+            ndata = normalize_request_info_values(data)
             for nval in ndata:
                 for kval in ndata[nval]:
                     #~ print "haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddd", ndata[nval][kval]
@@ -1912,12 +1917,7 @@ class JNTNetwork(object):
                 self.broadcast_basics_timer = None
                 self.broadcast_basics_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_basics_discover)
                 self.broadcast_basics_timer.start()
-            if 'uuid' in data:
-                ndata = {'0': {'0':data}}
-            elif 'uuid' in data[data.keys()[0]]:
-                ndata = {'0':data}
-            else:
-                ndata = data
+            ndata = normalize_request_info_values(data)
             #~ print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
             for nval in ndata:
                 for kval in ndata[nval]:
@@ -1955,12 +1955,7 @@ class JNTNetwork(object):
                 self.broadcast_systems_timer = None
                 self.broadcast_systems_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_systems_discover)
                 self.broadcast_systems_timer.start()
-            if 'uuid' in data:
-                ndata = {'0': {'0':data}}
-            elif 'uuid' in data[data.keys()[0]]:
-                ndata = {'0':data}
-            else:
-                ndata = data
+            ndata = normalize_request_info_nodes(data)
             #print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
             for nval in ndata:
                 for kval in ndata[nval]:
@@ -1985,17 +1980,28 @@ class JNTNetwork(object):
                 self.broadcast_commands_timer = None
                 self.broadcast_commands_timer = threading.Timer(self.broadcast_timeout, self.finish_broadcast_commands_discover)
                 self.broadcast_commands_timer.start()
-            if 'uuid' in data:
-                ndata = {'0': {'0':data}}
-            elif 'uuid' in data[data.keys()[0]]:
-                ndata = {'0':data}
+            ndata = normalize_request_info_values(data)
+            #~ print "ddddaaaaaaaaaaaaaaaaaaaata : %s" % ndata
             for nval in ndata:
                 for kval in ndata[nval]:
-                    if ndata[nval][kval]['hadd'] not in self.commands:
-                        self.commands[ndata[nval][kval]['hadd']] = {}
-                    self.commands[ndata[nval][kval]['hadd']][ndata[nval][kval]['uuid']] = ndata[nval][kval]
-                    if 'node_uuid' not in ndata[nval][kval]:
-                        ndata[nval][kval]['node_uuid'] = self.nodes[ndata[nval][kval]['hadd']]
+                    hadd = ndata[nval][kval]['hadd']
+                    uuid = ndata[nval][kval]['uuid']
+                    #~ print "haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddd", hadd, uuid
+                    index = 0
+                    if 'index' in ndata[nval][kval]:
+                        index = ndata[nval][kval]['index']
+                    if hadd not in self.commands:
+                        self.commands[hadd] = {}
+                    if uuid not in self.commands[hadd]:
+                        self.commands[hadd][uuid] = {}
+                    if index not in self.commands[hadd][uuid]:
+                        self.commands[hadd][uuid][index] = ndata[nval][kval]
+                    else:
+                        self.commands[hadd][uuid][index].update(ndata[nval][kval])
+                    ndata[nval][kval].update(self.commands[hadd][uuid][index])
+                    #~ print 'add_commands', self.commands[hadd][uuid][index]
+            #~ print "seeeeeeeeeeeeeeeeeeeeeeeeeeeeeeelf.commands"
+            #~ print self.commands
         except:
             logger.exception("Exception in add_commands")
         finally:
@@ -2087,7 +2093,14 @@ class JNTNetwork(object):
         :rtype: int
 
         """
-        return len(self.commands)
+        lvl1 = len(self.commands)
+        lvl2 = 0
+        lvl3 = 0
+        for k in self.commands:
+            lvl2 += len(self.commands[k])
+            for kk in self.commands[k]:
+                lvl3 += len(self.commands[k][kk])
+        return lvl1, lvl2, lvl3
 
     @property
     def basics_count(self):
