@@ -614,7 +614,7 @@ class JNTNodeMan(object):
         if self.request_nodes_config_response == False:
             #retrieve hadds from local configuration
             for node in self.nodes:
-                if node != self._controller.uuid:
+                if node != self._controller.uuid and not self.is_stopped:
                     onode = self.nodes[node]
                     onode.load_config_from_local()
                     #~ print "finish_nodes_config onode", onode.to_dict
@@ -1345,7 +1345,7 @@ class JNTBusNodeMan(JNTNodeMan):
                 compo.start(self.mqtt_nodes)
             except:
                 logger.exception("[%s] - Can't start component %s", self.__class__.__name__, uuid)
-        else:
+        elif not self.is_stopped:
             if uuid != self._controller.uuid:
                 logger.exception("[%s] - Can't start component because can't find %s in components", self.__class__.__name__, uuid)
 
