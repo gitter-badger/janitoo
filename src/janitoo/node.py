@@ -1298,7 +1298,10 @@ class JNTBusNodeMan(JNTNodeMan):
     def stop(self):
         """
         """
-        self.bus.stop()
+        try:
+            self.bus.stop()
+        except:
+            logger.exception("exception in stop : %s", self.__class__.__name__)
         JNTNodeMan.stop(self)
 
     def after_controller_reply_config(self):
