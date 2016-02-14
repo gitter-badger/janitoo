@@ -106,7 +106,7 @@ RUN make clone module=janitoo_layouts && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN make clone module=janitoo_termal && \
+RUN make clone module=janitoo_thermal && \
     apt-get clean && rm -Rf /tmp/* || true && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
