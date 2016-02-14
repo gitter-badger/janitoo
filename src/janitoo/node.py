@@ -623,7 +623,8 @@ class JNTNodeMan(object):
                     #~ print onode.__dict__
                     #~ for value in onode.values:
                         #~ print onode.values[value].__dict__
-        if self.state == 'INIT':
+        #~ if self.state == 'INIT':
+        if not self.is_stopped:
             self.fsm_state_next()
 
     def stop_nodes_init(self):
