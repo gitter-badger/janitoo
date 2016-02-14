@@ -156,6 +156,8 @@ def main():
                             else:
                                 nested = data[i1][i2]
                             for i3 in nested:
+                                if 'cmd_classes' in nested[i3] and 'cmd_class' not in nested[i3]:
+                                    nested[i3]['cmd_class'] = nested[i3]['cmd_classes']
                                 print(row.format(**nested[i3]))
             else:
                 print(msg.payload)
@@ -201,12 +203,15 @@ def main():
                             else:
                                 nested = data[i1][i2]
                             for i3 in nested:
+                                #Support for old protocol
+                                if 'cmd_classes' in nested[i3] and 'cmd_class' not in nested[i3]:
+                                    nested[i3]['cmd_class'] = nested[i3]['cmd_classes']
                                 print(row.format(**nested[i3]))
             else:
                 print(msg.payload)
 
         mqttc = get_mqttc(args, on_message, debug=args.debug)
-        mqttc.subscribe(jnt_utils.TOPIC_BROADCAST_REPLY%args.myhadd, 0)
+        mqttc.subscribe([(jnt_utils.TOPIC_BROADCAST_REPLY%args.myhadd, 0), (jnt_utils.TOPIC_NODES_REPLY%args.myhadd, 0)])
         msg = { 'cmd_class':COMMAND_DISCOVERY, 'genre':0x04, 'uuid':args.vuuid, 'reply_hadd':args.myhadd}
         mqttc.publish(jnt_utils.TOPIC_BROADCAST_REQUEST, jnt_utils.json_dumps(msg))
         stop_at = datetime.datetime.now() + datetime.timedelta(seconds=args.timeout)
