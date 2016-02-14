@@ -543,7 +543,8 @@ class JNTNodeMan(object):
             self.after_controller_reply_config()
         except:
             logger.exception("Exception when starting coontroller")
-        self.fsm_state_next()
+        if not self.is_stopped:
+            self.fsm_state_next()
 
     def stop_controller_reply_config(self):
         """
