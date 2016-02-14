@@ -74,7 +74,7 @@ def normalize_request_info_values(data):
     """ """
     if 'uuid' in data:
         ndata = {'0': {'0':data}}
-    elif 'uuid' in data[data.keys()[0]]:
+    elif len(data)==0 or 'uuid' in data[data.keys()[0]]:
         ndata = {'0':data}
     else:
         ndata = data
