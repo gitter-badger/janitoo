@@ -1193,10 +1193,11 @@ class JNTNodeMan(object):
     def find_value(self, node_uuid, value_uuid):
         """Find a value usinf its uuid and the node one
         """
-        nuuid='%s__%s'%(self.section, node_uuid)
+        #~ nuuid='%s__%s'%(self.section, node_uuid)
+        nuuid=node_uuid
         nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].uuid == nuuid ]
         if len(nodes)>1:
-            logger.warning("Found 2 nodes %s with uuid %s. Use the fisrt one.", nodes, node_uuid)
+            logger.warning("Found 2 nodes %s with uuid %s.", nodes, node_uuid)
         if len(nodes)==0:
             return None
         vuuid='%s'%(value_uuid)
