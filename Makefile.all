@@ -62,6 +62,7 @@ clean: clean-docs clean-archive
 	for module in ${SUBMODULES};do make -C $$module clean; done
 	-rm -rf $(BUILDDIR)
 	-find . -name \*.pyc -delete
+	-rm -f .coverage
 
 clean-dist:
 	for module in ${SUBMODULES};do make -C $$module clean-dist; done
