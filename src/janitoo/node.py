@@ -1182,8 +1182,8 @@ class JNTNodeMan(object):
     def find_node(self, node_uuid):
         """Find a node usinf its uuid
         """
-        #~ nuuid='%s__%s'%(self.section, node_uuid)
-        nuuid=node_uuid
+        nuuid='%s__%s'%(self.section, node_uuid)
+        #~ nuuid=node_uuid
         nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].uuid == nuuid ]
         if len(nodes)>1:
             logger.warning("Found 2 nodes %s with uuid %s. Returning the fisrt one.", nodes, node_uuid)
@@ -1194,8 +1194,8 @@ class JNTNodeMan(object):
     def find_value(self, node_uuid, value_uuid):
         """Find a value usinf its uuid and the node one
         """
-        #~ nuuid='%s__%s'%(self.section, node_uuid)
-        nuuid=node_uuid
+        nuuid='%s__%s'%(self.section, node_uuid)
+        #~ nuuid=node_uuid
         nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].uuid == nuuid ]
         if len(nodes)>1:
             logger.warning("Found 2 nodes %s with uuid %s.", nodes, node_uuid)
