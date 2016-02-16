@@ -945,7 +945,7 @@ class JNTNodeMan(object):
     def loop(self, stopevent):
         """
         """
-        if self.state != 'ONLINE':
+        if not self.is_started:
             return
         to_polls = []
         nodes = self.polls.keys()
@@ -969,9 +969,9 @@ class JNTNodeMan(object):
         try:
             sleep = float(self.loop_sleep) - 0.02*len(to_polls) - 0.02*len(to_heartbeats)
         except ValueError:
-            sleep = 0
+            sleep = 0.05
         if sleep<0:
-            sleep=0
+            sleep=0.05
         stopevent.wait(sleep)
 
     def heartbeat(self, nodes, mqttc=None, stopevent=None):
