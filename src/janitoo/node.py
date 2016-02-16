@@ -396,7 +396,7 @@ class JNTNodeMan(object):
                 finally:
                     self.mqtt_controller_uuid_lock.release()
             if self.request_controller_uuid_timer is None:
-                self.request_controller_uuid_timer = threading.Timer(self.config_timeout, self.finish_controller_uuid)
+                self.request_controller_uuid_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_controller_uuid)
                 self.request_controller_uuid_timer.start()
 
     def finish_controller_uuid(self):
@@ -450,7 +450,7 @@ class JNTNodeMan(object):
             print "start_controller_reply_system"
         else:
             if self.request_controller_system_timer is None:
-                self.request_controller_system_timer = threading.Timer(self.config_timeout, self.finish_controller_reply_system)
+                self.request_controller_system_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_controller_reply_system)
                 self.request_controller_system_timer.start()
 
     def after_controller_reply_system(self):
@@ -500,7 +500,7 @@ class JNTNodeMan(object):
             print "start_controller_reply_config"
         else:
             if self.request_controller_config_timer is None:
-                self.request_controller_config_timer = threading.Timer(self.config_timeout, self.finish_controller_reply_config)
+                self.request_controller_config_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_controller_reply_config)
                 self.request_controller_config_timer.start()
 
     def before_controller_reply_config(self):
@@ -565,7 +565,7 @@ class JNTNodeMan(object):
             print "start_nodes_init"
         else:
             if self.request_nodes_hadds_timer is None:
-                self.request_nodes_hadds_timer = threading.Timer(self.config_timeout, self.finish_nodes_hadds)
+                self.request_nodes_hadds_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_nodes_hadds)
                 self.request_nodes_hadds_timer.start()
 
     def finish_nodes_hadds(self):
@@ -584,7 +584,7 @@ class JNTNodeMan(object):
                 self.after_create_node(node)
                 #~ print onode.__dict__
         if self.request_nodes_system_timer is None:
-            self.request_nodes_system_timer = threading.Timer(self.config_timeout, self.finish_nodes_system)
+            self.request_nodes_system_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_nodes_system)
             self.request_nodes_system_timer.start()
 
     def finish_nodes_system(self):
@@ -602,7 +602,7 @@ class JNTNodeMan(object):
                     self.after_system_node(node)
                     #~ print onode.__dict__
         if self.request_nodes_config_timer is None:
-            self.request_nodes_config_timer = threading.Timer(self.config_timeout, self.finish_nodes_config)
+            self.request_nodes_config_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_nodes_config)
             self.request_nodes_config_timer.start()
 
     def finish_nodes_config(self):
@@ -1012,7 +1012,7 @@ class JNTNodeMan(object):
             mqt.publish_value(node.hadd, value, genre)
             self.add_poll(value)
         else:
-            self.add_poll(value, timeout=self.config_timeout)
+            self.add_poll(value, timeout=self.config_timeout+self.slow_start)
 
     #~ def call_value_set_data(self, value, data=None):
         #~ """
@@ -1659,7 +1659,7 @@ class JNTNode(object):
         config_timeout = self.options.get_option(node_uuid, 'config_timeout')
         if config_timeout is not None:
             try:
-                self.config_timeout = int(config_timeout)
+                self.config_timeout = float(config_timeout)
             except ValueError:
                 logger.exception('Exception when retrieving timeout')
         return self.config_timeout
@@ -1668,7 +1668,7 @@ class JNTNode(object):
         """
         """
         try:
-            self.config_timeout = int(value)
+            self.config_timeout = float(value)
             self.options.set_option(node_uuid, 'config_timeout', self.config_timeout)
         except ValueError:
             logger.exception('Exception when setting timeout')
