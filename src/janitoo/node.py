@@ -596,7 +596,7 @@ class JNTNodeMan(object):
         if self.request_nodes_system_response == False:
             #retrieve hadds from local configuration
             for node in self.nodes:
-                if node != self._controller.uuid:
+                if node != self._controller.uuid and not self.is_stopped:
                     onode = self.nodes[node]
                     onode.load_system_from_local()
                     self.after_system_node(node)
