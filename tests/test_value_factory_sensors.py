@@ -78,6 +78,11 @@ class TestSensorHumidity(TestFactory, BasePoll):
     """
     entry_name='sensor_humidity'
 
+class TestSensorPressure(TestFactory, BasePoll):
+    """Test the value factory
+    """
+    entry_name='sensor_pressure'
+
 class TestSensorRotationSpeed(TestFactory, BasePoll):
     """Test the value factory
     """

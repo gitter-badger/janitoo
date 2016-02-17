@@ -93,6 +93,9 @@ def make_sensor_memory(**kwargs):
 def make_sensor_float(**kwargs):
     return JNTValueSensorFloat(**kwargs)
 
+def make_sensor_pressure(**kwargs):
+    return JNTValueSensorPressure(**kwargs)
+
 class JNTValueSensorGeneric(JNTValueFactoryEntry):
     """
     """
@@ -131,6 +134,18 @@ class JNTValueSensorTemperature(JNTValueSensorFloat):
         help = kwargs.pop('help', 'A temperature sensor')
         label = kwargs.pop('label', 'Temp.')
         units = kwargs.pop('units', '°C')
+        index = kwargs.pop('index', 0)
+        cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
+        JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
+            index=index, cmd_class=cmd_class, **kwargs)
+
+class JNTValueSensorPressure(JNTValueSensorFloat):
+    def __init__(self, entry_name="sensor_pressure", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A pressure sensor')
+        label = kwargs.pop('label', 'Pressure')
+        units = kwargs.pop('units', 'Pa')
         index = kwargs.pop('index', 0)
         cmd_class = kwargs.pop('cmd_class', COMMAND_SENSOR_MULTILEVEL)
         JNTValueSensorGeneric.__init__(self, entry_name=entry_name, help=help, label=label, units=units,
