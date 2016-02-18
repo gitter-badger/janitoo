@@ -45,27 +45,177 @@ __copyright__ = "Copyright © 2013-2014 Sébastien GALLET aka bibi21000"
 import logging
 logger = logging.getLogger(__name__)
 import threading
-from paho.mqtt.client import Client
+import paho.mqtt.client as mqttc
 import uuid as muuid
 
 from janitoo.utils import JanitooNotImplemented, HADD, json_dumps
 
-class MQTTBasic(Client):
+class MQTTBasic(mqttc.Client):
     """A grandmother for mqtt """
-    pass
+    def __init__(self, options={}, **kwargs):
+        """
+        """
+        client_id = kwargs.pop('client_id', None)
+        mqttc.Client.__init__(self, client_id=client_id, **kwargs)
+        self.options = options
+
+    def connect_with_options(self):
+        """Connect to the mqtt broker using options
+
+        returns :
+            0: Connection successful
+            1: Connection refused - incorrect protocol version
+            2: Connection refused - invalid client identifier
+            3: Connection refused - server unavailable
+            4: Connection refused - bad username or password
+            5: Connection refused - not authorised
+            6-255: Currently unused.
+
+        """
+        if "broker_user" in self.options:
+            password = None
+            if "broker_password" in self.options:
+                password = self.options['broker_password']
+            self.username_pw_set(self.options['broker_user'], password)
+        server = '127.0.0.1'
+        if "broker_ip" in self.options:
+            server = self.options['broker_ip']
+        #print server
+        port = 1883
+        if "broker_port" in self.options:
+            port = self.options['broker_port']
+        keepalive = 60
+        if "broker_keepalive" in self.options:
+            keepalive = int(self.options['broker_keepalive'])
+        return self.connect(server, port=port, keepalive=keepalive)
+
+    def publish_heartbeat(self, add_ctrl, add_node, state='ONLINE', qos=0, retain=False):
+        """Publish an heartbeat for the node add_ctrl, add_node.
+
+        This causes a message to be sent to the broker and subsequently from
+        the broker to any clients subscribing to matching topics.
+
+        :param uuid: The uuid sent in the request.
+        :type uuid: str
+        :param payload: The actual message to send. If not given, or set to None a
+                        zero length message will be used. Passing an int or float will result
+                        in the payload being converted to a string representing that number. If
+                        you wish to send a true int/float, use struct.pack() to create the
+                        payload you require.
+        :type payload: message
+        :param qos: The quality of service level to use.
+        :type qos: int
+        :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
+        :type retain: bool
+        """
+        self.publish(topic="/dhcp/heartbeat/"+HADD%(add_ctrl, add_node), payload=state, qos=qos, retain=retain)
+
+    def publish_heartbeat_controller(self, add_ctrl, state='ONLINE', qos=0, retain=False):
+        """Publish an heartbeat for the controller add_ctrl and all its nodes.
+
+        This causes a message to be sent to the broker and subsequently from
+        the broker to any clients subscribing to matching topics.
+
+        :param uuid: The uuid sent in the request.
+        :type uuid: str
+        :param payload: The actual message to send. If not given, or set to None a
+                        zero length message will be used. Passing an int or float will result
+                        in the payload being converted to a string representing that number. If
+                        you wish to send a true int/float, use struct.pack() to create the
+                        payload you require.
+        :type payload: message
+        :param qos: The quality of service level to use.
+        :type qos: int
+        :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
+        :type retain: bool
+        """
+        msg = {'add_ctrl':add_ctrl, 'add_node':-1}
+        self.publish(topic="/dhcp/heartbeat/", payload=json_dumps(msg), qos=qos, retain=retain)
+
+    def publish_heartbeat_msg(self, msg, qos=0, retain=False):
+        """Publish an heartbeat message.
+
+        This causes a message to be sent to the broker and subsequently from
+        the broker to any clients subscribing to matching topics.
+
+        :param uuid: The uuid sent in the request.
+        :type uuid: str
+        :param payload: The actual message to send. If not given, or set to None a
+                        zero length message will be used. Passing an int or float will result
+                        in the payload being converted to a string representing that number. If
+                        you wish to send a true int/float, use struct.pack() to create the
+                        payload you require.
+        :type payload: message
+        :param qos: The quality of service level to use.
+        :type qos: int
+        :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
+        :type retain: bool
+        """
+        #Deprecated. We must send the heart to /dhcp/heartbeat/0011/0001
+        self.publish(topic="/dhcp/heartbeat/", payload=json_dumps(msg), qos=qos, retain=retain)
+
+    def publish_heartbeat_resolv_msg(self, msg, qos=0, retain=False):
+        """Publish an heartbeat message.
+
+        This causes a message to be sent to the broker and subsequently from
+        the broker to any clients subscribing to matching topics.
+
+        :param uuid: The uuid sent in the request.
+        :type uuid: str
+        :param payload: The actual message to send. If not given, or set to None a
+                        zero length message will be used. Passing an int or float will result
+                        in the payload being converted to a string representing that number. If
+                        you wish to send a true int/float, use struct.pack() to create the
+                        payload you require.
+        :type payload: message
+        :param qos: The quality of service level to use.
+        :type qos: int
+        :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
+        :type retain: bool
+        """
+        self.publish(topic="/resolv/dhcp/heartbeat/", payload=json_dumps(msg), qos=qos, retain=retain)
+
+    def publish_value(self, hadd, value, genre='user', qos=0, retain=False):
+        """Publish a value.
+
+        This causes a message to be sent to the broker and subsequently from
+        the broker to any clients subscribing to matching topics.
+
+        :param uuid: The uuid sent in the request.
+        :type uuid: str
+        :param payload: The actual message to send. If not given, or set to None a
+                        zero length message will be used. Passing an int or float will result
+                        in the payload being converted to a string representing that number. If
+                        you wish to send a true int/float, use struct.pack() to create the
+                        payload you require.
+        :type payload: message
+        :param qos: The quality of service level to use.
+        :type qos: int
+        :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
+        :type retain: bool
+        """
+        #~ print "publish_value : ", hadd, value, genre
+        if genre in ["user", "basic", "config"]:
+            #For user values with indexes send all instance
+            res = value.to_json_with_indexes()
+        else:
+            res = value.to_json()
+        logger.debug('Publish new value to /value/%s : %s', hadd, res)
+        self.publish(topic="/values/%s/%s/%s" % (genre, hadd, value.uuid), payload=res, qos=qos, retain=retain)
+
 
 class MQTTClient(threading.Thread):
-    def __init__(self, clientid=None, options={}, loop_sleep=0.15):
+    def __init__(self, client_id=None, options={}, loop_sleep=0.15):
         """Initialise the client
 
-        :param clientid: use a specific client id which must be unique on the broker. Use None to let the client generate a random id for you.
-        :type clientid: str
+        :param client_id: use a specific client id which must be unique on the broker. Use None to let the client generate a random id for you.
+        :type client_id: str
         """
         threading.Thread.__init__(self)
         self._stopevent = threading.Event()
         self.options = options
         self.loop_sleep = loop_sleep
-        self._mqttc = MQTTBasic(clientid)
+        self._mqttc = MQTTBasic(client_id=client_id, options=options)
         self._mqttc.on_connect = self.mqtt_on_connect
         self._mqttc.on_publish = self.mqtt_on_publish
         self._mqttc.on_subscribe = self.mqtt_on_subscribe
@@ -208,32 +358,6 @@ class MQTTClient(threading.Thread):
         #mqttc.message_callback_add("$SYS/broker/bytes/#", on_message_bytes)
         self._mqttc.message_callback_add(topic, callback)
 
-    def _username_pw_set(self, username, password=None):
-        """Set a username and optionally a password for broker authentication.
-
-        Must be called before connect() to have any effect.
-        Requires a broker that supports MQTT v3.1.
-
-        username: The username to authenticate with. Need have no relationship to the client id.
-        password: The password to authenticate with. Optional, set to None if not required.
-        """
-        self._mqttc.username_pw_set(username, password)
-
-    def _connect(self, server='127.0.0.1', port=1883, keepalive=60):
-        """Connect to the broker
-
-        :param server: the hostname or IP address of the remote broker.
-        :type server: str
-        :param port: the network port of the server host to connect to. Defaults to 1883.
-                     Note that the default port for MQTT over SSL/TLS is 8883 so if you are using tls_set() the port may need providing manually.
-        :type port: int
-        :param keepalive: maximum period in seconds allowed between communications with the broker.
-                          If no other messages are being exchanged, this controls the rate at which the client will send ping messages to the broker.
-        :type keepalive: int
-        """
-        logger.info("Connect to %s:%s", server, port)
-        self._mqttc.connect(server, port, keepalive)
-
     def subscribe(self, topic=None, qos=0, callback=None):
         """Subscribe to a topic
 
@@ -375,7 +499,7 @@ class MQTTClient(threading.Thread):
         :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
         :type retain: bool
         """
-        self.publish(topic="/dhcp/heartbeat/"+HADD%(add_ctrl, add_node), payload=state, qos=qos, retain=retain)
+        self._mqttc.publish_heartbeat(add_ctrl, add_node, state=state, qos=qos, retain=retain)
 
     def publish_heartbeat_controller(self, add_ctrl, state='ONLINE', qos=0, retain=False):
         """Publish an heartbeat for the controller add_ctrl and all its nodes.
@@ -397,7 +521,7 @@ class MQTTClient(threading.Thread):
         :type retain: bool
         """
         msg = {'add_ctrl':add_ctrl, 'add_node':-1}
-        self.publish(topic="/dhcp/heartbeat/", payload=json_dumps(msg), qos=qos, retain=retain)
+        self._mqttc.publish_heartbeat_controller(add_ctrl, state=state, qos=qos, retain=retain)
 
     def publish_heartbeat_msg(self, msg, qos=0, retain=False):
         """Publish an heartbeat message.
@@ -419,7 +543,7 @@ class MQTTClient(threading.Thread):
         :type retain: bool
         """
         #Deprecated. We must send the heart to /dhcp/heartbeat/0011/0001
-        self.publish(topic="/dhcp/heartbeat/", payload=json_dumps(msg), qos=qos, retain=retain)
+        self._mqttc.publish_heartbeat_msg(msg, qos=qos, retain=retain)
 
     def publish_heartbeat_resolv_msg(self, msg, qos=0, retain=False):
         """Publish an heartbeat message.
@@ -440,7 +564,7 @@ class MQTTClient(threading.Thread):
         :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
         :type retain: bool
         """
-        self.publish(topic="/resolv/dhcp/heartbeat/", payload=json_dumps(msg), qos=qos, retain=retain)
+        self._mqttc.publish_heartbeat_resolv_msg(msg, qos=qos, retain=retain)
 
     def publish_value(self, hadd, value, genre='user', qos=0, retain=False):
         """Publish a value.
@@ -468,7 +592,7 @@ class MQTTClient(threading.Thread):
         else:
             res = value.to_json()
         logger.debug('Publish new value to /value/%s : %s', hadd, res)
-        self.publish(topic="/values/%s/%s/%s" % (genre, hadd, value.uuid), payload=res, qos=qos, retain=retain)
+        self._mqttc.publish_value(hadd, value, genre=genre, qos=qos, retain=retain)
 
     def run(self):
         """Run the loop
@@ -478,34 +602,18 @@ class MQTTClient(threading.Thread):
         #~ while rc == 0 and not self._stopevent.isSet():
             #~ #print "Ok"
             #~ rc = self._mqttc.loop_forever()
-        while not self._stopevent.isSet():
-            self._mqttc.loop(timeout=self.loop_sleep)
-        self._mqttc.disconnect()
+        self._mqttc.loop_forever(timeout=self.loop_sleep, max_packets=1, retry_first_connection=False)
         self._mqttc = None
 
     def stop(self):
         """Stop the mqtt thread
         """
-        logger.debug("Stop the client")
+        logger.debug("Stop the mqtt client")
+        self._mqttc.disconnect()
         self._stopevent.set( )
 
     def connect(self):
         """Connect to the mqtt broker
         """
-        logger.info("Start the client")
-        if "broker_user" in self.options:
-            password = None
-            if "broker_password" in self.options:
-                password = self.options['broker_password']
-            self._username_pw_set(self.options['broker_user'], password)
-        server = '127.0.0.1'
-        if "broker_ip" in self.options:
-            server = self.options['broker_ip']
-        #print server
-        port = 1883
-        if "broker_port" in self.options:
-            port = self.options['broker_port']
-        keepalive = 60
-        if "broker_keepalive" in self.options:
-            keepalive = int(self.options['broker_keepalive'])
-        self._connect(server=server, port=port, keepalive=keepalive)
+        logger.info("Connect the mqtt client")
+        self._mqttc.connect_with_options()

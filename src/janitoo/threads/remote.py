@@ -47,7 +47,7 @@ from janitoo.value import JNTValue
 from janitoo.component import JNTComponent
 from janitoo.bus import JNTBus
 from janitoo.dhcp import HeartbeatMessage
-from janitoo.mqtt import MQTTClient
+from janitoo.mqtt import MQTTClient, MQTTBasic
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -127,6 +127,8 @@ class RemoteNodeComponent(JNTComponent):
             label='wbasics',
             default=None,
         )
+
+
 
     def start(self, mqttc):
         """Start the component.
