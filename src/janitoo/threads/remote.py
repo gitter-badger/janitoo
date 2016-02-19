@@ -131,6 +131,7 @@ class RemoteNodeComponent(JNTComponent):
         """Start the component.
         """
         self.state = 'BOOT'
+        JNTComponent.start(self, mqttc)
         hadd = self.values['remote_hadd'].data
         logger.debug("[%s] - Found remote HADD %s for node %s", self.__class__.__name__, hadd, self.node.uuid)
         if hadd is None:
@@ -147,7 +148,6 @@ class RemoteNodeComponent(JNTComponent):
             self.mqttc_heartbeat.start()
         except:
             logger.exception("[%s] - start", self.__class__.__name__)
-        JNTComponent.start(self, mqttc)
         values_read = self.get_read_values()
         values_write = self.get_write_values()
         logger.debug("[%s] - found %s values_read", self.__class__.__name__, len(values_read))
@@ -269,13 +269,7 @@ class RemoteNodeComponent(JNTComponent):
         :param message: The message variable is a MQTTMessage that describes all of the message parameters.
         :type message: paho.mqtt.client.MQTTMessage
         """
-        hb = HeartbeatMessage(message)
-        add_ctrl, add_node, state = hb.get_heartbeat()
-        if add_ctrl is None or add_node is None:
-            return
-        if (add_ctrl == self.remote_hadd[0]) and \
-           (add_node == self.remote_hadd[1] or add_node == -1) :
-               self.state = state
+        pass
 
 class RemoteBus(JNTBus):
     """A pseudo-bus
