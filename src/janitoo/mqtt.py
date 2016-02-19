@@ -605,7 +605,7 @@ class MQTTClient(threading.Thread):
         #~ while rc == 0 and not self._stopevent.isSet():
             #~ #print "Ok"
             #~ rc = self.client.loop_forever()
-        self.client.loop_forever(timeout=self.loop_sleep, max_packets=1, retry_first_connection=False)
+        self.client.loop_forever(retry_first_connection=False)
         self.client = None
 
     def stop(self):
