@@ -47,6 +47,7 @@ logger = logging.getLogger(__name__)
 import threading
 import paho.mqtt.client as mqttc
 import uuid as muuid
+import traceback
 
 from janitoo.utils import JanitooNotImplemented, HADD, json_dumps
 
@@ -601,19 +602,21 @@ class MQTTClient(threading.Thread):
         """Run the loop
         """
         #print "Start run"
-        #~ rc = 0
-        #~ while rc == 0 and not self._stopevent.isSet():
-            #~ #print "Ok"
-            #~ rc = self.client.loop_forever()
-        self.client.loop_forever(retry_first_connection=False)
+        rc = 0
+        while rc == 0 and not self._stopevent.isSet():
+            try:
+                rc = self.client.loop_forever()
+            except:
+                logger.warning("[%s] - Exception in run : %s", self.__class__.__name__, traceback.format_exc())
+        #~ self.client.loop_forever(retry_first_connection=False)
         self.client = None
 
     def stop(self):
         """Stop the mqtt thread
         """
         logger.debug("[%s] - Stop the mqtt client", self.__class__.__name__)
-        self.client.disconnect()
         self._stopevent.set( )
+        self.client.disconnect()
 
     def connect(self):
         """Connect to the mqtt broker
