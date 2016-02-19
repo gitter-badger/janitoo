@@ -212,6 +212,7 @@ class RemoteNodeComponent(JNTComponent):
                         topic=TOPIC_VALUES_BASIC
                     topic = topic%(HADD%(self.remote_hadd)+'/'+value[1])
                     topics.append(topic)
+                logger.debug("[%s] - Unsubscribe to %s", self.__class__.__name__, topics)
                 self.mqttc_values.unsubscribe(topics)
                 self.mqttc_values.stop()
                 if self.mqttc_values.is_alive():
@@ -222,6 +223,7 @@ class RemoteNodeComponent(JNTComponent):
         if self.mqttc_heartbeat is not None:
             try:
                 hadd = HADD%(self.remote_hadd[0], self.remote_hadd[1])
+                logger.debug("[%s] - Unsubscribe to %s", self.__class__.__name__, TOPIC_HEARTBEAT_NODE%(hadd))
                 self.mqttc_heartbeat.unsubscribe(topic=TOPIC_HEARTBEAT_NODE%(hadd))
                 self.mqttc_heartbeat.stop()
                 if self.mqttc_heartbeat.is_alive():
