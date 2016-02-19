@@ -28,11 +28,14 @@ import time
 import unittest
 import threading
 import logging
-#~ from common import TestJanitoo, SLEEP
+import mock
+
+from janitoo_nosetests import JNTTBase
+from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
+
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
-from janitoo_nosetests import JNTTBase
-import mock
+from janitoo.utils import HADD_SEP, HADD
 
 class TestSerser(JNTTBase):
     """Test the common server
@@ -80,3 +83,24 @@ class TestSerser(JNTTBase):
             print noptions
             self.assertEqual(type(noptions), type({}))
             self.assertEqual(len(noptions), 0)
+
+
+class TestHttpSerser(JNTTServer, JNTTServerCommon):
+    """Test the server
+    """
+    loglevel = logging.DEBUG
+    path = '/tmp/janitoo_test'
+    broker_user = 'toto'
+    broker_password = 'toto'
+    server_class = JNTServer
+    server_conf = "tests/data/test_server.conf"
+    hadds = [HADD%(1118,0), HADD%(1118,1)]
+
+    def test_101_server_start_no_error_in_log(self):
+        self.start()
+        try:
+            time.sleep(120)
+            self.assertInLogfile('Found heartbeats in timeout')
+            self.assertNotInLogfile('^ERROR ')
+        finally:
+            self.stop()
