@@ -61,14 +61,14 @@ class JNTBus(object):
                     try:
                         self.factory[entry.name] = entry.load()
                     except:
-                        logger.exception('Exception when loading entry_point %s',  entry.name)
+                        logger.exception('[%s] - Exception when loading entry_point %s', self.__class__.__name__,  entry.name)
         if not hasattr(self,'value_factory'):
             self.value_factory = {}
             for entrypoint in iter_entry_points(group = 'janitoo.values'):
                 try:
                     self.value_factory[entrypoint.name] = entrypoint.load()
                 except:
-                    logger.exception('Exception when loading entry_point %s',  entry.name)
+                    logger.exception('[%s] - Exception when loading entry_point %s', self.__class__.__name__,  entry.name)
         if not hasattr(self,'components'):
             self.components = {}
         if not hasattr(self,'values'):

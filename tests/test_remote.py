@@ -84,17 +84,17 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
         print self.thread.bus.nodeman.find_node('node0')
         print self.thread.bus.nodeman.find_node('node1')
         print self.thread.bus.nodeman.find_node('node3')
-        print self.thread.bus.nodeman.find_value('node0','users_read').instances
-        print self.thread.bus.nodeman.find_value('node1','users_read').instances
+        print self.thread.bus.nodeman.find_value('node0','user_read').instances
+        print self.thread.bus.nodeman.find_value('node1','user_read').instances
         self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node1'))
         self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node0'))
         self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node3'))
-        self.assertEqual(2, self.thread.bus.nodeman.find_value('node1','users_read').get_length())
-        self.assertEqual(1, self.thread.bus.nodeman.find_value('node0','users_read').get_length())
-        self.assertEqual(1, self.thread.bus.nodeman.find_value('node0','users_write').get_length())
-        self.assertEqual(3, self.thread.bus.nodeman.find_value('node3','users_read').get_length())
+        self.assertEqual(2, self.thread.bus.nodeman.find_value('node1','user_read').get_length())
+        self.assertEqual(1, self.thread.bus.nodeman.find_value('node0','user_read').get_length())
+        self.assertEqual(1, self.thread.bus.nodeman.find_value('node0','user_write').get_length())
+        self.assertEqual(3, self.thread.bus.nodeman.find_value('node3','user_read').get_length())
         self.assertEqual(4, len(self.thread.bus.find_components('remote.node')))
-        self.assertEqual(4, len(self.thread.bus.find_values('remote.node','users_read')))
+        self.assertEqual(4, len(self.thread.bus.find_values('remote.node','user_read')))
 
     def test_102_values_config(self):
         self.thread.start()
@@ -104,19 +104,20 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
             time.sleep(1)
             i += 1
             #~ print self.thread.nodeman.state
+        time.sleep(10)
         print self.thread.bus.nodeman.nodes
         print self.thread.bus.nodeman.find_node('node3')
-        print self.thread.bus.nodeman.find_value('node3','users_read').instances
-        print self.thread.bus.nodeman.find_value('node3','users_write').instances
+        print self.thread.bus.nodeman.find_value('node3','user_read').instances
+        print self.thread.bus.nodeman.find_value('node3','user_write').instances
         self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node3'))
-        rvalue = self.thread.bus.nodeman.find_value('node3','users_read')
+        rvalue = self.thread.bus.nodeman.find_value('node3','user_read')
         print rvalue.get_value_config()
         self.assertEqual(3, rvalue.get_length())
         self.assertEqual(['ok_syntax_hum','0'], rvalue.get_value_config())
         self.assertEqual(None, rvalue.get_value_config(index=1))
         self.assertEqual(['bad_syntax_hum','0'], rvalue.get_value_config(index=2))
         self.assertEqual(None, rvalue.get_value_config(index=3))
-        wvalue = self.thread.bus.nodeman.find_value('node3','users_write')
+        wvalue = self.thread.bus.nodeman.find_value('node3','user_write')
         print wvalue.get_value_config()
         self.assertEqual(6, wvalue.get_length())
         self.assertEqual(['okswitch','0','0x0025','1','0'], wvalue.get_value_config())
@@ -128,15 +129,15 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
         self.assertEqual(None, wvalue.get_value_config(index=6))
 
         print self.thread.bus.nodeman.find_node('node0')
-        print self.thread.bus.nodeman.find_value('node0','users_read').instances
-        print self.thread.bus.nodeman.find_value('node0','users_write').instances
+        print self.thread.bus.nodeman.find_value('node0','user_read').instances
+        print self.thread.bus.nodeman.find_value('node0','user_write').instances
         self.assertNotEqual(None, self.thread.bus.nodeman.find_node('node0'))
-        rvalue = self.thread.bus.nodeman.find_value('node0','users_read')
+        rvalue = self.thread.bus.nodeman.find_value('node0','user_read')
         print rvalue.get_value_config()
         self.assertEqual(1, rvalue.get_length())
         self.assertEqual(['dht_out_hum','0'], rvalue.get_value_config())
         self.assertEqual(None, rvalue.get_value_config(index=1))
-        wvalue = self.thread.bus.nodeman.find_value('node0','users_write')
+        wvalue = self.thread.bus.nodeman.find_value('node0','user_write')
         print wvalue.get_value_config()
         self.assertEqual(1, wvalue.get_length())
         self.assertEqual(['switch','0','0x0025','1','0'], wvalue.get_value_config())

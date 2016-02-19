@@ -979,7 +979,7 @@ class JNTNodeMan(object):
         """
         for node in nodes:
             self.add_heartbeat(self.nodes[node])
-            logger.debug('Try to send heartbeat for node %s with hadd %s', node, self.nodes[node].hadd)
+            logger.debug('[%s] - Try to send heartbeat for node %s with hadd %s', self.__class__.__name__, node, self.nodes[node].hadd)
             if self.nodes[node].hadd is not None:
                 #~ print self.nodes[node].hadd
                 add_ctrl, add_node = self.nodes[node].split_hadd()

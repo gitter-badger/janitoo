@@ -200,7 +200,7 @@ class MQTTBasic(mqttc.Client):
             res = value.to_json_with_indexes()
         else:
             res = value.to_json()
-        logger.debug('Publish new value to /value/%s : %s', hadd, res)
+        logger.debug('[%s] - Publish new value to /value/%s : %s', self.__class__.__name__, hadd, res)
         self.publish(topic="/values/%s/%s/%s" % (genre, hadd, value.uuid), payload=res, qos=qos, retain=retain)
 
 
@@ -215,10 +215,10 @@ class MQTTClient(threading.Thread):
         self._stopevent = threading.Event()
         self.options = options
         self.loop_sleep = loop_sleep
-        self._mqttc = MQTTBasic(client_id=client_id, options=options)
-        self._mqttc.on_connect = self.mqtt_on_connect
-        self._mqttc.on_publish = self.mqtt_on_publish
-        self._mqttc.on_subscribe = self.mqtt_on_subscribe
+        self.client = MQTTBasic(client_id=client_id, options=options)
+        self.client.on_connect = self.mqtt_on_connect
+        self.client.on_publish = self.mqtt_on_publish
+        self.client.on_subscribe = self.mqtt_on_subscribe
 
     def mqtt_on_connect(self, client, userdata, flags, rc):
         """Called when the broker responds to our connection request.
@@ -245,7 +245,7 @@ class MQTTClient(threading.Thread):
                        6-255: Currently unused.
         :type rc: in
         """
-        logger.debug("Connected to broker")
+        logger.debug("[%s] - Connected to broker", self.__class__.__name__)
         #print("rc: "+str(rc))
         #raise JanitooNotImplemented('mqtt_on_connect not implemnted')
 
@@ -261,7 +261,7 @@ class MQTTClient(threading.Thread):
         :type message: paho.mqtt.client.MQTTMessage
 
         """
-        logger.debug("mqtt_on_message topic : %s, qos : %s, payload: %s", message.topic, message.qos, message.payload)
+        logger.debug("[%s] - mqtt_on_message topic : %s, qos : %s, payload: %s", self.__class__.__name__, message.topic, message.qos, message.payload)
         #print(message.topic+" "+str(message.qos)+" "+str(message.payload))
         #raise JanitooNotImplemented('mqtt_on_message not implemnted')
 
@@ -285,7 +285,7 @@ class MQTTClient(threading.Thread):
 
         """
         #print("mid: "+str(mid))
-        logger.debug("The message have been published")
+        logger.debug("[%s] - The message have been published", self.__class__.__name__)
 
     def mqtt_on_subscribe(self, client, userdata, mid, granted_qos):
         """called when the broker responds to a subscribe request.
@@ -303,7 +303,7 @@ class MQTTClient(threading.Thread):
 
         """
         #print("Subscribed: "+str(mid)+" "+str(granted_qos))
-        logger.debug("The subscription is done")
+        logger.debug("[%s] - The subscription is done", self.__class__.__name__)
 
     def mqtt_on_log(self, client, userdata, level, buff):
         """called when the client has log information. Define to allow debugging.
@@ -320,13 +320,13 @@ class MQTTClient(threading.Thread):
         :type buff: str
 
         """
-        if level == mqtt.MQTT_LOG_DEBUG:
+        if level == mqttc.MQTT_LOG_DEBUG:
             logger.debug(buff)
-        elif level == mqtt.MQTT_LOG_ERR:
+        elif level == mqttc.MQTT_LOG_ERR:
             logger.error(buff)
-        elif level == mqtt.MQTT_LOG_WARNING:
+        elif level == mqttc.MQTT_LOG_WARNING:
             logger.warning(buff)
-        elif level == mqtt.MQTT_LOG_NOTICE or level == mqtt.MQTT_LOG_INFO:
+        elif level == mqttc.MQTT_LOG_NOTICE or level == mqttc.MQTT_LOG_INFO:
             logger.info(buff)
 
     def remove_topic(self, topic=None):
@@ -335,7 +335,7 @@ class MQTTClient(threading.Thread):
         :param topic: a string specifying the subscription topic to subscribe to.
         :type topic: str
         """
-        self._mqttc.message_callback_remove(topic)
+        self.client.message_callback_remove(topic)
 
     def add_topic(self, topic=None, callback=None):
         """Register a message callback for a specific topic.
@@ -356,9 +356,9 @@ class MQTTClient(threading.Thread):
         """
         #mqttc.message_callback_add("$SYS/broker/messages/#", on_message_msgs)
         #mqttc.message_callback_add("$SYS/broker/bytes/#", on_message_bytes)
-        self._mqttc.message_callback_add(topic, callback)
+        self.client.message_callback_add(topic, callback)
 
-    def subscribe(self, topic=None, qos=0, callback=None):
+    def subscribe(self, topic=None, topics=None, qos=0, callback=None):
         """Subscribe to a topic
 
         This function may be called in three different ways:
@@ -398,10 +398,13 @@ class MQTTClient(threading.Thread):
         :param callback: the function called when a message arrived.
         :type callback: func
         """
-        #self._mqttc.subscribe("$SYS/#", 0)
-        self._mqttc.on_message = callback
-        self._mqttc.subscribe(topic, qos)
-        logger.debug("Subscribe to %s", topic)
+        #self.client.subscribe("$SYS/#", 0)
+        self.client.on_message = callback
+        if type(topics) == type([]):
+            self.client.subscribe(topics)
+        else:
+            self.client.subscribe(topic, qos)
+        logger.debug("[%s] - Subscribe to %s or %s", self.__class__.__name__, topic, topics)
 
     def unsubscribe(self, topic):
         """Unsubscribe the client from one or more topics.
@@ -411,7 +414,7 @@ class MQTTClient(threading.Thread):
 
         Raises a ValueError if topic is None or has zero string length, or is not a string or list.
         """
-        self._mqttc.unsubscribe(topic)
+        self.client.unsubscribe(topic)
 
     def subscribe_reply(self, uuid=None, qos=0, callback=None):
         """Subscribe to the reply mechanisme
@@ -478,7 +481,7 @@ class MQTTClient(threading.Thread):
         :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
         :type retain: bool
         """
-        self._mqttc.publish(topic, payload, qos, retain)
+        self.client.publish(topic, payload, qos, retain)
 
     def publish_heartbeat(self, add_ctrl, add_node, state='ONLINE', qos=0, retain=False):
         """Publish an heartbeat for the node add_ctrl, add_node.
@@ -499,7 +502,7 @@ class MQTTClient(threading.Thread):
         :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
         :type retain: bool
         """
-        self._mqttc.publish_heartbeat(add_ctrl, add_node, state=state, qos=qos, retain=retain)
+        self.client.publish_heartbeat(add_ctrl, add_node, state=state, qos=qos, retain=retain)
 
     def publish_heartbeat_controller(self, add_ctrl, state='ONLINE', qos=0, retain=False):
         """Publish an heartbeat for the controller add_ctrl and all its nodes.
@@ -521,7 +524,7 @@ class MQTTClient(threading.Thread):
         :type retain: bool
         """
         msg = {'add_ctrl':add_ctrl, 'add_node':-1}
-        self._mqttc.publish_heartbeat_controller(add_ctrl, state=state, qos=qos, retain=retain)
+        self.client.publish_heartbeat_controller(add_ctrl, state=state, qos=qos, retain=retain)
 
     def publish_heartbeat_msg(self, msg, qos=0, retain=False):
         """Publish an heartbeat message.
@@ -543,7 +546,7 @@ class MQTTClient(threading.Thread):
         :type retain: bool
         """
         #Deprecated. We must send the heart to /dhcp/heartbeat/0011/0001
-        self._mqttc.publish_heartbeat_msg(msg, qos=qos, retain=retain)
+        self.client.publish_heartbeat_msg(msg, qos=qos, retain=retain)
 
     def publish_heartbeat_resolv_msg(self, msg, qos=0, retain=False):
         """Publish an heartbeat message.
@@ -564,7 +567,7 @@ class MQTTClient(threading.Thread):
         :param retain: If set to true, the message will be set as the "last known good"/retained message for the topic.
         :type retain: bool
         """
-        self._mqttc.publish_heartbeat_resolv_msg(msg, qos=qos, retain=retain)
+        self.client.publish_heartbeat_resolv_msg(msg, qos=qos, retain=retain)
 
     def publish_value(self, hadd, value, genre='user', qos=0, retain=False):
         """Publish a value.
@@ -591,8 +594,8 @@ class MQTTClient(threading.Thread):
             res = value.to_json_with_indexes()
         else:
             res = value.to_json()
-        logger.debug('Publish new value to /value/%s : %s', hadd, res)
-        self._mqttc.publish_value(hadd, value, genre=genre, qos=qos, retain=retain)
+        logger.debug('[%s] - Publish new value to /value/%s : %s', self.__class__.__name__, hadd, res)
+        self.client.publish_value(hadd, value, genre=genre, qos=qos, retain=retain)
 
     def run(self):
         """Run the loop
@@ -601,19 +604,19 @@ class MQTTClient(threading.Thread):
         #~ rc = 0
         #~ while rc == 0 and not self._stopevent.isSet():
             #~ #print "Ok"
-            #~ rc = self._mqttc.loop_forever()
-        self._mqttc.loop_forever(timeout=self.loop_sleep, max_packets=1, retry_first_connection=False)
-        self._mqttc = None
+            #~ rc = self.client.loop_forever()
+        self.client.loop_forever(timeout=self.loop_sleep, max_packets=1, retry_first_connection=False)
+        self.client = None
 
     def stop(self):
         """Stop the mqtt thread
         """
-        logger.debug("Stop the mqtt client")
-        self._mqttc.disconnect()
+        logger.debug("[%s] - Stop the mqtt client", self.__class__.__name__)
+        self.client.disconnect()
         self._stopevent.set( )
 
     def connect(self):
         """Connect to the mqtt broker
         """
-        logger.info("Connect the mqtt client")
-        self._mqttc.connect_with_options()
+        logger.info("[%s] - Connect the mqtt client", self.__class__.__name__)
+        return self.client.connect_with_options()

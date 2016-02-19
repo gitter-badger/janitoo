@@ -88,8 +88,7 @@ class RemoteNodeComponent(JNTComponent):
                 product_name=product_name, product_type=product_type, product_manufacturer="Janitoo", **kwargs)
         logger.debug("[%s] - __init__ node uuid:%s", self.__class__.__name__, self.uuid)
         self.mqttc_heartbeat = None
-        self.mqttc_users = None
-        self.mqttc_basics = None
+        self.mqttc_values = None
         self.state = 'OFFLINE'
         self.remote_hadd = (None,None)
         uuid="remote_hadd"
@@ -99,48 +98,47 @@ class RemoteNodeComponent(JNTComponent):
             label='rhadd',
             default=None,
         )
-        uuid="users_read"
+        uuid="user_read"
         self.values[uuid] = self.value_factory['rread_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
-            help='The users values to listen to : value_uuid:index',
-            label='rusers',
+            help='The user values to listen to : value_uuid:index',
+            label='ruser',
             default=None,
         )
-        uuid="users_write"
+        uuid="user_write"
         self.values[uuid] = self.value_factory['rwrite_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
-            help='The users values to listen to : value_uuid:index',
-            label='wusers',
+            help='The user values to listen to : value_uuid:index',
+            label='wuser',
             default=None,
         )
-        uuid="basics_read"
+        uuid="basic_read"
         self.values[uuid] = self.value_factory['rread_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
-            help='The basics values to listen to : value_uuid:index',
-            label='rbasics',
+            help='The basic values to listen to : value_uuid:index',
+            label='rbasic',
             default=None,
         )
-        uuid="basics_write"
+        uuid="basic_write"
         self.values[uuid] = self.value_factory['rwrite_value'](options=self.options, uuid=uuid,
             node_uuid=self.uuid,
-            help='The basics values to listen to : value_uuid:index',
-            label='wbasics',
+            help='The basic values to listen to : value_uuid:index',
+            label='wbasic',
             default=None,
         )
-
-
 
     def start(self, mqttc):
         """Start the component.
         """
         self.state = 'BOOT'
         hadd = self.values['remote_hadd'].data
+        logger.debug("[%s] - Found remote HADD %s for node %s", self.__class__.__name__, hadd, self.node.uuid)
         if hadd is None:
-            logger.debug("[%s] - No HADD", self.__class__.__name__)
+            logger.debug("[%s] - No remote HADD. Exit ...", self.__class__.__name__)
             return False
         self.remote_hadd = hadd_split(hadd)
         if self.remote_hadd[0] is None or self.remote_hadd[1] is None:
-            logger.warning("[%s] - Bad HADD %s", self.__class__.__name__, hadd)
+            logger.warning("[%s] - Bad remote HADD %s", self.__class__.__name__, hadd)
             return False
         try:
             self.mqttc_heartbeat = MQTTClient(options=self.options.data)
@@ -150,17 +148,77 @@ class RemoteNodeComponent(JNTComponent):
         except:
             logger.exception("[%s] - start", self.__class__.__name__)
         JNTComponent.start(self, mqttc)
-        which = 'users_read'
-        max_index = self.values[which].get_max_index()+1
-        logger.warning("[%s] - found %s %s", self.__class__.__name__, max_index, 'users_read')
+        values_read = self.get_read_values()
+        values_write = self.get_write_values()
+        logger.debug("[%s] - found %s values_read", self.__class__.__name__, len(values_read))
+        logger.debug("[%s] - found %s values_write", self.__class__.__name__, len(values_write))
+        topics = []
+        for value in values_read:
+            if value[0] == 'user':
+                topic=TOPIC_VALUES_USER
+            else:
+                topic=TOPIC_VALUES_BASIC
+            topic = topic%(hadd+'/'+value[1])
+            topics.append((topic, 0))
+            logger.debug("[%s] - subscribe to %s", self.__class__.__name__, topic)
+        if len(topics)>0:
+            try:
+                self.mqttc_values = MQTTClient(options=self.options.data)
+                self.mqttc_values.connect()
+                self.mqttc_values.subscribe(topics=topics, callback=self.on_remote_value)
+                self.mqttc_values.start()
+            except:
+                logger.exception("[%s] - start", self.__class__.__name__)
+
         #~ print max_index
         #~ for index in range(max_index):
             #~ print index
         return True
 
+    def get_read_values(self):
+        """Return all the read values.
+        """
+        values = []
+        for which in ['user_read', 'basic_read']:
+            nb_instances = self.values[which].get_length()
+            for i in range(nb_instances):
+                vuuid, vindex = self.values[which].get_value_config(index=i)
+                values.append((which.replace('_read',''), vuuid, int(vindex)))
+        return values
+
+    def get_write_values(self):
+        """Return all the read values.
+        """
+        values = []
+        for which in ['user_write', 'basic_write']:
+            nb_instances = self.values[which].get_length()
+            for i in range(nb_instances):
+                vuuid, vindex, cmdcls, ston, stoff = self.values[which].get_value_config(index=i)
+                values.append((which.replace('_write',''), vuuid, int(vindex), cmdcls, ston, stoff))
+        return values
+
     def stop(self):
         """Stop the component.
         """
+        if self.mqttc_values is not None:
+            try:
+                hadd = HADD%(self.remote_hadd[0], self.remote_hadd[1])
+                values_read = self.get_read_values()
+                topics = []
+                for value in values_read:
+                    if value[0] == 'user':
+                        topic=TOPIC_VALUES_USER
+                    else:
+                        topic=TOPIC_VALUES_BASIC
+                    topic = topic%(HADD%(self.remote_hadd)+'/'+value[1])
+                    topics.append(topic)
+                self.mqttc_values.unsubscribe(topics)
+                self.mqttc_values.stop()
+                if self.mqttc_values.is_alive():
+                    self.mqttc_values.join()
+                self.mqttc_values = None
+            except:
+                logger.exception("[%s] - stop", self.__class__.__name__)
         if self.mqttc_heartbeat is not None:
             try:
                 hadd = HADD%(self.remote_hadd[0], self.remote_hadd[1])
@@ -184,6 +242,24 @@ class RemoteNodeComponent(JNTComponent):
         return False
 
     def on_heartbeat(self, client, userdata, message):
+        """On request
+
+        :param client: the Client instance that is calling the callback.
+        :type client: paho.mqtt.client.Client
+        :param userdata: user data of any type and can be set when creating a new client instance or with user_data_set(userdata).
+        :type userdata: all
+        :param message: The message variable is a MQTTMessage that describes all of the message parameters.
+        :type message: paho.mqtt.client.MQTTMessage
+        """
+        hb = HeartbeatMessage(message)
+        add_ctrl, add_node, state = hb.get_heartbeat()
+        if add_ctrl is None or add_node is None:
+            return
+        if (add_ctrl == self.remote_hadd[0]) and \
+           (add_node == self.remote_hadd[1] or add_node == -1) :
+               self.state = state
+
+    def on_remote_value(self, client, userdata, message):
         """On request
 
         :param client: the Client instance that is calling the callback.
