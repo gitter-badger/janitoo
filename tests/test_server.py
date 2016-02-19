@@ -37,8 +37,8 @@ from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
 from janitoo.utils import HADD_SEP, HADD
 
-JNTTBase.skipCITest()
-JNTTBase.skipDockerTest()
+#~ JNTTBase.skipCITest()
+#~ JNTTBase.skipDockerTest()
 
 class TestSerser(JNTTBase):
     """Test the common server
@@ -86,25 +86,3 @@ class TestSerser(JNTTBase):
             print noptions
             self.assertEqual(type(noptions), type({}))
             self.assertEqual(len(noptions), 0)
-
-
-class TestHttpSerser(JNTTServer, JNTTServerCommon):
-    """Test the server
-    """
-    loglevel = logging.DEBUG
-    path = '/tmp/janitoo_test'
-    broker_user = 'toto'
-    broker_password = 'toto'
-    server_class = JNTServer
-    server_conf = "tests/data/test_server.conf"
-    hadds = [HADD%(1118,0), HADD%(1118,1), HADD%(1120,0), HADD%(1120,1), HADD%(1120,2), HADD%(1120,3), HADD%(1120,4)]
-
-    def test_101_server_start_no_error_in_log(self):
-        self.start()
-        try:
-            self.assertHeartbeatNodes(hadds=self.hadds)
-            time.sleep(120)
-            self.assertInLogfile('Found heartbeats in timeout')
-            self.assertNotInLogfile('^ERROR ')
-        finally:
-            self.stop()
