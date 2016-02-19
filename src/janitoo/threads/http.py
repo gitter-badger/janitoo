@@ -295,15 +295,13 @@ class HttpResourceComponent(JNTComponent):
         dirname = os.path.join(dirname, "public")
         dirname = os.path.join(dirname, self.path)
         self.deploy_resource(dirname)
-        JNTComponent.start(self, mqttc)
-        return True
+        return JNTComponent.start(self, mqttc)
 
     def stop(self):
         """Stop the component.
 
         """
-        JNTComponent.stop(self)
-        return True
+        return JNTComponent.stop(self)
 
     def deploy_resource(self, destination):
         """

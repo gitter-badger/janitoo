@@ -63,9 +63,12 @@ class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
     def test_101_thread_start_wait_long_stop(self):
         #~ self.skipTest("Fail on docker")
         self.thread.start()
-        time.sleep(60)
-        self.assertDir("/tmp/janitoo_test/home/public")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/js")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/css")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/images")
-        #~ self.assertDir("/tmp/janitoo_test/home/public/generic/doc")
+        try:
+            time.sleep(60)
+            self.assertDir("/tmp/janitoo_test/home/public")
+            #~ self.assertDir("/tmp/janitoo_test/home/public/generic/js")
+            #~ self.assertDir("/tmp/janitoo_test/home/public/generic/css")
+            #~ self.assertDir("/tmp/janitoo_test/home/public/generic/images")
+            #~ self.assertDir("/tmp/janitoo_test/home/public/generic/doc")
+        finally:
+            self.thread.stop()
