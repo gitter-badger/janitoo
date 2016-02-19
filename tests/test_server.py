@@ -37,6 +37,9 @@ from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
 from janitoo.utils import HADD_SEP, HADD
 
+JNTTThreadRun.skipCITest()
+JNTTThreadRun.skipDockerTest()
+
 class TestSerser(JNTTBase):
     """Test the common server
     """
