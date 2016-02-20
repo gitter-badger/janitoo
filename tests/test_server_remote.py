@@ -37,7 +37,7 @@ from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
 from janitoo.utils import HADD_SEP, HADD
 
-JNTTBase.skipCITest()
+#~ JNTTBase.skipCITest()
 JNTTServer.skipDockerTest()
 
 class TestRemoteSerser(JNTTServer, JNTTServerCommon):
