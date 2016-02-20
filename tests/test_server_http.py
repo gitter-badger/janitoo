@@ -48,8 +48,8 @@ class TestHttpSerser(JNTTServer, JNTTServerCommon):
     broker_user = 'toto'
     broker_password = 'toto'
     server_class = JNTServer
-    server_conf = "tests/data/test_server.conf"
-    hadds = [HADD%(1118,0), HADD%(1118,1), HADD%(1120,0), HADD%(1120,1), HADD%(1120,2), HADD%(1120,3), HADD%(1120,4)]
+    server_conf = "tests/data/test_server_http.conf"
+    hadds = [HADD%(1118,0), HADD%(1118,1)]
 
     def test_101_server_start_no_error_in_log(self):
         self.start()

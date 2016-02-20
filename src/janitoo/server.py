@@ -176,7 +176,7 @@ class JNTServer(object):
         self.stop()
         while len(self._threads)>0:
             self._stopevent.wait(self.loop_sleep*10)
-        time.sleep(1.0)
+        self._stopevent.wait(1.5)
         self.start()
 
     def flush(self):
