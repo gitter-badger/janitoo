@@ -38,7 +38,7 @@ from janitoo.server import JNTServer
 from janitoo.utils import HADD_SEP, HADD
 
 #~ JNTTBase.skipCITest()
-JNTTBase.skipDockerTest()
+JNTTServer.skipDockerTest()
 
 class TestHttpSerser(JNTTServer, JNTTServerCommon):
     """Test the server
