@@ -37,7 +37,7 @@ from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
 from janitoo.utils import HADD_SEP, HADD
 
-JNTTBase.skipCITest()
+#~ JNTTBase.skipCITest()
 JNTTServer.skipDockerTest()
 
 class TestRemoteSerser(JNTTServer, JNTTServerCommon):
@@ -56,7 +56,7 @@ class TestRemoteSerser(JNTTServer, JNTTServerCommon):
         try:
             self.assertHeartbeatNodes(hadds=self.hadds)
             time.sleep(120)
-            self.assertInLogfile('Found heartbeats in timeout')
-            self.assertNotInLogfile('^ERROR ')
         finally:
             self.stop()
+        self.assertInLogfile('Found heartbeats in timeout')
+        self.assertNotInLogfile('^ERROR ')
