@@ -69,13 +69,13 @@ class JNTServer(object):
         self.gc_delay = 0
         self.slow_start = 0.05
 
-    #~ def __del__(self):
-        #~ """
-        #~ """
-        #~ try:
-            #~ self.stop()
-        #~ except:
-            #~ pass
+    def __del__(self):
+        """
+        """
+        try:
+            self.stop()
+        except:
+            pass
 
     def start(self):
         """Start the server. Must be called at the end of the children class.

@@ -78,13 +78,13 @@ class BaseThread(threading.Thread):
         if self.section is None:
             self.init_section()
 
-    #~ def __del__(self):
-        #~ """
-        #~ """
-        #~ try:
-            #~ self.stop()
-        #~ except:
-            #~ pass
+    def __del__(self):
+        """
+        """
+        try:
+            self.stop()
+        except:
+            pass
 
     def init_section(self):
         """Init the bus. Must be overloaded
