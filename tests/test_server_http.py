@@ -56,3 +56,6 @@ class TestHttpSerser(JNTTServer, JNTTServerCommon):
     server_conf = "tests/data/test_server_http.conf"
     hadds = [HADD%(1118,0), HADD%(1118,1)]
 
+    def test_040_server_start_no_error_in_log(self):
+        self.skipTravisTest()
+        JNTTServer.test_040_server_start_no_error_in_log(self)
