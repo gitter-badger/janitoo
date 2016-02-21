@@ -119,6 +119,7 @@ class JNTBus(object):
 
     def stop(self):
         """Start the bus and components"""
+        logger.debug("[%s] - Stop the bus", self.__class__.__name__)
         for compo in self.components.keys():
             self.components[compo].stop()
             del self.components[compo]

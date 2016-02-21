@@ -112,12 +112,17 @@ class BaseThread(threading.Thread):
     def stop(self):
         """Stop the thread
         """
-        logger.debug("Stop the thread %s", self.__class__.__name__)
+        logger.debug("[%s] - Stop the thread", self.__class__.__name__)
         if self.config_timeout_timer is not None:
             self.config_timeout_timer.cancel()
             self.config_timeout_timer = None
-        self._reloadevent.set()
         self._stopevent.set()
+
+    def reload(self):
+        """Stop the thread
+        """
+        logger.debug("[%s] - reload the thread", self.__class__.__name__)
+        self._reloadevent.set()
 
     def pre_loop(self):
         """Launch before entering the run loop. The node manager is available.
@@ -208,6 +213,11 @@ class JNTThread(BaseThread):
             except:
                 logger.exception('[%s] - Exception in post_loop', self.__class__.__name__)
             self.nodeman.stop()
+            i = 0
+            while not self.nodeman.is_stopped and i<100:
+                i += 1
+                self._reloadevent.wait(0.1)
+        logger.debug("[%s] - Exiting the thread loop", self.__class__.__name__)
         self.nodeman = None
 
 class JNTBusThread(JNTThread):

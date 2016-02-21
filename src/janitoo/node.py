@@ -954,7 +954,7 @@ class JNTNodeMan(object):
                 if self.polls[node][key]['next_run'] < datetime.datetime.now():
                     to_polls.append(self.polls[node][key]['value'])
         if len(to_polls)>0:
-            logger.debug('Found polls in timeout : [ %s ]', ', '.join(str(e.uuid) for e in to_polls))
+            logger.debug('[%s] - Found polls in timeout : [ %s ]', self.__class__.__name__, ', '.join(str(e.uuid) for e in to_polls))
         for value in to_polls:
             self.publish_poll(self.mqtt_nodes, value, stopevent)
             stopevent.wait(0.1)
@@ -964,7 +964,7 @@ class JNTNodeMan(object):
             if self.heartbeats[node]['next_run'] < datetime.datetime.now():
                 to_heartbeats.append(node)
         if len(to_heartbeats)>0:
-            logger.debug('Found heartbeats in timeout : %s', to_heartbeats)
+            logger.debug('[%s] - Found heartbeats in timeout : %s', self.__class__.__name__, to_heartbeats)
             self.heartbeat(to_heartbeats, self.mqtt_heartbeat, stopevent)
         try:
             sleep = float(self.loop_sleep) - 0.02*len(to_polls) - 0.02*len(to_heartbeats)
@@ -1305,7 +1305,7 @@ class JNTBusNodeMan(JNTNodeMan):
         try:
             self.bus.stop()
         except:
-            logger.exception("exception in stop : %s", self.__class__.__name__)
+            logger.exception("Exception when stopping bus : %s", self.__class__.__name__)
         JNTNodeMan.stop(self)
 
     def after_controller_reply_config(self):

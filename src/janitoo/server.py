@@ -56,6 +56,7 @@ class JNTServer(object):
         """Init the server. Must be called at the begin of the children class.
         """
         self._stopevent = threading.Event()
+        self._reloadevent = threading.Event()
         self.options = JNTOptions(options)
         signal.signal(signal.SIGTERM, self.sigterm_handler)
         #Need more tests
@@ -68,19 +69,23 @@ class JNTServer(object):
         self.gc_delay = 0
         self.slow_start = 0.05
 
-    def __del__(self):
-        """
-        """
-        try:
-            self.stop()
-        except:
-            pass
+    #~ def __del__(self):
+        #~ """
+        #~ """
+        #~ try:
+            #~ self.stop()
+        #~ except:
+            #~ pass
 
     def start(self):
         """Start the server. Must be called at the end of the children class.
         """
         logger.info("[%s] - Start the server", self.__class__.__name__)
         self._stopevent.clear()
+
+    def pre_loop(self):
+        """Before enterig the loop
+        """
         loop_sleep = self.options.get_option('system','loop_sleep')
         if loop_sleep is not None:
             try:
@@ -101,11 +106,6 @@ class JNTServer(object):
                 self.slow_start = int(slow_start)
             except:
                 logger.info("[%s] - Can't set slow_start from configuration file. Using default valuse %s", self.__class__.__name__, self.slow_start)
-        self.start_threads()
-
-    def start_threads(self):
-        """Start the threads associated to this server.
-        """
         for entry in iter_entry_points(group='janitoo.threads', name=None):
             th=None
             try:
@@ -126,34 +126,9 @@ class JNTServer(object):
             raise JanitooException(message="Can't find a thread to launch in the config file")
         logger.info("[%s] - Loaded thread(s) from entry_point : %s", self.__class__.__name__, self._threads)
 
-    def pre_loop(self):
-        """Before enterig the loop
-        """
-        pass
-
     def post_loop(self):
         """After the loop
         """
-        pass
-
-    def run(self):
-        """Run the loop
-        """
-        i = 0
-        self.pre_loop()
-        while not self._stopevent.isSet():
-            i += 1
-            self._stopevent.wait(self.loop_sleep)
-            if self.gc_delay>0 and self.gc_next_run < datetime.datetime.now():
-                gc.collect()
-                self.gc_next_run = datetime.datetime.now() + datetime.timedelta(seconds=self.gc_delay)
-        self.post_loop()
-
-    def stop(self):
-        """Stop the server. Must be called at begin if overloaded in the children class
-        """
-        logger.info("[%s] - Stop the server", self.__class__.__name__)
-        self._stopevent.set( )
         for th in self._threads:
             th.stop()
         for th in self._threads:
@@ -161,6 +136,28 @@ class JNTServer(object):
                 th.join()
             self._threads.remove(th)
         self._threads = []
+
+    def run(self):
+        """Run the loop
+        """
+        logger.debug("[%s] - Entering the server loop", self.__class__.__name__)
+        while not self._stopevent.isSet():
+            self._reloadevent.clear()
+            self.pre_loop()
+            while not self._reloadevent.isSet() and not self._stopevent.isSet():
+                self._stopevent.wait(self.loop_sleep)
+                if self.gc_delay>0 and self.gc_next_run < datetime.datetime.now():
+                    gc.collect()
+                    self.gc_next_run = datetime.datetime.now() + datetime.timedelta(seconds=self.gc_delay)
+            self.post_loop()
+        logger.debug("[%s] - Exiting the server loop", self.__class__.__name__)
+        self.post_loop()
+
+    def stop(self):
+        """Stop the server. Must be called at begin if overloaded in the children class
+        """
+        logger.info("[%s] - Stop the server", self.__class__.__name__)
+        self._stopevent.set( )
 
     def reload_threads(self):
         """Reload the threads
@@ -173,11 +170,12 @@ class JNTServer(object):
         """Reload the server
         """
         logger.info("[%s] - Reload the server", self.__class__.__name__)
-        self.stop()
-        while len(self._threads)>0:
-            self._stopevent.wait(self.loop_sleep*10)
-        self._stopevent.wait(1.5)
-        self.start()
+        self._reloadevent.set( )
+        #~ self.stop()
+        #~ while len(self._threads)>0:
+            #~ self._stopevent.wait(self.loop_sleep*10)
+        #~ self._stopevent.wait(1.5)
+        #~ self.start()
 
     def flush(self):
         """Flush the server's data to disk
@@ -207,7 +205,7 @@ class JNTServer(object):
         print('TERM signal received : %s' % (signal))
         logger.warning('TERM signal received : %s', signal)
         self.stop()
-        sys.exit(0)
+        #~ sys.exit(0)
 
     def sighup_handler(self, signal, frame):
         """Catch SIGHUP signal
@@ -215,7 +213,7 @@ class JNTServer(object):
         print('HUP signal received : %s' % (signal))
         logger.warning('HUP signal received : %s', signal)
         self.reload()
-        sys.exit(0)
+        #~ sys.exit(0)
 
     def sigusr1_handler(self, signal, frame):
         """Catch SIGUSR1 signal
@@ -225,7 +223,7 @@ class JNTServer(object):
         print('USR1 signal received : %s' % (signal))
         logger.warning('USR1 signal received : %s', signal)
         self.reload()
-        sys.exit(0)
+        #~ sys.exit(0)
 
 ##############################################################
 #Check that we are in sync with the official command classes

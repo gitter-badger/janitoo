@@ -27,8 +27,8 @@ import sys, os
 import time
 import unittest
 import threading
-import logging
 import mock
+import logging
 
 from janitoo_nosetests import JNTTBase
 from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
@@ -51,12 +51,3 @@ class TestRemoteSerser(JNTTServer, JNTTServerCommon):
     server_conf = "tests/data/test_server_remote.conf"
     hadds = [HADD%(1120,0), HADD%(1120,1), HADD%(1120,2), HADD%(1120,3), HADD%(1120,4)]
 
-    def test_101_server_start_no_error_in_log(self):
-        self.start()
-        try:
-            self.assertHeartbeatNodes(hadds=self.hadds)
-            time.sleep(120)
-        finally:
-            self.stop()
-        self.assertNotInLogfile('^ERROR ')
-        self.assertInLogfile('Found heartbeats in timeout')

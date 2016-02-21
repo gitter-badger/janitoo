@@ -110,6 +110,14 @@ class HttpServerThread(BaseThread):
         self.port = 8081
         self._server = None
 
+    def __del__(self):
+        """
+        """
+        try:
+            self.stop()
+        except:
+            pass
+
     def config(self, host="localhost", port=8081):
         """
         """
@@ -130,18 +138,19 @@ class HttpServerThread(BaseThread):
         #~ os.chdir(dirname)
         if dirname.endswith("/"):
             dirname = dirname[:-1]
-        logger.debug("[%s] - dirname %s", self.__class__.__name__, dirname)
+        logger.debug("[%s] - Start the server (%s:%s) serving dirnectory %s", self.__class__.__name__, self.host, self.port, dirname)
         self._server = ThreadedHTTPServer((self.host, self.port), ThreadedHTTPHandler, root_directory=dirname)
 
     def post_loop(self):
         """Launch after finishing the run loop. The node manager is still available.
         """
-        pass
+        self._server.server_close()
+        self._server = None
 
     def loop(self):
         """Launch after finishing the run loop. The node manager is still available.
         """
-        self._server.serve_forever()
+        self._server.serve_forever(poll_interval=self.loop_sleep)
 
     def config_timeout_callback(self):
         """Called when configuration is finished.
@@ -149,7 +158,6 @@ class HttpServerThread(BaseThread):
         BaseThread.config_timeout_callback(self)
         if self._server is not None:
             self._server.shutdown()
-            self._server = None
 
     def stop(self):
         """Stop the thread
@@ -157,7 +165,6 @@ class HttpServerThread(BaseThread):
         BaseThread.stop(self)
         if self._server is not None:
             self._server.shutdown()
-            self._server = None
 
     def run(self):
         """Run the loop

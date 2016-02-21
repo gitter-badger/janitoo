@@ -26,9 +26,10 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 import sys, os
 import time
 import unittest
-import threading
 import logging
+import threading
 import mock
+import logging
 
 from janitoo_nosetests import JNTTBase
 from janitoo_nosetests.server import JNTTServer, JNTTServerCommon
@@ -43,20 +44,9 @@ JNTTServer.skipDockerTest()
 class TestHttpSerser(JNTTServer, JNTTServerCommon):
     """Test the server
     """
-    loglevel = logging.DEBUG
     path = '/tmp/janitoo_test'
     broker_user = 'toto'
     broker_password = 'toto'
     server_class = JNTServer
     server_conf = "tests/data/test_server_http.conf"
     hadds = [HADD%(1118,0), HADD%(1118,1)]
-
-    def test_101_server_start_no_error_in_log(self):
-        self.start()
-        try:
-            self.assertHeartbeatNodes(hadds=self.hadds)
-            time.sleep(120)
-        finally:
-            self.stop()
-        self.assertNotInLogfile('^ERROR ')
-        self.assertInLogfile('Found heartbeats in timeout')
