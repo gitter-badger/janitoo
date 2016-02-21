@@ -97,20 +97,7 @@ class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
             self.assertEqual(3, self.thread.bus.nodeman.find_value('node3','user_read').get_length())
             self.assertEqual(4, len(self.thread.bus.find_components('remote.node')))
             self.assertEqual(4, len(self.thread.bus.find_values('remote.node','user_read')))
-        finally:
-            self.thread.stop()
 
-    def test_102_values_config(self):
-        self.thread.start()
-        try:
-            timeout = 120
-            i = 0
-            while i< timeout and not self.thread.nodeman.is_started:
-                time.sleep(1)
-                i += 1
-                #~ print self.thread.nodeman.state
-            time.sleep(10)
-            print self.thread.bus.nodeman.nodes
             print self.thread.bus.nodeman.find_node('node3')
             print self.thread.bus.nodeman.find_value('node3','user_read').instances
             print self.thread.bus.nodeman.find_value('node3','user_write').instances
