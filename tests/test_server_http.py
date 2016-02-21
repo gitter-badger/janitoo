@@ -43,6 +43,8 @@ from janitoo.utils import HADD_SEP, HADD
 
 #~ JNTTBase.skipCITest()
 #~ JNTTServer.skipDockerTest()
+#The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
+#~ JNTTServer.skipTravisTest()
 
 class TestHttpSerser(JNTTServer, JNTTServerCommon):
     """Test the server
