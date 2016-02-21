@@ -42,7 +42,7 @@ from janitoo.server import JNTServer
 from janitoo.utils import HADD_SEP, HADD
 
 #~ JNTTBase.skipCITest()
-JNTTServer.skipDockerTest()
+#~ JNTTServer.skipDockerTest()
 
 class TestHttpSerser(JNTTServer, JNTTServerCommon):
     """Test the server
@@ -53,3 +53,4 @@ class TestHttpSerser(JNTTServer, JNTTServerCommon):
     server_class = JNTServer
     server_conf = "tests/data/test_server_http.conf"
     hadds = [HADD%(1118,0), HADD%(1118,1)]
+
