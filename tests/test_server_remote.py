@@ -58,4 +58,4 @@ class TestRemoteSerser(JNTTServer, JNTTServerCommon):
 
     def test_040_server_start_no_error_in_log(self):
         self.skipTravisTest()
-        JNTTServer.test_040_server_start_no_error_in_log(self)
+        JNTTServerCommon.test_040_server_start_no_error_in_log(self)
