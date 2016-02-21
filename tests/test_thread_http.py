@@ -64,7 +64,7 @@ class TestHttpThread(JNTTThreadRun, JNTTThreadRunCommon):
         #~ self.skipTest("Fail on docker")
         self.thread.start()
         try:
-            time.sleep(60)
+            time.sleep(15)
             self.assertDir("/tmp/janitoo_test/home/public")
             #~ self.assertDir("/tmp/janitoo_test/home/public/generic/js")
             #~ self.assertDir("/tmp/janitoo_test/home/public/generic/css")
