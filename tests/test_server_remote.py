@@ -51,7 +51,7 @@ class TestRemoteSerser(JNTTServer, JNTTServerCommon):
     server_conf = "tests/data/test_server_remote.conf"
     hadds = [HADD%(1120,0), HADD%(1120,1), HADD%(1120,2), HADD%(1120,3), HADD%(1120,4)]
 
-    #~ def test_040_server_start_no_error_in_log(self):
-        #~ #The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
-        #~ self.skipTravisTest()
-        #~ JNTTServerCommon.test_040_server_start_no_error_in_log(self)
+    def test_040_server_start_no_error_in_log(self):
+        #The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
+        self.skipTravisTest()
+        JNTTServerCommon.test_040_server_start_no_error_in_log(self)
