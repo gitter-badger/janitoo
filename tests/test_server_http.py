@@ -51,10 +51,10 @@ class TestHttpSerser(JNTTServer, JNTTServerCommon):
     server_conf = "tests/data/test_server_http.conf"
     hadds = [HADD%(1118,0), HADD%(1118,1)]
 
-    def test_040_server_start_no_error_in_log(self):
-        #The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
-        self.skipTravisTest()
-        JNTTServerCommon.test_040_server_start_no_error_in_log(self)
+    #~ def test_040_server_start_no_error_in_log(self):
+        #~ #The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
+        #~ self.skipTravisTest()
+        #~ JNTTServerCommon.test_040_server_start_no_error_in_log(self)
 
     def test_100_node_config(self):
         self.start()
