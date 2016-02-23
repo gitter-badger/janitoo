@@ -60,6 +60,14 @@ class MQTTBasic(mqttc.Client):
         mqttc.Client.__init__(self, client_id=client_id, **kwargs)
         self.options = options
 
+    def disconnect(self):
+        """
+        """
+        try:
+            mqttc.Client.disconnect(self)
+        except:
+            logger.exception('[%s] - Exception in disconnect', self.__class__.__name__)
+
     def connect_with_options(self):
         """Connect to the mqtt broker using options
 

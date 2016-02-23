@@ -706,7 +706,7 @@ class JNTNodeMan(object):
                 if 'reply_hadd' not in data:
                     logger.warning("No reply_hadd in message %s", message)
                 logger.debug("on_request COMMAND_CONFIGURATION message %s,%s", message.topic, message.payload)
-                node = self.get_node_from_hadd(data['reply_hadd'])
+                node = self.get_node_from_hadd(data['hadd'])
                 #~ print node.values
                 if data['genre'] == 0x04:
                     #print "message %s" % message
@@ -736,7 +736,7 @@ class JNTNodeMan(object):
                         data['label'] = node.values[data['uuid']].label
                         data['help'] = node.values[data['uuid']].help
                         msg = json_dumps(data)
-                        topic = TOPIC_VALUES_SYSTEM % ("%s/%s" % (data['reply_hadd'], data['uuid']))
+                        topic = TOPIC_VALUES_SYSTEM % ("%s/%s" % (data['hadd'], data['uuid']))
                         self.publish_request(topic, msg)
                         return
                 elif data['genre'] == 0x03:
@@ -768,7 +768,7 @@ class JNTNodeMan(object):
                         data['label'] = node.values[data['uuid']].label
                         data['help'] = node.values[data['uuid']].help
                         msg = json_dumps(data)
-                        topic = TOPIC_VALUES_CONFIG % ("%s/%s" % (data['reply_hadd'], data['uuid']))
+                        topic = TOPIC_VALUES_CONFIG % ("%s/%s" % (data['hadd'], data['uuid']))
                         self.publish_request(topic, msg)
                         return
             else:

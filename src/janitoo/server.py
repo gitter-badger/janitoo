@@ -150,13 +150,13 @@ class JNTServer(object):
                     gc.collect()
                     self.gc_next_run = datetime.datetime.now() + datetime.timedelta(seconds=self.gc_delay)
             self.post_loop()
+        logger.info("[%s] - Stop the server", self.__class__.__name__)
         logger.debug("[%s] - Exiting the server loop", self.__class__.__name__)
         self.post_loop()
 
     def stop(self):
         """Stop the server. Must be called at begin if overloaded in the children class
         """
-        logger.info("[%s] - Stop the server", self.__class__.__name__)
         self._stopevent.set( )
 
     def reload_threads(self):

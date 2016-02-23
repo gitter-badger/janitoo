@@ -55,3 +55,26 @@ class TestHttpSerser(JNTTServer, JNTTServerCommon):
         #The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
         self.skipTravisTest()
         JNTTServerCommon.test_040_server_start_no_error_in_log(self)
+
+    def test_100_node_config(self):
+        self.start()
+        try:
+            self.assertHeartbeatNode(hadd=self.hadd_ctrl)
+            time.sleep(5)
+            self.assertUpdateValue(type='config', data='alocation', cmd_class=0x70, genre=0x03, uuid='location', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+            time.sleep(0.5)
+            self.assertUpdateValue(type='config', data='Inside computer', cmd_class=0x70, genre=0x03, uuid='location', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+            time.sleep(0.5)
+            self.assertUpdateValue(type='config', data='aname', cmd_class=0x70, genre=0x03, uuid='name', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+            time.sleep(0.5)
+            self.assertUpdateValue(type='config', data='Embeded http server', cmd_class=0x70, genre=0x03, uuid='name', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+            time.sleep(0.5)
+            self.assertUpdateValue(type='system', data=30, cmd_class=0x70, genre=0x04, uuid='heartbeat', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+            time.sleep(0.5)
+            self.assertUpdateValue(type='system', data=15, cmd_class=0x70, genre=0x04, uuid='heartbeat', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+            time.sleep(0.5)
+            self.assertUpdateValue(type='system', data=5, cmd_class=0x70, genre=0x04, uuid='config_timeout', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+            time.sleep(0.5)
+            self.assertUpdateValue(type='system', data=2, cmd_class=0x70, genre=0x04, uuid='config_timeout', node_hadd=self.hadd_ctrl, client_hadd='9999/0000', is_writeonly=True)
+        finally:
+            self.stop()
