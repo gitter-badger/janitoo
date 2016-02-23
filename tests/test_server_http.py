@@ -41,11 +41,6 @@ from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
 from janitoo.utils import HADD_SEP, HADD
 
-#~ JNTTBase.skipCITest()
-#~ JNTTServer.skipDockerTest()
-#The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
-#~ JNTTServer.skipTravisTest()
-
 class TestHttpSerser(JNTTServer, JNTTServerCommon):
     """Test the server
     """
@@ -56,6 +51,7 @@ class TestHttpSerser(JNTTServer, JNTTServerCommon):
     server_conf = "tests/data/test_server_http.conf"
     hadds = [HADD%(1118,0), HADD%(1118,1)]
 
-    #~ def test_040_server_start_no_error_in_log(self):
-        #~ self.skipTravisTest()
-        #~ JNTTServerCommon.test_040_server_start_no_error_in_log(self)
+    def test_040_server_start_no_error_in_log(self):
+        #The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
+        self.skipTravisTest()
+        JNTTServerCommon.test_040_server_start_no_error_in_log(self)
