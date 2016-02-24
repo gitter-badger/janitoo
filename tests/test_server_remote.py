@@ -53,5 +53,5 @@ class TestRemoteSerser(JNTTServer, JNTTServerCommon):
 
     def test_040_server_start_no_error_in_log(self):
         #The job exceeded the maxmimum time limit for jobs, and has been terminated on Travis
-        self.skipTravisTest()
+        self.skipCITest()
         JNTTServerCommon.test_040_server_start_no_error_in_log(self)
