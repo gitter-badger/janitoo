@@ -105,29 +105,29 @@ class JNTComponent(object):
                 check_hearbeat_cb=cb_check_hearbeat, oid=self.oid, **kwargs)
         return  self.node
 
-    def value_poll_get(self, node_uuid, index, prefix=''):
-        """
-        """
-        value_id = '%s_%s'%(prefix,'poll')
-        temp_poll = self._bus.nodeman.options.get_option("%s"%node_uuid, value_id)
-        if temp_poll is not None:
-            try:
-                self.node.values[value_id].poll_delay = int(temp_poll)
-            except ValueError:
-                logger.exception('Exception when retrieving poll temperature')
-        #~ print "%s" % self.node.values
-        return self.node.values[value_id].poll_delay
+    #~ def value_poll_get(self, node_uuid, index, prefix=''):
+        #~ """
+        #~ """
+        #~ value_id = '%s_%s'%(prefix,'poll')
+        #~ temp_poll = self._bus.nodeman.options.get_option("%s"%node_uuid, value_id)
+        #~ if temp_poll is not None:
+            #~ try:
+                #~ self.node.values[value_id].poll_delay = int(temp_poll)
+            #~ except ValueError:
+                #~ logger.exception('Exception when retrieving poll %s', value_id)
+        #~ #print "%s" % self.node.values
+        #~ return self.node.values[value_id].poll_delay
 
-    def value_poll_set(self, node_uuid, index, value, prefix=''):
-        """
-        """
-        try:
-            value_id = '%s_%s'%(prefix,'poll')
-            self.node.values[value_id].poll_delay = int(value)
-            self._bus.nodeman.add_poll(self.node.values[value_id])
-            self._bus.nodeman.options.set_option("%s"%node_uuid, value_id, '%s'%self.node.values[value_id].poll_delay)
-        except ValueError:
-            pass
+    #~ def value_poll_set(self, node_uuid, index, value, prefix=''):
+        #~ """
+        #~ """
+        #~ try:
+            #~ value_id = '%s_%s'%(prefix,'poll')
+            #~ self.node.values[value_id].poll_delay = int(value)
+            #~ self._bus.nodeman.add_poll(self.node.values[value_id])
+            #~ self._bus.nodeman.options.set_option("%s"%node_uuid, value_id, '%s'%self.node.values[value_id].poll_delay)
+        #~ except ValueError:
+                #~ logger.exception('Exception when setting poll %s', value_id)
 
     def get_bus_value(self, value_uuid):
         '''Retrieve a bus's private value. Take care of exported buses
