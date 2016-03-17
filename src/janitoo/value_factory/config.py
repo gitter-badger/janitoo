@@ -153,6 +153,7 @@ class JNTValueConfigGeneric(JNTValueFactoryEntry):
                 self.instances[index]['data'] = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, index))
             except:
                 logger.exception('Exception when retrieving %s_%s for node %s'%(self.uuid, index, node_uuid))
+                self.instances[index]['data'] = self.default
         return self.instances[index]['data']
 
 class JNTValueConfigString(JNTValueConfigGeneric):
