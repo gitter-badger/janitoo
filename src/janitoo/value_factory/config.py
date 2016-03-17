@@ -144,7 +144,7 @@ class JNTValueConfigGeneric(JNTValueFactoryEntry):
                             stop = True
                         #~ logger.debug('index %s, instances %s'%(i, self.instances))
                     except:
-                        logger.exception('Catched exception when retrieving %s_%s for self.instances[i]["data"] %s'%(self.uuid, i, self.instances[i]['data']))
+                        logger.exception('Catched exception when retrieving %s_%s for self.instances : %s'%(self.uuid, i, self.instances))
                         stop = True
                 i += 1
         #~ print "last", self.instances[index]['data']
