@@ -112,7 +112,7 @@ class JNTBus(object):
 
     def export_values(self):
         '''Export values to all targets'''
-        logger.debug("[%s] - Export values %s to bus %s", self.__class__.__name__, self.values, target)
+        logger.debug("[%s] - Export values to all buses", self.__class__.__name__)
         for target in self._masters:
             for value in self.values.keys():
                 target.values['%s'%(value)] = self.values[value]
