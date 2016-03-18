@@ -89,7 +89,6 @@ class JNTBus(object):
         self._masters = kwargs.get('masters', [])
         if type(self._masters) != type([]):
             self._masters = [ self._masters ]
-        self.export_values()
 
     def __del__(self):
         """
@@ -115,6 +114,7 @@ class JNTBus(object):
         logger.debug("[%s] - Export values to all buses", self.__class__.__name__)
         for target in self._masters:
             for value in self.values.keys():
+                logger.debug("[%s] - Export value %s to bus %s", self.__class__.__name__, value, target)
                 target.values['%s'%(value)] = self.values[value]
 
     def export_attrs(self, objname, obj):
@@ -127,6 +127,7 @@ class JNTBus(object):
 
     def start(self, mqttc, trigger_thread_reload_cb=None):
         """Start the bus"""
+        self.export_values()
         self._trigger_thread_reload_cb = trigger_thread_reload_cb
         self.mqttc = mqttc
 
