@@ -86,6 +86,10 @@ class JNTBus(object):
         self.name = kwargs.get('name', 'Default bus name')
         """The name"""
         self.nodeman = None
+        self._masters = kwargs.get('masters', [])
+        if type(self._masters) != type([]):
+            self._masters = [ self._masters ]
+        self.export_values()
 
     def __del__(self):
         """
@@ -106,11 +110,20 @@ class JNTBus(object):
             return self.values[value_uuid]
         return None
 
-    def export_values(self, target):
-        '''Export vales to target'''
+    def export_values(self):
+        '''Export values to all targets'''
         logger.debug("[%s] - Export values %s to bus %s", self.__class__.__name__, self.values, target)
-        for value in self.values.keys():
-            target.values['%s'%(value)] = self.values[value]
+        for target in self._masters:
+            for value in self.values.keys():
+                target.values['%s'%(value)] = self.values[value]
+
+    def export_attrs(self, objname, obj):
+        '''Export object to all targets'''
+        logger.debug("[%s] - Export attrs to all buses", self.__class__.__name__)
+        for target in self._masters:
+            if hasattr(target, objname):
+                logger.error("[%s] - Collision found on attribute %s. Continue anyway by overrinding.", self.__class__.__name__, objname)
+            setattr(target, objname, obj)
 
     def start(self, mqttc, trigger_thread_reload_cb=None):
         """Start the bus"""
