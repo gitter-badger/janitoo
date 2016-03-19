@@ -125,6 +125,12 @@ class JNTBus(object):
                 logger.error("[%s] - Collision found on attribute %s. Continue anyway by overrinding.", self.__class__.__name__, objname)
             setattr(target, objname, obj)
 
+    def update_attrs(self, objname, obj):
+        '''Export object to all targets'''
+        logger.debug("[%s] - Export attrs to all buses", self.__class__.__name__)
+        for target in self._masters:
+            setattr(target, objname, obj)
+
     def start(self, mqttc, trigger_thread_reload_cb=None):
         """Start the bus"""
         self.export_values()

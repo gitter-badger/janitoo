@@ -109,6 +109,7 @@ class JNTServer(object):
         for entry in iter_entry_points(group='janitoo.threads', name=None):
             th=None
             try:
+                logger.debug("[%s] - Load entry-point : %s", self.__class__.__name__, entry)
                 mkth = entry.load()
                 try:
                     th = mkth(self.options.data)
