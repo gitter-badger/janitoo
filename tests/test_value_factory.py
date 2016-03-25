@@ -144,22 +144,32 @@ class TestIpPing(TestFactory, BaseConfig, BasePoll):
         self.assertEqual('192.168.24.5', main_value.get_config(node_uuid, 0))
         self.assertFalse(main_value.ping_ip(node_uuid, 0))
 
-class TestActionString(TestFactory):
+class TestActionString(TestFactory, BaseFactory):
     """Test the value factory
     """
     entry_name='action_string'
 
-class TestActionBoolean(TestFactory):
+class TestActionBoolean(TestFactory, BaseFactory):
     """Test the value factory
     """
     entry_name='action_boolean'
 
-class TestActionInteger(TestFactory):
+class TestActionInteger(TestFactory, BaseFactory):
     """Test the value factory
     """
     entry_name='action_integer'
 
-class TestListString(TestFactory):
+class TestActionSwitchBinary(TestFactory, BaseFactory):
+    """Test the value factory
+    """
+    entry_name='action_switch_binary'
+
+class TestActionSwitchMultilevel(TestFactory, BaseFactory):
+    """Test the value factory
+    """
+    entry_name='action_switch_multilevel'
+
+class TestListString(TestFactory, BaseFactory):
     """Test the value factory
     """
     entry_name='action_list'

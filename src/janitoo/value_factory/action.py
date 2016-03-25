@@ -42,10 +42,18 @@ from janitoo.classes import COMMAND_DESC
 COMMAND_CONFIGURATION = 0x0070
 COMMAND_SENSOR_BINARY = 0x0030
 COMMAND_SENSOR_MULTILEVEL = 0x0031
+COMMAND_SWITCH_BINARY = 0x0025
+COMMAND_SWITCH_MULTILEVEL = 0x0026
+COMMAND_BUTTON_BINARY = 0x3000
+COMMAND_BUTTON_MULTILEVEL = 0x3001
 
 assert(COMMAND_DESC[COMMAND_CONFIGURATION] == 'COMMAND_CONFIGURATION')
 assert(COMMAND_DESC[COMMAND_SENSOR_BINARY] == 'COMMAND_SENSOR_BINARY')
 assert(COMMAND_DESC[COMMAND_SENSOR_MULTILEVEL] == 'COMMAND_SENSOR_MULTILEVEL')
+assert(COMMAND_DESC[COMMAND_SWITCH_BINARY] == 'COMMAND_SWITCH_BINARY')
+assert(COMMAND_DESC[COMMAND_SWITCH_MULTILEVEL] == 'COMMAND_SWITCH_MULTILEVEL')
+assert(COMMAND_DESC[COMMAND_BUTTON_BINARY] == 'COMMAND_BUTTON_BINARY')
+assert(COMMAND_DESC[COMMAND_BUTTON_MULTILEVEL] == 'COMMAND_BUTTON_MULTILEVEL')
 ##############################################################
 
 def make_action_string(**kwargs):
@@ -62,6 +70,12 @@ def make_action_boolean(**kwargs):
 
 def make_action_list(**kwargs):
     return JNTValueActionList(**kwargs)
+
+def make_action_switch_binary(**kwargs):
+    return JNTValueActionSwitchBinary(**kwargs)
+
+def make_action_switch_multilevel(**kwargs):
+    return JNTValueActionSwitchMultilevel(**kwargs)
 
 class JNTValueActionGeneric(JNTValueFactoryEntry):
     def __init__(self, **kwargs):
@@ -124,4 +138,44 @@ class JNTValueActionList(JNTValueActionGeneric):
         index = kwargs.pop('index', 0)
         JNTValueActionGeneric.__init__(self, entry_name=entry_name, help=help, label=label,
             index=index, type=0x05, **kwargs)
+
+class JNTValueActionSwitchBinary(JNTValueActionBoolean):
+    def __init__(self, entry_name="action_switch_binary", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A switch')
+        label = kwargs.pop('label', 'Switch')
+        index = kwargs.pop('index', 0)
+        JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
+            cmd_class=COMMAND_SWITCH_BINARY, index=index, type=0x04, **kwargs)
+
+class JNTValueActionSwitchMultilevel(JNTValueActionBoolean):
+    def __init__(self, entry_name="action_switch_multilevel", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A switch')
+        label = kwargs.pop('label', 'Switch')
+        index = kwargs.pop('index', 0)
+        JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
+            cmd_class=COMMAND_SWITCH_MULTILEVEL, index=index, type=0x02, **kwargs)
+
+class JNTValueActionButtonBinary(JNTValueActionBoolean):
+    def __init__(self, entry_name="action_button_binary", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A button')
+        label = kwargs.pop('label', 'Button')
+        index = kwargs.pop('index', 0)
+        JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
+            cmd_class=COMMAND_BUTTON_BINARY, index=index, type=0x04, **kwargs)
+
+class JNTValueActionButtonMultiLevel(JNTValueActionBoolean):
+    def __init__(self, entry_name="action_button_mutlilevel", **kwargs):
+        """
+        """
+        help = kwargs.pop('help', 'A button')
+        label = kwargs.pop('label', 'Button')
+        index = kwargs.pop('index', 0)
+        JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
+            cmd_class=COMMAND_BUTTON_MULTILEVEL, index=index, type=0x02, **kwargs)
 
