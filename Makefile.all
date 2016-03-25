@@ -141,12 +141,12 @@ commit:
 	make -C $(module) message="$(message)" commit
 
 clone:
-	git clone https://github.com/bibi21000/$(module).git || make -C $(module) clone
+	git clone https://github.com/bibi21000/$(module).git || make -C $(module) pull
 	make -C $(module) deps
 	make -C $(module) develop
 
 clone-all:
-	for module in ${SUBMODULES};do git clone https://github.com/bibi21000/$(module).git || make -C $(module) clone; make -C $(module) deps; make -C $(module) develop; done
+	for module in ${SUBMODULES};do git clone https://github.com/bibi21000/$(module).git || make -C $(module) pull; make -C $(module) deps; make -C $(module) develop; done
 
 pull:
 	git clone $(repo)
