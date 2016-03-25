@@ -147,7 +147,7 @@ class JNTValueActionSwitchBinary(JNTValueActionBoolean):
         label = kwargs.pop('label', 'Switch')
         index = kwargs.pop('index', 0)
         JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
-            cmd_class=COMMAND_SWITCH_BINARY, index=index, type=0x04, **kwargs)
+            cmd_class=COMMAND_SWITCH_BINARY, index=index, **kwargs)
 
 class JNTValueActionSwitchMultilevel(JNTValueActionBoolean):
     def __init__(self, entry_name="action_switch_multilevel", **kwargs):
@@ -156,8 +156,8 @@ class JNTValueActionSwitchMultilevel(JNTValueActionBoolean):
         help = kwargs.pop('help', 'A switch')
         label = kwargs.pop('label', 'Switch')
         index = kwargs.pop('index', 0)
-        JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
-            cmd_class=COMMAND_SWITCH_MULTILEVEL, index=index, type=0x02, **kwargs)
+        JNTValueActionByte.__init__(self, entry_name=entry_name, help=help, label=label,
+            cmd_class=COMMAND_SWITCH_MULTILEVEL, index=index, **kwargs)
 
 class JNTValueActionButtonBinary(JNTValueActionBoolean):
     def __init__(self, entry_name="action_button_binary", **kwargs):
@@ -167,7 +167,7 @@ class JNTValueActionButtonBinary(JNTValueActionBoolean):
         label = kwargs.pop('label', 'Button')
         index = kwargs.pop('index', 0)
         JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
-            cmd_class=COMMAND_BUTTON_BINARY, index=index, type=0x04, **kwargs)
+            cmd_class=COMMAND_BUTTON_BINARY, index=index, **kwargs)
 
 class JNTValueActionButtonMultiLevel(JNTValueActionBoolean):
     def __init__(self, entry_name="action_button_mutlilevel", **kwargs):
@@ -176,6 +176,6 @@ class JNTValueActionButtonMultiLevel(JNTValueActionBoolean):
         help = kwargs.pop('help', 'A button')
         label = kwargs.pop('label', 'Button')
         index = kwargs.pop('index', 0)
-        JNTValueActionBoolean.__init__(self, entry_name=entry_name, help=help, label=label,
-            cmd_class=COMMAND_BUTTON_MULTILEVEL, index=index, type=0x02, **kwargs)
+        JNTValueActionByte.__init__(self, entry_name=entry_name, help=help, label=label,
+            cmd_class=COMMAND_BUTTON_MULTILEVEL, index=index, **kwargs)
 
