@@ -55,61 +55,6 @@ def data_files_config(res, rsrc, src, pattern):
 data_files = []
 data_files_config(data_files, 'docs','src/docs/','*')
 
-#You must define a variable like the one below.
-#It will be used to collect entries without installing the package
-janitoo_entry_points = {
-    "janitoo.threads": [
-        "http = janitoo.threads.http:make_thread",
-        "email = janitoo.threads.email:make_thread",
-        "scenes = janitoo.threads.scenes:make_thread",
-        "remote = janitoo.threads.remote:make_thread",
-    ],
-    "janitoo.components": [
-        "scenes.scene = janitoo.threads.scenes:make_scene",
-        "http.resource = janitoo.threads.http:make_http_resource",
-        "remote.node = janitoo.threads.remote:make_remote_node",
-    ],
-    "janitoo.values": [
-        "ip_ping = janitoo.value_factory.other:make_ip_ping",
-        "rread_value = janitoo.value_factory.other:make_value_rread",
-        "rwrite_value = janitoo.value_factory.other:make_value_rwrite",
-        "sensor_pressure = janitoo.value_factory.sensor:make_sensor_pressure",
-        "sensor_temperature = janitoo.value_factory.sensor:make_sensor_temperature",
-        "sensor_altitude = janitoo.value_factory.sensor:make_sensor_altitude",
-        "sensor_voltage = janitoo.value_factory.sensor:make_sensor_voltage",
-        "sensor_float = janitoo.value_factory.sensor:make_sensor_float",
-        "sensor_current = janitoo.value_factory.sensor:make_sensor_current",
-        "sensor_percent = janitoo.value_factory.sensor:make_sensor_percent",
-        "sensor_frequency = janitoo.value_factory.sensor:make_sensor_frequency",
-        "sensor_humidity = janitoo.value_factory.sensor:make_sensor_humidity",
-        "sensor_rotation_speed = janitoo.value_factory.sensor:make_sensor_rotation_speed",
-        "sensor_string = janitoo.value_factory.sensor:make_sensor_string",
-        "sensor_list = janitoo.value_factory.sensor:make_sensor_list",
-        "sensor_integer = janitoo.value_factory.sensor:make_sensor_integer",
-        "sensor_byte = janitoo.value_factory.sensor:make_sensor_byte",
-        "sensor_orientation = janitoo.value_factory.sensor:make_sensor_orientation",
-        "sensor_memory = janitoo.value_factory.sensor:make_sensor_memory",
-        "config_array = janitoo.value_factory.config:make_config_array",
-        "config_boolean = janitoo.value_factory.config:make_config_boolean",
-        "config_string = janitoo.value_factory.config:make_config_string",
-        "config_password = janitoo.value_factory.config:make_config_password",
-        "config_byte = janitoo.value_factory.config:make_config_byte",
-        "config_integer = janitoo.value_factory.config:make_config_integer",
-        "config_list = janitoo.value_factory.config:make_config_list",
-        "config_float = janitoo.value_factory.config:make_config_float",
-        "action_string = janitoo.value_factory.action:make_action_string",
-        "action_byte = janitoo.value_factory.action:make_action_byte",
-        "action_integer = janitoo.value_factory.action:make_action_integer",
-        "action_list = janitoo.value_factory.action:make_action_list",
-        "action_switch_binary = janitoo.value_factory.action:make_action_switch_binary",
-        "action_switch_multilevel = janitoo.value_factory.action:make_action_switch_multilevel",
-        "action_boolean = janitoo.value_factory.action:make_action_boolean",
-        "sensor_basic_float = janitoo.value_factory.basic:make_sensor_float",
-        "sensor_basic_integer = janitoo.value_factory.basic:make_sensor_integer",
-        "sensor_basic_byte = janitoo.value_factory.basic:make_sensor_byte",
-    ],
-}
-
 setup(
     name = 'janitoo',
     description = "A multi-technologies home automation protocol over mqtt",
@@ -153,5 +98,4 @@ setup(
     dependency_links = [
       'https://github.com/bibi21000/janitoo_nosetests/archive/master.zip#egg=janitoo_nosetests',
     ],
-    entry_points = janitoo_entry_points,
 )
