@@ -75,6 +75,11 @@ RUN make clone module=janitoo_db && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
+RUN make clone module=janitoo_factory && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
 RUN make clone module=janitoo_pki && \
     make clone module=janitoo_nginx && \
     make clone module=janitoo_mosquitto && \

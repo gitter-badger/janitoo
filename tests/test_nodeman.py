@@ -54,7 +54,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -71,7 +71,7 @@ class TestNodeManagerState(TestJanitoo):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
         bus = FakeBus(options=options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -87,7 +87,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -116,7 +116,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -159,7 +159,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -198,7 +198,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -237,7 +237,7 @@ class TestNodeManagerState(TestJanitoo):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
         bus = FakeBus(options=options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -267,7 +267,7 @@ class TestNodeManagerState(TestJanitoo):
             options = JNTOptions(options)
         bus = FakeBus(options=options)
         print bus
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -310,7 +310,7 @@ class TestNodeManagerState(TestJanitoo):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
         bus = FakeBus(options=options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -382,7 +382,7 @@ class TestNodeManagerState(TestJanitoo):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
         bus = FakeBus(options=options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()

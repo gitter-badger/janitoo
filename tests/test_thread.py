@@ -60,11 +60,5 @@ JNTTThreadRun.skipDockerTest()
 class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
-    thread_name = "email"
-    conf_file = "tests/data/test_threads.conf"
-
-class TestRemoteThread(JNTTThreadRun, JNTTThreadRunCommon):
-    """Test the thread
-    """
-    thread_name = "remote"
+    thread_name = "fake"
     conf_file = "tests/data/test_threads.conf"
