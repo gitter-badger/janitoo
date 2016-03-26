@@ -55,6 +55,15 @@ def data_files_config(res, rsrc, src, pattern):
 data_files = []
 data_files_config(data_files, 'docs','src/docs/','*')
 
+janitoo_entry_points = {
+    "janitoo.threads": [
+        "fake = janitoo.tests.http:make_thread",
+    ],
+    "janitoo.components": [
+        "fake.component = janitoo.tests:make_fake_component",
+    ],
+}
+
 setup(
     name = 'janitoo',
     description = "A multi-technologies home automation protocol over mqtt",
@@ -98,4 +107,5 @@ setup(
     dependency_links = [
       'https://github.com/bibi21000/janitoo_nosetests/archive/master.zip#egg=janitoo_nosetests',
     ],
+    entry_points = janitoo_entry_points,
 )

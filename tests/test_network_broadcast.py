@@ -36,7 +36,7 @@ from common import TestJanitoo, SLEEP
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
 from janitoo.dhcp import JNTNetwork
-from janitoo.threads.http import HttpBus
+from janitoo.tests import FakeBus
 from janitoo.node import JNTNodeMan, JNTBusNodeMan
 from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
@@ -71,7 +71,7 @@ class TestNetworkState(JNTTBase):
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
             options.set_option(section, 'uuid', "%s"%thread_uuid)
-        self.nodeman = JNTBusNodeMan(options, HttpBus(options=options, product_name="Http server"), section, thread_uuid)
+        self.nodeman = JNTBusNodeMan(options, FakeBus(options=options, product_name="Http server"), section, thread_uuid)
         print self.nodeman.state
         #~ hadds = { 0 : HADD%(self.node_add_ctrl,0),
                      #~ }
@@ -125,7 +125,7 @@ class TestNetworkState(JNTTBase):
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
             options.set_option(section, 'uuid', "%s"%thread_uuid)
-        self.nodeman = JNTBusNodeMan(options, HttpBus(options=options, product_name="Http server"), section, thread_uuid)
+        self.nodeman = JNTBusNodeMan(options, FakeBus(options=options, product_name="Http server"), section, thread_uuid)
         print self.nodeman.state
         #~ hadds = { 0 : HADD%(self.node_add_ctrl,0),
                      #~ }

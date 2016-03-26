@@ -37,7 +37,7 @@ from janitoo.server import JNTServer
 from janitoo.node import JNTNodeMan, JNTBusNodeMan
 from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
-from janitoo.threads.http import HttpBus
+from janitoo.tests import FakeBus
 import mock
 import uuid as muuid
 
@@ -70,7 +70,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = HttpBus(options=options)
+        bus = FakeBus(options=options)
         section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
@@ -236,7 +236,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = HttpBus(options=options)
+        bus = FakeBus(options=options)
         section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
@@ -265,7 +265,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = HttpBus(options=options)
+        bus = FakeBus(options=options)
         print bus
         section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
@@ -309,7 +309,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = HttpBus(options=options)
+        bus = FakeBus(options=options)
         section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
@@ -381,7 +381,7 @@ class TestNodeManagerState(TestJanitoo):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_bus.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        bus = HttpBus(options=options)
+        bus = FakeBus(options=options)
         section = 'http'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
