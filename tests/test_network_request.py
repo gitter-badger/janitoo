@@ -83,7 +83,7 @@ class TestNetworkState(JNTTBase):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
@@ -142,7 +142,7 @@ class TestNetworkState(JNTTBase):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
-        section = 'http'
+        section = 'fake'
         thread_uuid = options.get_option(section, 'uuid')
         if thread_uuid == None:
             thread_uuid = muuid.uuid1()
