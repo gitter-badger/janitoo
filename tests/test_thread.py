@@ -57,7 +57,7 @@ assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 #~ JNTTThreadRun.skipCITest()
 JNTTThreadRun.skipDockerTest()
 
-class TestEmailThread(JNTTThreadRun, JNTTThreadRunCommon):
+class TestFakeThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
     thread_name = "fake"
