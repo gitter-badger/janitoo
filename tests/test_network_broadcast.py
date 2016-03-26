@@ -106,7 +106,7 @@ class TestNetworkState(JNTTBase):
         print "network.users", self.network.users
         print "network.configs", self.network.configs
         print "network.basics", self.network.basics
-        print "network.ystems", self.network.systems
+        print "network.systems", self.network.systems
         print "network.commands", self.network.commands
 
         print "HADD", HADD%(self.node_add_ctrl,0)
@@ -114,7 +114,12 @@ class TestNetworkState(JNTTBase):
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.nodes)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.configs)
-        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.basics)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.nodes)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.systems)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.configs)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.basics)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.users)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.commands)
 
     def test_011_broadcast_primary(self):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
@@ -160,7 +165,7 @@ class TestNetworkState(JNTTBase):
         print "network.users", self.network.users
         print "network.configs", self.network.configs
         print "network.basics", self.network.basics
-        print "network.ystems", self.network.systems
+        print "network.systems", self.network.systems
         print "network.commands", self.network.commands
 
         print "HADD", HADD%(self.node_add_ctrl,0)
@@ -168,4 +173,9 @@ class TestNetworkState(JNTTBase):
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.nodes)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.configs)
-        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.basics)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.nodes)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.systems)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.configs)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.basics)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.users)
+        self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.commands)
