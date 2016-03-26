@@ -179,7 +179,7 @@ class TestNetworkState(JNTTBase):
     def test_130_network_state_secondary_random(self):
         #~ self.skipTest("Pass but freeze on Docker/CI. Surely a non stopped thread in the state machine")
         #~ self.onlyCITest()
-        self.onlyCircleTest()
+        #~ self.onlyCircleTest()
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
@@ -228,7 +228,7 @@ class TestNetworkState(JNTTBase):
     def test_131_network_state_secondary_random_more(self):
         #~ self.skipTest("Pass but freeze on Docker/CI. Surely a non stopped thread in the state machine")
         #~ self.onlyCITest()
-        self.onlyCircleTest()
+        #~ self.onlyCircleTest()
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
@@ -277,7 +277,7 @@ class TestNetworkState(JNTTBase):
     def test_140_network_state_primary_random(self):
         #~ self.skipTest("Pass but freeze on Docker/CI. Surely a non stopped thread in the state machine")
         #~ self.onlyCITest()
-        self.onlyCircleTest()
+        #~ self.onlyCircleTest()
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
@@ -324,7 +324,7 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_141_network_state_primary_random_more(self):
-        self.onlyCircleTest()
+        #~ self.onlyCircleTest()
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
