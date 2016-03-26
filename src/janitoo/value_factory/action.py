@@ -169,10 +169,10 @@ class JNTValueActionSwitchBinary(JNTValueActionList):
     def __init__(self, entry_name="action_switch_binary", **kwargs):
         """
         """
-        help = kwargs.pop('help', 'A switch')
         label = kwargs.pop('label', 'Switch')
         index = kwargs.pop('index', 0)
         list_items = kwargs.pop('list_items', ['on', 'off'])
+        help = kwargs.pop('help', 'A switch. Valid values are : %s'%list_items)
         JNTValueActionList.__init__(self,
             entry_name=entry_name,
             help=help,
@@ -186,7 +186,7 @@ class JNTValueActionSwitchMultilevel(JNTValueActionByte):
     def __init__(self, entry_name="action_switch_multilevel", **kwargs):
         """
         """
-        help = kwargs.pop('help', 'A switch multilevel')
+        help = kwargs.pop('help', 'A switch multilevel. A byte from 0 to 100')
         label = kwargs.pop('label', 'Switch')
         index = kwargs.pop('index', 0)
         JNTValueActionByte.__init__(self,
