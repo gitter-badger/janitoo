@@ -60,6 +60,6 @@ assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 class TestHourlyTimerThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
-    thread_name = "http"
+    thread_name = "fake"
     conf_file = "tests/data/test_threads_hourly.conf"
 
