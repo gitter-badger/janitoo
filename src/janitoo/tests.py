@@ -96,6 +96,26 @@ class FakeComponent(JNTComponent):
         JNTComponent.__init__(self, oid=oid, bus=bus, addr=addr, name=name,
                 product_manufacturer="Janitoo", **kwargs)
         logger.debug("[%s] - __init__ node uuid:%s", self.__class__.__name__, self.uuid)
+        uuid="test_basic"
+        self.values[uuid] = JNTValue( uuid=uuid,
+                    index=0,
+                    genre=0x01,
+                )
+        uuid="test_user"
+        self.values[uuid] = JNTValue( uuid=uuid,
+                    index=0,
+                    genre=0x02,
+                )
+        uuid="test_command"
+        self.values[uuid] = JNTValue( uuid=uuid,
+                    index=0,
+                    genre=0x05,
+                )
+        uuid="test_config"
+        self.values[uuid] = JNTValue( uuid=uuid,
+                    index=0,
+                    genre=0x03,
+                )
 
     def check_heartbeat_file(self, filename):
         """Check that the component is 'available'

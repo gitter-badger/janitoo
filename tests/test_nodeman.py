@@ -400,16 +400,16 @@ class TestNodeManagerState(TestJanitoo):
         self.assertEqual(node_state.state, 'ONLINE')
         try:
 
-            node = node_state.find_node('resource1')
+            node = node_state.find_node('component1')
             self.assertTrue('rrd1' in node.name)
-            node = node_state.find_node('resourcebad')
+            node = node_state.find_node('componentbad')
             self.assertEqual(node, None)
-            value = node_state.find_value('resource1', 'heartbeat')
-            self.assertTrue('resource1' in value.node_uuid)
+            value = node_state.find_value('component1', 'heartbeat')
+            self.assertTrue('component1' in value.node_uuid)
             self.assertEqual('heartbeat',value.uuid)
-            value = node_state.find_value('resourcebad', 'heartbeat')
+            value = node_state.find_value('componentbad', 'heartbeat')
             self.assertEqual(value, None)
-            value = node_state.find_value('resource1', 'badbeat')
+            value = node_state.find_value('component1', 'badbeat')
             self.assertEqual(value, None)
 
         finally:

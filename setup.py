@@ -57,7 +57,7 @@ data_files_config(data_files, 'docs','src/docs/','*')
 
 janitoo_entry_points = {
     "janitoo.threads": [
-        "fake = janitoo.tests.http:make_thread",
+        "fake = janitoo.tests:make_thread",
     ],
     "janitoo.components": [
         "fake.component = janitoo.tests:make_fake_component",

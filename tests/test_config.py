@@ -121,6 +121,8 @@ class TestNetworkState(JNTTBase):
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.configs)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.basics)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.users)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.commands)
 
     def test_011_request_primary(self):
 
@@ -179,3 +181,5 @@ class TestNetworkState(JNTTBase):
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.systems)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.configs)
         self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.basics)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.users)
+        self.assertTrue(HADD%(self.node_add_ctrl,0) in self.network.commands)
