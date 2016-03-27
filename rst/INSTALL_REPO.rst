@@ -20,18 +20,71 @@ On a debian like distribution :
 
     sudo apt-get install -y git make
 
+Create the directory structure
+==============================
+
+.. code-block:: bash
+
+    sudo mkdir /opt/janitoo
+    sudo chown `whoami` /opt/janitoo
+    mkdir /opt/janitoo/src
+    mkdir /opt/janitoo/etc
+    mkdir /opt/janitoo/log
+    mkdir /opt/janitoo/home
+    mkdir /opt/janitoo/run
 
 Get sources of janitoo
-===============================
+======================
+
+Change to janitoo source directory :
+
+.. code-block:: bash
+
+    cd /opt/janitoo/src
+
 You are now ready to download sources of janitoo :
 
 .. code-block:: bash
 
     git clone https://github.com/bibi21000/janitoo
 
-The previous command will create a copy of the official repository on your
-computer in a directory called janitoo.
+Create a link to the makefile :
 
+.. code-block:: bash
+
+    ln -s janitoo/Makefile.all Makefile
+
+Install modules
+===============
+
+Create the list of needed modules in Makefile.local (in src directory):
+
+.. code-block:: bash
+
+    vim Makefile.local
+
+Add needed modules in a variable SUBMODULES, the order is important. For example :
+
+.. code-block:: bash
+
+    SUBMODULES = janitoo_nosetests janitoo janitoo_factory \
+     janitoo_thermal janitoo_layouts \
+     janitoo_hostsensor janitoo_hostsensor_psutil janitoo_hostsensor_raspberry \
+     janitoo_raspberry janitoo_raspberry_dht janitoo_raspberry_gpio \
+     janitoo_raspberry_i2c janitoo_raspberry_i2c_bmp janitoo_raspberry_i2c_pca9685 \
+     janitoo_raspberry_1wire janitoo_raspberry_camera \
+     janitoo_raspberry_lcdchar janitoo_raspberry_ili9341 \
+     janitoo_raspberry_fishtank
+
+.. code-block:: bash
+
+    vim Makefile.local
+
+Clone modules:
+
+.. code-block:: bash
+
+    make clone-all
 
 Install dependencies
 ====================
@@ -45,64 +98,52 @@ On a debian like distribution :
 
 For non-debian (fedora, ...), you can retrieve the packages needed in the Makefile.
 
+Configure your server
+=====================
 
-Update and build process
-========================
-Go to the previously created directory
-
-.. code-block:: bash
-
-    cd janitoo
-
-The following command will update your local repository to the last release
-of janitoo and openzwave.
+In his section, we will install the fishtank server on your rapsberry.
 
 .. code-block:: bash
 
-    make update
+    cp /opt/janitoo/src/janitoo_raspberry_fishtank/src/config/janitoo_raspberry_fishtank.conf /opt/janitoo/etc/janitoo_fishtank.conf
 
-When update process is done, you can compile sources
 
-.. code-block:: bash
-
-    make build
-
-Or if you have already build janitoo in a previous installation, you can use the clean target to remove old builds.
+Update the configuration file
 
 .. code-block:: bash
 
-    sudo make clean
+    vim /opt/janitoo/etc/janitoo_fishtank.conf
 
+You need some tools (a c++ compiler, headers dir python, ...) to build janitoo and openzwave library.
 
-Installation
-============
-You can now ready to install the eggs using the following command :
-
-.. code-block:: bash
-
-    sudo make install
-
-You can also remove janitoo using :
+You can now start, stop your server :
 
 .. code-block:: bash
 
-    sudo make uninstall
+    jnt_fishtank -c /opt/janitoo/etc/janitoo_fishtank.conf start
 
+    jnt_fishtank -c /opt/janitoo/etc/janitoo_fishtank.conf status
 
-Running tests
-=============
-You can launch the regression tests using :
+    jnt_fishtank -c /opt/janitoo/etc/janitoo_fishtank.conf stop
+
+You can also start the server in foreground (for development) :
 
 .. code-block:: bash
 
-    make tests
+    jnt_fishtank -c /opt/janitoo/etc/janitoo_fishtank.conf start
 
-Keep in mind that the tests will "play" with your nodes : switching on and off, dimming, adding and removing scenes, ...
+    jnt_fishtank -c /opt/janitoo/etc/janitoo_fishtank.conf status
 
+    jnt_fishtank -c /opt/janitoo/etc/janitoo_fishtank.conf stop
 
-About the repositroy
-====================
-This repository is a development tool, so it might be "unstable" ... yeah, sometimes it won't build anymore :)
+Start your server at boot
+=========================
 
-If you want to retrieve the last "good" commit, look at https://github.com/bibi21000/janitoo/commits/master.
-The commits names "Auto-commit for docs" are done after the full process : build + test + docs, so they might be "working" (almost for me).
+You can also start your server at boot
+
+.. code-block:: bash
+
+    sudo cp /opt/janitoo/src/janitoo_raspberry_fishtank/src/scripts/jnt_fishtank.init /etc/init.d/jnt_fishtank
+
+    sudo update-rc.d jnt_fishtank defaults
+

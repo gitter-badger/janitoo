@@ -146,7 +146,7 @@ clone:
 	make -C $(module) develop
 
 clone-all:
-	for module in ${SUBMODULES};do git clone https://github.com/bibi21000/$(module).git || make -C $(module) pull; make -C $(module) deps; make -C $(module) develop; done
+	for module in ${SUBMODULES};do git clone https://github.com/bibi21000/$(module).git || make -C $(module) pull; sudo make -C $(module) deps; sudo make -C $(module) develop; done
 
 pull:
 	git clone $(repo)
