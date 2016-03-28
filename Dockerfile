@@ -101,6 +101,12 @@ RUN make clone module=janitoo_postgresql && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
+RUN make clone module=janitoo_gogs && \
+    make docker-inst module=janitoo_gogs && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
 #RUN make clone module=janitoo_dhcp && \
 #    apt-get clean && \
 #    rm -Rf /root/.cache/* 2>/dev/null||true && \
@@ -110,6 +116,11 @@ RUN make clone module=janitoo_layouts && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
+
+RUN make clone module=janitoo_events && \
+    make clone module=janitoo_events_cron && \
+    apt-get clean && rm -Rf /tmp/* || true && \
+    [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
 RUN make clone module=janitoo_thermal && \
     apt-get clean && rm -Rf /tmp/* || true && \
@@ -123,6 +134,7 @@ RUN make clone module=janitoo_datalog_rrd && \
 
 RUN make clone module=janitoo_flask && \
     make clone module=janitoo_flask_socketio && \
+    make clone module=janitoo_flask_websockets && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
