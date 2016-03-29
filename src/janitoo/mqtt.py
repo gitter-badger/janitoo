@@ -619,13 +619,16 @@ class MQTTClient(threading.Thread):
         #~ self.client.loop_forever(retry_first_connection=False)
         if self.client is not None:
             self.client.disconnect()
+        self.client = None
 
     def stop(self):
         """Stop the mqtt thread
         """
         logger.debug("[%s] - Stop the mqtt client", self.__class__.__name__)
         self._stopevent.set( )
-        self._stopevent.wait(0.1)
+        if self.client is not None:
+            self.client.disconnect()
+            self._stopevent.wait(0.1)
         self.client = None
 
     def connect(self):
