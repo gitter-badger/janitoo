@@ -617,17 +617,14 @@ class MQTTClient(threading.Thread):
             except:
                 logger.warning("[%s] - Exception in run : %s", self.__class__.__name__, traceback.format_exc())
         #~ self.client.loop_forever(retry_first_connection=False)
-        if self.client is not None:
-            self.client.disconnect()
         self.client = None
 
     def stop(self):
         """Stop the mqtt thread
         """
         logger.debug("[%s] - Stop the mqtt client", self.__class__.__name__)
+        self.client.disconnect()
         self._stopevent.set( )
-        if self.client is not None:
-            self.client.disconnect()
 
     def connect(self):
         """Connect to the mqtt broker
