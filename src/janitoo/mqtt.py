@@ -623,8 +623,9 @@ class MQTTClient(threading.Thread):
         """Stop the mqtt thread
         """
         logger.debug("[%s] - Stop the mqtt client", self.__class__.__name__)
-        self.client.disconnect()
         self._stopevent.set( )
+        if self.client is not None:
+            self.client.disconnect()
 
     def connect(self):
         """Connect to the mqtt broker

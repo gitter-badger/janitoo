@@ -13,7 +13,7 @@ RUN apt-get update && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base && \
+RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base apt-transport-https && \
     mkdir -p /var/run/sshd && \
     sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
     apt-get clean && \
