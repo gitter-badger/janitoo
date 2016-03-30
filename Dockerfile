@@ -13,7 +13,7 @@ RUN apt-get update && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base apt-transport-https && \
+RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base apt-transport-https apt-utils && \
     mkdir -p /var/run/sshd && \
     sed -i -e "s/^PermitRootLogin without-password/#PermitRootLogin without-password/" /etc/ssh/sshd_config && \
     apt-get clean && \
@@ -94,12 +94,13 @@ RUN make clone module=janitoo_mysql && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-RUN make clone module=janitoo_postgresql && \
-    make clone module=janitoo_postgresql_client && \
-    make docker-inst module=janitoo_postgresql && \
-    apt-get clean && \
-    rm -Rf /root/.cache/* 2>/dev/null||true && \
-    rm -Rf /tmp/* 2>/dev/null||true
+#Only for tests
+#RUN make clone module=janitoo_postgresql && \
+#    make clone module=janitoo_postgresql_client && \
+#    make docker-inst module=janitoo_postgresql && \
+#    apt-get clean && \
+#    rm -Rf /root/.cache/* 2>/dev/null||true && \
+#    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_gogs && \
     make docker-inst module=janitoo_gogs && \
