@@ -98,6 +98,13 @@ class BaseThread(threading.Thread):
         self.config_timeout_timer = None
         self._reloadevent.set( )
 
+    def stop_trigger_reload(self, timeout=None):
+        """Stop reload trigger.
+        """
+        if self.config_timeout_timer is not None:
+            self.config_timeout_timer.cancel()
+            self.config_timeout_timer = None
+
     def trigger_reload(self, timeout=None):
         """Trigger the config_timeout_callback to reload config.
         """
@@ -106,9 +113,9 @@ class BaseThread(threading.Thread):
                 self.config_timeout_delay = int(timeout)
             except ValueError:
                 logger.warning("[%s] - C'ant set timeout_delay to %s seconds in trigger_reload", self.__class__.__name__, timeout)
-        if self.config_timeout_timer is not None:
-            self.config_timeout_timer.cancel()
-            self.config_timeout_timer = None
+        self.stop_trigger_reload()
+        if self._stopevent.isSet():
+            return
         self.config_timeout_timer = threading.Timer(self.config_timeout_delay, self.config_timeout_callback)
         self.config_timeout_timer.start()
 
@@ -116,10 +123,8 @@ class BaseThread(threading.Thread):
         """Stop the thread
         """
         logger.debug("[%s] - Stop the thread", self.__class__.__name__)
-        if self.config_timeout_timer is not None:
-            self.config_timeout_timer.cancel()
-            self.config_timeout_timer = None
         self._stopevent.set()
+        self.stop_trigger_reload()
 
     def reload(self):
         """Stop the thread
