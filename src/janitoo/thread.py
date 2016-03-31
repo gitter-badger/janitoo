@@ -257,5 +257,8 @@ class JNTBusThread(JNTThread):
         """Stop the bus
         """
         if self.bus != None:
-            self.bus.stop()
+            try:
+                self.bus.stop()
+            except:
+                logger.exception("[%s] - Exception in post-loop", self.__class__.__name__)
             self.bus = None
