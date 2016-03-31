@@ -54,9 +54,6 @@ COMMAND_DISCOVERY = 0x5000
 assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 ##############################################################
 
-JNTTThreadRun.skipCITest()
-JNTTThreadRun.skipDockerTest()
-
 class TestFakeThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
