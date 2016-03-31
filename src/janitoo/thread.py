@@ -262,7 +262,6 @@ class JNTBusThread(JNTThread):
                 self.bus.stop()
             except:
                 logger.exception("[%s] - Exception in post-loop", self.__class__.__name__)
-            self.bus = None
 
     def post_run(self):
         """Derefernce the bus
