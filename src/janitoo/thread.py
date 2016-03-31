@@ -149,6 +149,11 @@ class BaseThread(threading.Thread):
         """
         pass
 
+    def post_run(self):
+        """Launch before exititng the run methode. You should dereference here.
+        """
+        pass
+
     def resource_filename(self, path='public'):
         """Needed to publish static files
         """
@@ -221,6 +226,7 @@ class JNTThread(BaseThread):
                 i += 1
                 self._reloadevent.wait(0.1)
         logger.debug("[%s] - Exiting the thread loop", self.__class__.__name__)
+        self.post_run()
         self.nodeman = None
 
 class JNTBusThread(JNTThread):
@@ -257,3 +263,8 @@ class JNTBusThread(JNTThread):
             except:
                 logger.exception("[%s] - Exception in post-loop", self.__class__.__name__)
             self.bus = None
+
+    def post_run(self):
+        """Derefernce the bus
+        """
+        self.bus = None
