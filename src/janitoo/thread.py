@@ -257,11 +257,13 @@ class JNTBusThread(JNTThread):
     def post_loop(self):
         """Stop the bus
         """
-        if self.bus != None:
-            try:
-                self.bus.stop()
-            except:
-                logger.exception("[%s] - Exception in post-loop", self.__class__.__name__)
+        #The bus is stopped by the nodeman
+        #~ if self.bus != None:
+            #~ try:
+                #~ self.bus.stop()
+            #~ except:
+                #~ logger.exception("[%s] - Exception in post-loop", self.__class__.__name__)
+        pass
 
     def post_run(self):
         """Derefernce the bus
