@@ -186,11 +186,6 @@ class JNTThread(BaseThread):
         """
         return self.nodeman.state
 
-    #~ def boot(self):
-        #~ """configure the HADD address. The node manager is not available.
-        #~ """
-        #~ raise NotImplementedError()
-
     def create_nodeman(self):
         """
         """
