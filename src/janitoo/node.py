@@ -171,7 +171,7 @@ class JNTNodeMan(object):
         fsm_state.add_transition('fsm_state_next', 'INIT','ONLINE')
         fsm_state.add_transition('fsm_state_stop', '*', 'OFFLINE',
             before=['stop_controller_uuid', 'stop_controller_reply_system', 'stop_controller_reply_config',
-                    'stop_nodes_init', 'stop_controller_reply',
+                    'stop_nodes_init', 'stop_controller_timer', 'stop_controller_reply',
                     'stop_broadcast_request', 'stop_nodes_request'],
             after=['after_fsm_stop']
         )
@@ -194,7 +194,6 @@ class JNTNodeMan(object):
         """Return True if the network is started
         """
         return self.state == "ONLINE"
-
 
     def after_fsm_stop(self):
         """
@@ -528,6 +527,8 @@ class JNTNodeMan(object):
         """
         logger.debug("fsm_state : %s", 'finish_reply_config')
         self.request_controller_config_timer = None
+        if self.is_stopped:
+            return
         self.before_controller_reply_config()
         if self.request_controller_config_response == False:
             #~ print self._controller.values
@@ -556,6 +557,19 @@ class JNTNodeMan(object):
             if self.request_controller_config_timer is not None:
                 self.request_controller_config_timer.cancel()
                 self.request_controller_config_timer = None
+
+    def stop_controller_timer(self):
+        """
+        """
+        if self.request_controller_uuid_timer is not None:
+            self.request_controller_uuid_timer.cancel()
+            self.request_controller_uuid_timer = None
+        if self.request_controller_system_timer is not None:
+            self.request_controller_system_timer.cancel()
+            self.request_controller_system_timer = None
+        if self.request_controller_config_timer is not None:
+            self.request_controller_config_timer.cancel()
+            self.request_controller_config_timer = None
 
     def start_nodes_init(self):
         """

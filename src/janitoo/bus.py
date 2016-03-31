@@ -89,6 +89,7 @@ class JNTBus(object):
         self._masters = kwargs.get('masters', [])
         if type(self._masters) != type([]):
             self._masters = [ self._masters ]
+        self.is_started = False
 
     def __del__(self):
         """
@@ -136,14 +137,16 @@ class JNTBus(object):
         self.export_values()
         self._trigger_thread_reload_cb = trigger_thread_reload_cb
         self.mqttc = mqttc
+        self.is_started = True
 
     def stop(self):
         """Start the bus and components"""
         logger.debug("[%s] - Stop the bus", self.__class__.__name__)
-        for compo in self.components.keys():
-            self.components[compo].stop()
-            del self.components[compo]
-        self.components = {}
+        if self.is_started:
+            for compo in self.components.keys():
+                self.components[compo].stop()
+                del self.components[compo]
+            self.components = {}
 
     @property
     def uuid(self):
