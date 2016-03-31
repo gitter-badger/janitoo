@@ -262,4 +262,3 @@ class JNTBusThread(JNTThread):
             except:
                 logger.exception("[%s] - Exception in post-loop", self.__class__.__name__)
             self.bus = None
-
