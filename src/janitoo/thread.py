@@ -204,7 +204,7 @@ class JNTThread(BaseThread):
         self.trigger_reload()
         logger.debug("[%s] - Wait for the thread reload event for initial startup", self.__class__.__name__)
         while not self._reloadevent.isSet() and not self._stopevent.isSet():
-            self._reloadevent.wait(0.50)
+            self._reloadevent.wait(0.10)
         logger.debug("[%s] - Entering the thread loop", self.__class__.__name__)
         while not self._stopevent.isSet():
             self._reloadevent.clear()
