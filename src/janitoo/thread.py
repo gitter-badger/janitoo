@@ -267,4 +267,3 @@ class JNTBusThread(JNTThread):
         """Derefernce the bus
         """
         self.bus = None
-
