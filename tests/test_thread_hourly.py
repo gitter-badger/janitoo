@@ -65,4 +65,3 @@ class TestHourlyTimerThread(JNTTThreadRun, JNTTThreadRunCommon):
     """
     thread_name = "fake"
     conf_file = "tests/data/test_threads_hourly.conf"
-
