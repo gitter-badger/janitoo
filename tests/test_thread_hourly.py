@@ -60,7 +60,6 @@ assert(COMMAND_DESC[COMMAND_DISCOVERY] == 'COMMAND_DISCOVERY')
 JNTTThreadRun.skipCITest()
 JNTTThreadRun.skipDockerTest()
 
-
 class TestHourlyTimerThread(JNTTThreadRun, JNTTThreadRunCommon):
     """Test the thread
     """
