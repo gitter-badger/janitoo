@@ -62,4 +62,3 @@ class TestFakeThread(JNTTThreadRun, JNTTThreadRunCommon):
     """
     thread_name = "fake"
     conf_file = "tests/data/test_threads.conf"
-
