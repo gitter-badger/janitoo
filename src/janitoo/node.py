@@ -1758,17 +1758,3 @@ class JNTNode(object):
         except ValueError:
             logger.exception('Exception when setting location')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
