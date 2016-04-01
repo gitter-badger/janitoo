@@ -181,6 +181,8 @@ class JNTNodeMan(object):
         """
         """
         self.stop_hourly_timer()
+        self.stop_nodes_init()
+        self.stop_controller_timer()
         self.fsm_state_stop()
 
     @property
