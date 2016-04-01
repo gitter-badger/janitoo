@@ -1757,3 +1757,4 @@ class JNTNode(object):
             self.options.set_option(node_uuid, 'location', self.location)
         except ValueError:
             logger.exception('Exception when setting location')
+
