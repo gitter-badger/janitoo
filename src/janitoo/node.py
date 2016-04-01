@@ -67,7 +67,7 @@ class JNTNodeMan(object):
         State(name='NEW'),
         State(name='BOOT', on_enter=['start_controller_uuid', 'start_heartbeat_sender'], on_exit=['stop_controller_uuid']),
         State(name='SYSTEM', on_enter=['start_controller_reply', 'start_controller_reply_system'], on_exit=['stop_controller_reply_system']),
-        State(name='CONFIG', on_enter=['start_controller_reply_config'], on_exit=['stop_controller_reply_config']),
+        State(name='CONFIG', on_enter=['start_controller_reply_config'], on_exit=['stop_controller_reply_config', 'stop_controller_timer']),
         State(name='INIT', on_enter=['start_nodes_init'], on_exit=['stop_nodes_init', 'stop_controller_reply']),
         State(name='ONLINE', on_enter=['start_broadcast_request', 'start_nodes_request', 'start_hourly_timer'], on_exit=['stop_broadcast_request', 'stop_nodes_request', 'stop_hourly_timer']),
         State(name='OFFLINE', on_enter=['stop_heartbeat_sender']),
@@ -403,7 +403,7 @@ class JNTNodeMan(object):
     def finish_controller_uuid(self):
         """
         """
-        logger.debug("fsm_state : %s", 'finish_controller_uuid')
+        logger.debug("fsm_state : %s in state %s", 'finish_controller_uuid', self.state)
         self.request_controller_uuid_timer = None
         if self.is_stopped:
             return
@@ -423,7 +423,7 @@ class JNTNodeMan(object):
     def stop_controller_uuid(self):
         """
         """
-        logger.debug("fsm_state : %s", 'stop_controller_uuid')
+        logger.debug("fsm_state : %s in state %s", 'stop_controller_uuid', self.state)
         if self._test:
             print "stop_controller_uuid"
         else:
@@ -462,7 +462,7 @@ class JNTNodeMan(object):
     def finish_controller_reply_system(self):
         """
         """
-        logger.debug("fsm_state : %s", 'finish_controller_reply_system')
+        logger.debug("fsm_state : %s in state %s", 'finish_controller_reply_system', self.state)
         self.request_controller_system_timer = None
         if self.is_stopped:
             return
@@ -527,7 +527,7 @@ class JNTNodeMan(object):
     def finish_controller_reply_config(self):
         """
         """
-        logger.debug("fsm_state : %s", 'finish_reply_config')
+        logger.debug("fsm_state : %s in state %s", 'finish_reply_config', self.state)
         self.request_controller_config_timer = None
         if self.is_stopped:
             return
@@ -587,7 +587,7 @@ class JNTNodeMan(object):
     def finish_nodes_hadds(self):
         """
         """
-        logger.debug("fsm_state : %s", 'finish_nodes_hadds')
+        logger.debug("fsm_state : %s in state %s", 'finish_nodes_hadds', self.state)
         logger.debug("finish_nodes_hadds : nodes = %s", self.nodes)
         self.request_nodes_hadds_timer = None
         #~ print "self.request_nodes_hadds_response ", self.request_nodes_hadds_response
@@ -606,7 +606,7 @@ class JNTNodeMan(object):
     def finish_nodes_system(self):
         """
         """
-        logger.debug("fsm_state : %s", 'finish_nodes_system')
+        logger.debug("fsm_state : %s in state %s", 'finish_nodes_system', self.state)
         logger.debug("finish_nodes_system : nodes = %s", self.nodes)
         self.request_nodes_system_timer = None
         if self.request_nodes_system_response == False:
@@ -624,7 +624,7 @@ class JNTNodeMan(object):
     def finish_nodes_config(self):
         """
         """
-        logger.debug("fsm_state : %s", 'finish_nodes_config')
+        logger.debug("fsm_state : %s in state %s", 'finish_nodes_config', self.state)
         logger.debug("finish_nodes_config : nodes = %s", self.nodes)
         self.request_nodes_config_timer = None
         #~ print "self.request_nodes_hadds_response ", self.request_nodes_config_response
@@ -1759,49 +1759,3 @@ class JNTNode(object):
             self.options.set_option(node_uuid, 'location', self.location)
         except ValueError:
             logger.exception('Exception when setting location')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
