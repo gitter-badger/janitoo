@@ -1658,3 +1658,4 @@ class JNTNode(object):
             logger.exception('Exception when setting location')
 
 
+
