@@ -31,6 +31,7 @@ from pkg_resources import resource_filename, Requirement, iter_entry_points
 
 from janitoo.utils import JanitooNotImplemented, HADD
 from janitoo.node import JNTNode
+from janitoo.options import JNTOptions
 
 class JNTComponent(object):
     def __init__(self, oid='generic.generic', bus=None, addr=None, **kwargs):
@@ -50,7 +51,7 @@ class JNTComponent(object):
         self.cmd_classes = []
         self.node = None
         self.mqttc = None
-        self.options = kwargs.get('options', {})
+        self.options = kwargs.get('options', JNTOptions({}))
         if self._bus is None:
             self.value_factory = {}
             for entrypoint in iter_entry_points(group = 'janitoo.values'):
