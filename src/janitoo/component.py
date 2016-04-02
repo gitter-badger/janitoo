@@ -51,7 +51,9 @@ class JNTComponent(object):
         self.cmd_classes = []
         self.node = None
         self.mqttc = None
-        self.options = kwargs.get('options', JNTOptions({}))
+        self.options = kwargs.get('options', {})
+        if type(self.options) == type(dict()):
+            self.options = JNTOptions(self.options)
         if self._bus is None:
             self.value_factory = {}
             for entrypoint in iter_entry_points(group = 'janitoo.values'):
