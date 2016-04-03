@@ -891,39 +891,6 @@ class JNTNetwork(object):
         logger.debug("fsm_network : %s", 'fsm_on_started')
         self.emit_all()
 
-    #~ def resolv_mqttc_on_connect(self, client, userdata, flags, rc):
-        """Called when the broker responds to our connection request.
-
-
-        :param client: the Client instance that is calling the callback.
-        :type client: paho.mqtt.client.Client
-        :param userdata: user data of any type and can be set when creating a new client instance or with user_data_set(userdata).
-        :type userdata: all
-        :param flags: flags is a dict that contains response flags from the broker:
-                      flags['session present'] - this flag is useful for clients that are
-                      using clean session set to 0 only. If a client with clean
-                      session=0, that reconnects to a broker that it has previously
-                      connected to, this flag indicates whether the broker still has the
-                      session information for the client. If 1, the session still exists.
-        :type flags: dict
-        :param rc: the value of rc determines success or not:
-                       0: Connection successful
-                       1: Connection refused - incorrect protocol version
-                       2: Connection refused - invalid client identifier
-                       3: Connection refused - server unavailable
-                       4: Connection refused - bad username or password
-                       5: Connection refused - not authorised
-                       6-255: Currently unused.
-        :type rc: in
-        """
-        #~ logger.debug("fsm_network : %s", 'resolv_mqttc_on_connect')
-        #~ if self.resolv_timeout_timer is not None:
-            #~ self.resolv_timeout_timer.cancel()
-            #~ self.resolv_timeout_timer = None
-        #~ self.emit_network()
-        #~ self.fsm_network_next()
-
-
     def start_resolv_discover(self):
         """
         """
