@@ -42,7 +42,7 @@ from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 import mock
 
-class TestNetworkState(JNTTBase):
+class CommonNetworkState(JNTTBase):
     """Test the network state machine
     """
 
@@ -66,8 +66,14 @@ class TestNetworkState(JNTTBase):
             while not self.nodeman.is_stopped and i<10:
                 i += 1
                 time.sleep(1)
+        time.sleep(5)
         self.nodeman = None
         self.network = None
+
+class TestNetworkState1(CommonNetworkState):
+    """Test the network state machine
+    Split cause freeze
+    """
 
     def test_001_request_secondary(self):
         #~ self.wipTest("Freeze")
@@ -132,6 +138,11 @@ class TestNetworkState(JNTTBase):
         self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.basics)
         self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.users)
         self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.commands)
+
+class TestNetworkState2(CommonNetworkState):
+    """Test the network state machine
+    Split cause freeze
+    """
 
     def test_011_request_primary(self):
 

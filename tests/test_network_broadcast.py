@@ -42,7 +42,7 @@ from janitoo.options import JNTOptions
 from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 import mock
 
-class TestNetworkState(JNTTBase):
+class CommonNetworkState(JNTTBase):
     """Test the network state machine
     """
 
@@ -65,9 +65,13 @@ class TestNetworkState(JNTTBase):
             while not self.nodeman.is_stopped and i<10:
                 i += 1
                 time.sleep(1)
+        time.sleep(5)
         self.nodeman = None
         self.network = None
 
+class TestNetworkState1(CommonNetworkState):
+    """Test the network state machine
+    """
     def test_001_broadcast_secondary(self):
         #~ self.wipTest("Freeze")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
@@ -128,6 +132,9 @@ class TestNetworkState(JNTTBase):
         self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.users)
         self.assertTrue(HADD%(self.node_add_ctrl,1) in self.network.commands)
 
+class TestNetworkState2(CommonNetworkState):
+    """Test the network state machine
+    """
     def test_011_broadcast_primary(self):
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())

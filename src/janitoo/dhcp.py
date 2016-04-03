@@ -579,10 +579,15 @@ class JNTNetwork(object):
     def delete_fsm(self):
         """Delete the fsm
         """
+        self.fsm_network = None
+        self.clean_all()
+
+    def clean_all(self):
+        """Delete the fsm
+        """
         if self.heartbeat_cache is not None:
             self.heartbeat_cache.flush()
             self.heartbeat_cache = None
-        self.fsm_network = None
         self._lock.acquire()
         try:
             self.threads_timers = []
@@ -610,6 +615,7 @@ class JNTNetwork(object):
         self.before_stop_fsm()
         if self.fsm_network is not None:
             self.fsm_network_stop()
+        self.clean_all()
         #~ self.emit_nodes()
         #~ self.emit_network()
 
