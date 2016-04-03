@@ -573,26 +573,16 @@ class JNTNetwork(object):
         fsm.add_transition('fsm_network_fail', 'STARTED', 'BROADCAST_NODES', before = ['set_failed'])
         fsm.add_transition('fsm_network_fail', 'RESOLV', 'BROADCAST_NODES', before = ['set_failed'])
         fsm.add_transition('fsm_network_recover', 'STARTED', 'RESOLV', before = ['stop_heartbeat_discover', 'stop_dispatch_heartbeat', 'unset_failed'])
-        fsm.add_transition('fsm_network_stop', '*', 'STOPPED', after = ['delete_fsm'])
+        fsm.add_transition('fsm_network_stop', '*', 'STOPPED', before = ['before_stop_fsm'], after = ['delete_fsm'])
         return fsm
 
     def delete_fsm(self):
         """Delete the fsm
         """
+        if self.heartbeat_cache is not None:
+            self.heartbeat_cache.flush()
+            self.heartbeat_cache = None
         self.fsm_network = None
-
-    def stop(self):
-        """Stop the network
-        """
-        self._stopevent.set()
-        self.stop_resolv_heartbeat_timer()
-        self.stop_dispatch_heartbeat_timer()
-        for th in self.threads_timers:
-            if th.is_alive():
-                th.cancel()
-        self.stop_dispatch_heartbeat_timer()
-        if self.fsm_network is not None:
-            self.fsm_network_stop()
         self._lock.acquire()
         try:
             self.threads_timers = []
@@ -606,9 +596,20 @@ class JNTNetwork(object):
             logger.exception("Exception in network stop")
         finally:
             self._lock.release()
-        if self.heartbeat_cache is not None:
-            self.heartbeat_cache.flush()
-            self.heartbeat_cache = None
+
+    def before_stop_fsm(self):
+        """Stop the network
+        """
+        self._stopevent.set()
+        self.stop_resolv_heartbeat_timer()
+        self.stop_dispatch_heartbeat_timer()
+
+    def stop(self):
+        """Stop the network
+        """
+        self.before_stop_fsm()
+        if self.fsm_network is not None:
+            self.fsm_network_stop()
         #~ self.emit_nodes()
         #~ self.emit_network()
 
@@ -636,7 +637,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_broadcast_nodes_discover"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             if self.broadcast_mqttc is None:
                 self.broadcast_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -698,7 +699,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_broadcast_users_discover"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             msg = { 'cmd_class': COMMAND_DISCOVERY, 'genre':0x04, 'uuid':'request_info_users', 'reply_hadd':self.hadds[0]}
             self.broadcast_mqttc.publish(TOPIC_BROADCAST_REQUEST, json_dumps(msg))
@@ -726,7 +727,7 @@ class JNTNetwork(object):
         logger.debug("fsm_network : %s", 'finish_broadcast_users_discover')
         self.emit_network()
         self.emit_users()
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.fsm_network_next()
 
@@ -737,7 +738,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_broadcast_configs_discover"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             msg = { 'cmd_class': COMMAND_DISCOVERY, 'genre':0x04, 'uuid':'request_info_configs', 'reply_hadd':self.hadds[0]}
             self.broadcast_mqttc.publish(TOPIC_BROADCAST_REQUEST, json_dumps(msg))
@@ -763,7 +764,7 @@ class JNTNetwork(object):
         logger.debug("fsm_network : %s", 'finish_broadcast_configs_discover')
         self.emit_network()
         self.emit_configs()
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.fsm_network_next()
 
@@ -774,7 +775,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_broadcast_basics_discover"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             msg = { 'cmd_class': COMMAND_DISCOVERY, 'genre':0x04, 'uuid':'request_info_basics', 'reply_hadd':self.hadds[0]}
             self.broadcast_mqttc.publish(TOPIC_BROADCAST_REQUEST, json_dumps(msg))
@@ -800,7 +801,7 @@ class JNTNetwork(object):
         logger.debug("fsm_network : %s", 'finish_broadcast_basics_discover')
         self.emit_network()
         self.emit_basics()
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.fsm_network_next()
 
@@ -811,7 +812,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_broadcast_systems_discover"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             msg = { 'cmd_class': COMMAND_DISCOVERY, 'genre':0x04, 'uuid':'request_info_systems', 'reply_hadd':self.hadds[0]}
             self.broadcast_mqttc.publish(TOPIC_BROADCAST_REQUEST, json_dumps(msg))
@@ -837,7 +838,7 @@ class JNTNetwork(object):
         logger.debug("fsm_network : %s", 'finish_broadcast_systems_discover')
         self.emit_network()
         self.emit_systems()
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.fsm_network_next()
 
@@ -848,7 +849,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_broadcast_commands_discover"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             msg = { 'cmd_class': COMMAND_DISCOVERY, 'genre':0x04, 'uuid':'request_info_commands', 'reply_hadd':self.hadds[0]}
             self.broadcast_mqttc.publish(TOPIC_BROADCAST_REQUEST, json_dumps(msg))
@@ -874,7 +875,7 @@ class JNTNetwork(object):
         logger.debug("fsm_network : %s", 'finish_broadcast_commands_discover')
         self.emit_network()
         self.emit_commands()
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.fsm_network_next()
 
@@ -924,7 +925,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_resolv_discover"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             if self.resolv_mqttc is None:
                 self.resolv_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -964,7 +965,7 @@ class JNTNetwork(object):
         """
         logger.debug("fsm_network : %s", 'finish_resolv_discover')
         self.resolv_timeout_timer = None
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         if not self.is_failed:
             logger.warning("The network switch to failed mode")
@@ -1003,6 +1004,8 @@ class JNTNetwork(object):
         if self._test:
             print "start_resolv_request"
         else:
+            if self._stopevent.is_set() or self.is_stopped:
+                return
             try:
                 if self.resolv_request_mqttc is None:
                     self.resolv_request_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -1010,9 +1013,10 @@ class JNTNetwork(object):
                     self.resolv_request_mqttc.subscribe(topic="%s#"%TOPIC_RESOLV_REQUEST, callback=self.on_resolv_request)
                     self.resolv_request_mqttc.start()
             except AttributeError:
-                if self._stopevent.is_set():
+                if self._stopevent.is_set() or self.is_stopped:
                     return
-                raise
+                else:
+                    raise
 
     def stop_resolv_request(self):
         """
@@ -1040,6 +1044,8 @@ class JNTNetwork(object):
         if self._test:
             print "start_resolv_heartbeat"
         else:
+            if self._stopevent.is_set() or self.is_stopped:
+                return
             try:
                 if self.resolv_heartbeat_mqttc is None:
                     self.resolv_heartbeat_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -1048,9 +1054,10 @@ class JNTNetwork(object):
                     self.resolv_heartbeat_mqttc.start()
                     self.stop_resolv_heartbeat_timer()
             except AttributeError:
-                if self._stopevent.is_set():
+                if self._stopevent.is_set() or self.is_stopped:
                     return
-                raise
+                else:
+                    raise
 
     def start_resolv_heartbeat_timer(self):
         """
@@ -1059,7 +1066,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_resolv_heartbeat_timer"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             self.stop_resolv_heartbeat_timer()
             self.resolv_heartbeat_timer = threading.Timer(self.resolv_timeout, self.finish_resolv_heartbeat_timer)
@@ -1070,7 +1077,7 @@ class JNTNetwork(object):
         fallback to fail mode
         """
         logger.debug("fsm_network : %s", 'finish_resolv_heartbeat_timer')
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         if not self.is_failed and self.is_started:
             logger.warning("The network switch to failed mode")
@@ -1134,6 +1141,8 @@ class JNTNetwork(object):
         if self._test:
             print "start_nodes_discover"
         else:
+            if self._stopevent.is_set() or self.is_stopped:
+                return
             try:
                 if self.nodes_mqttc is None:
                     self.nodes_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -1142,9 +1151,10 @@ class JNTNetwork(object):
                     logger.debug("start_nodes_discover : listen to %s", self.hadds[0])
                     self.nodes_mqttc.start()
             except AttributeError:
-                if self._stopevent.is_set():
+                if self._stopevent.is_set() or self.is_stopped:
                     return
-                raise
+                else:
+                    raise
         self.emit_nodes()
         self.emit_network()
 
@@ -1155,6 +1165,8 @@ class JNTNetwork(object):
         if self._test:
             print "start_heartbeat_discover"
         else:
+            if self._stopevent.is_set() or self.is_stopped:
+                return
             try:
                 if self.heartbeat_discover_mqttc is None:
                     self.heartbeat_discover_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -1162,11 +1174,12 @@ class JNTNetwork(object):
                     self.heartbeat_discover_mqttc.subscribe(topic='/dhcp/heartbeat/#', callback=self.on_heartbeat_discover)
                     self.heartbeat_discover_mqttc.start()
             except AttributeError:
-                if self._stopevent.is_set():
+                if self._stopevent.is_set() or self.is_stopped:
                     return
-                raise
+                else:
+                    raise
         self.emit_network()
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.fsm_network_next()
 
@@ -1197,6 +1210,8 @@ class JNTNetwork(object):
         if self._test:
             print "start_heartbeat"
         else:
+            if self._stopevent.is_set() or self.is_stopped:
+                return
             try:
                 if self.heartbeat_mqttc is None:
                     self.heartbeat_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -1204,10 +1219,11 @@ class JNTNetwork(object):
                     self.heartbeat_mqttc.subscribe(topic='/dhcp/heartbeat/#', callback=self.on_heartbeat)
                     self.heartbeat_mqttc.start()
             except AttributeError:
-                if self._stopevent.is_set():
+                if self._stopevent.is_set() or self.is_stopped:
                     return
-                raise
-        if self._stopevent.is_set():
+                else:
+                    raise
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.emit_network()
         self.fsm_network_next()
@@ -1239,7 +1255,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_dispatch_heartbeat"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             if self.dispatch_heartbeat_mqttc is None:
                 self.dispatch_heartbeat_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -1257,7 +1273,7 @@ class JNTNetwork(object):
         if self._test:
             print "start_dispatch_heartbeat_timer"
         else:
-            if self._stopevent.is_set():
+            if self._stopevent.is_set() or self.is_stopped:
                 return
             self.stop_dispatch_heartbeat_timer()
             self.dispatch_heartbeat_timer = threading.Timer(1, self.finish_dispatch_heartbeat_timer)
@@ -1268,7 +1284,7 @@ class JNTNetwork(object):
         fallback to fail mode
         """
         #~ logger.debug("fsm_network : %s", 'finish_dispatch_heartbeat_timer')
-        if self._stopevent.is_set():
+        if self._stopevent.is_set() or self.is_stopped:
             return
         self.stop_dispatch_heartbeat_timer()
         self.start_dispatch_heartbeat_timer()
@@ -1319,6 +1335,8 @@ class JNTNetwork(object):
         if self._test:
             print "start_values_listener"
         else:
+            if self._stopevent.is_set() or self.is_stopped:
+                return
             try:
                 if self.values_mqttc is None:
                     self.values_mqttc = MQTTClient(options=self.options.data, loop_sleep=self.loop_sleep)
@@ -1326,9 +1344,10 @@ class JNTNetwork(object):
                     self.values_mqttc.subscribe(topic='/values/#', callback=self.on_value)
                     self.values_mqttc.start()
             except AttributeError:
-                if self._stopevent.is_set():
+                if self._stopevent.is_set() or self.is_stopped:
                     return
-                raise
+                else:
+                    raise
         self.emit_network()
 
     def stop_values_listener(self):

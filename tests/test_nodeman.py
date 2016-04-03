@@ -156,7 +156,7 @@ class TestNodeManagerState(TestJanitoo):
 
     def test_111_node_start_wait_random_stop(self):
         #~ self.skipTest("Pass but freeze on Docker/CI. Surely a non stopped thread in the state machine")
-        #~ self.onlyCITest()
+        self.onlyCITest()
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
@@ -196,7 +196,7 @@ class TestNodeManagerState(TestJanitoo):
 
     def test_112_node_start_wait_random_stop_more(self):
         #~ self.skipTest("Pass but freeze on Docker/CI. Surely a non stopped thread in the state machine")
-        #~ self.onlyCITest()
+        self.onlyCITest()
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
