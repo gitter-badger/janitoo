@@ -69,8 +69,8 @@ class JNTNodeMan(object):
         State(name='SYSTEM', on_enter=['start_controller_reply', 'start_controller_reply_system']),
         State(name='CONFIG', on_enter=['start_controller_reply_config']),
         State(name='INIT', on_enter=['start_nodes_init'], on_exit=['stop_boot_timer', 'stop_controller_reply']),
-        State(name='ONLINE', on_enter=['start_broadcast_request', 'start_nodes_request', 'start_hourly_timer'], on_exit=['stop_broadcast_request', 'stop_nodes_request', 'stop_hourly_timer']),
-        State(name='OFFLINE', on_enter=['stop_heartbeat_sender']),
+        State(name='ONLINE', on_enter=['start_broadcast_request', 'start_nodes_request', 'start_hourly_timer'], on_exit=['stop_broadcast_request', 'stop_nodes_request']),
+        State(name='OFFLINE', on_enter=['stop_boot_timer', 'stop_hourly_timer', 'stop_heartbeat_sender', 'stop_controller_uuid', 'stop_controller_reply','stop_broadcast_request', 'stop_nodes_request']),
     ]
 
     states_str = {
@@ -113,8 +113,8 @@ class JNTNodeMan(object):
         self.nodes_hadds_response = None
         self.request_nodes_config_response = False
         self.nodes_config_response = None
-        self.config_timeout = 8
-        self.slow_start = 0
+        self.config_timeout = 3
+        self.slow_start = 0.05
         self._controller = None
         self._controller_hadd = None
         self._requests = {'request_info_nodes' : self.request_info_nodes, 'request_info_users' : self.request_info_users, 'request_info_configs' : self.request_info_configs,
@@ -126,12 +126,6 @@ class JNTNodeMan(object):
         self._hourly_jobs = None
         self._daily_jobs = None
 
-        #~ self.request_controller_system_timer = None
-        #~ self.request_controller_config_timer = None
-        #~ self.request_controller_uuid_timer = None
-        #~ self.request_nodes_system_timer = None
-        #~ self.request_nodes_hadds_timer = None
-        #~ self.request_nodes_config_timer = None
         self.request_boot_timer = None
         self.request_boot_timer_lock = threading.Lock()
 
@@ -172,19 +166,31 @@ class JNTNodeMan(object):
         fsm_state.add_transition('fsm_state_next', 'SYSTEM', 'CONFIG')
         fsm_state.add_transition('fsm_state_next', 'CONFIG', 'INIT')
         fsm_state.add_transition('fsm_state_next', 'INIT','ONLINE')
-        fsm_state.add_transition('fsm_state_stop', '*', 'OFFLINE',
-            before=['stop_boot_timer', 'stop_controller_uuid', 'stop_controller_reply',
-                    'stop_broadcast_request', 'stop_nodes_request'],
-            after=['after_fsm_stop']
+        fsm_state.add_transition('fsm_state_stop', '*', 'OFFLINE', after=['after_fsm_stop']
         )
         return fsm_state
 
     def stop(self):
         """
         """
-        self.stop_hourly_timer()
-        self.stop_boot_timer()
         self.fsm_state_stop()
+        self.stop_hourly_timer()
+        self.stop_heartbeat_sender()
+        self.stop_controller_uuid()
+        self.stop_controller_reply()
+        self.stop_broadcast_request()
+        self.stop_nodes_request()
+        self.stop_boot_timer()
+
+    def after_fsm_stop(self):
+        """
+        """
+        self.nodes = {}
+        self.polls = {}
+        self.heartbeats = {}
+        self.fsm_state = None
+        self._hourly_jobs = []
+        self.state = "OFFLINE"
 
     @property
     def is_stopped(self):
@@ -198,15 +204,6 @@ class JNTNodeMan(object):
         """
         return self.state == "ONLINE"
 
-    def after_fsm_stop(self):
-        """
-        """
-        self.nodes = {}
-        self.polls = {}
-        self.heartbeats = {}
-        self.fsm_state = None
-        self._hourly_jobs = []
-
     def start_heartbeat_sender(self):
         """
         """
@@ -216,6 +213,8 @@ class JNTNodeMan(object):
         else:
             if self.mqtt_heartbeat is None:
                 self.mqtt_heartbeat_lock.acquire()
+                if self.is_stopped:
+                    return
                 try:
                     self.mqtt_heartbeat = MQTTClient(options=self.options.data)
                     self.mqtt_heartbeat.connect()
@@ -242,10 +241,10 @@ class JNTNodeMan(object):
                     self.mqtt_heartbeat.stop()
                     if self.mqtt_heartbeat.is_alive():
                         self.mqtt_heartbeat.join()
-                    self.mqtt_heartbeat = None
                 except:
                     logger.exception("[%s] - stop_heartbeat_sender", self.__class__.__name__)
                 finally:
+                    self.mqtt_heartbeat = None
                     self.mqtt_heartbeat_lock.release()
 
     def start_broadcast_request(self):
@@ -257,6 +256,8 @@ class JNTNodeMan(object):
         else:
             if self.mqtt_broadcast is None:
                 self.mqtt_broadcast_lock.acquire()
+                if self.is_stopped:
+                    return
                 try:
                     self.mqtt_broadcast = MQTTClient(options=self.options.data)
                     self.mqtt_broadcast.connect()
@@ -281,10 +282,10 @@ class JNTNodeMan(object):
                     self.mqtt_broadcast.stop()
                     if self.mqtt_broadcast.is_alive():
                         self.mqtt_broadcast.join()
-                    self.mqtt_broadcast = None
                 except:
                     logger.exception("[%s] - stop_broadcast_request", self.__class__.__name__)
                 finally:
+                    self.mqtt_broadcast = None
                     self.mqtt_broadcast_lock.release()
 
     def start_nodes_request(self):
@@ -295,6 +296,8 @@ class JNTNodeMan(object):
             print "start_nodes_request"
         else:
             if self.mqtt_nodes is None:
+                if self.is_stopped:
+                    return
                 self.mqtt_nodes_lock.acquire()
                 try:
                     self.mqtt_nodes = MQTTClient(options=self.options.data)
@@ -333,7 +336,7 @@ class JNTNodeMan(object):
                     if self.mqtt_nodes.is_alive():
                         self.mqtt_nodes.join()
                 except:
-                    logger.exception("[%s] - start_nodes_request", self.__class__.__name__)
+                    logger.exception("[%s] - stop_nodes_request", self.__class__.__name__)
                 finally:
                     self.mqtt_nodes = None
                     self.mqtt_nodes_lock.release()
@@ -345,6 +348,8 @@ class JNTNodeMan(object):
         if self._test:
             print "start_controller_reply"
         else:
+            if self.is_stopped:
+                return
             if self.mqtt_controller_reply is None:
                 self.mqtt_controller_reply_lock.acquire()
                 try:
@@ -354,7 +359,7 @@ class JNTNodeMan(object):
                     #~ self.mqtt_controller_reply.subscribe(topic=TOPIC_NODES_REPLY%(self._controller.hadd), callback=self.on_reply)
                     #~ self.mqtt_controller_reply.start()
                 except:
-                    logger.exception("[%s] - start_nodes_request", self.__class__.__name__)
+                    logger.exception("[%s] - start_controller_reply", self.__class__.__name__)
                 finally:
                     self.mqtt_controller_reply_lock.release()
 
@@ -372,10 +377,10 @@ class JNTNodeMan(object):
                     self.mqtt_controller_reply.stop()
                     if self.mqtt_controller_reply.is_alive():
                         self.mqtt_controller_reply.join()
-                    self.mqtt_controller_reply = None
                 except:
-                    logger.exception("[%s] - start_nodes_request", self.__class__.__name__)
+                    logger.exception("[%s] - stop_controller_reply", self.__class__.__name__)
                 finally:
+                    self.mqtt_controller_reply = None
                     self.mqtt_controller_reply_lock.release()
 
     def start_controller_uuid(self):
@@ -385,6 +390,8 @@ class JNTNodeMan(object):
         if self._test:
             print "start_controller_uuid"
         else:
+            if self.is_stopped:
+                return
             if self.mqtt_controller_uuid is None:
                 self.mqtt_controller_uuid_lock.acquire()
                 try:
@@ -394,15 +401,16 @@ class JNTNodeMan(object):
                     #~ self.mqtt_controller_uuid.subscribe(topic=TOPIC_NODES_REPLY%(self._controller_hadd), callback=self.on_reply_uuid)
                     #~ self.mqtt_controller_uuid.start()
                 except:
-                    logger.exception("[%s] - start_nodes_request", self.__class__.__name__)
+                    logger.exception("[%s] - start_controller_uuid", self.__class__.__name__)
                 finally:
                     self.mqtt_controller_uuid_lock.release()
             self.request_boot_timer_lock.acquire()
             try:
+                self._stop_boot_timer()
+                if self.is_stopped:
+                    return
                 self.request_boot_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_controller_uuid)
                 self.request_boot_timer.start()
-            except:
-                logger.exception("[%s] - start_controller_uuid", self.__class__.__name__)
             finally:
                 self.request_boot_timer_lock.release()
 
@@ -410,19 +418,27 @@ class JNTNodeMan(object):
         """
         """
         logger.debug("fsm_state : %s in state %s", 'finish_controller_uuid', self.state)
-        self.request_controller_uuid_timer = None
         if self.is_stopped:
             return
-        if self.request_controller_uuid_response == False:
-            #retrieve hadd from local configuration
-            controller = self.create_controller_node()
-            self.add_controller_node(controller.uuid, controller)
-            self._controller.hadd_get(controller.uuid, None)
-            self._controller_hadd = self._controller.hadd
-            self.add_heartbeat(self._controller)
-            logger.debug("[%s] - Added controller node with uuid %s and hadd %s", self.__class__.__name__, self._controller.uuid, self._controller_hadd)
-            #~ print self._controller.__dict__
-            #~ print self.config_timeout
+        self.request_boot_timer_lock.acquire()
+        try:
+            self._stop_boot_timer()
+            if self.is_stopped:
+                return
+            if self.request_controller_uuid_response == False:
+                #retrieve hadd from local configuration
+                controller = self.create_controller_node()
+                self.add_controller_node(controller.uuid, controller)
+                self._controller.hadd_get(controller.uuid, None)
+                self._controller_hadd = self._controller.hadd
+                self.add_heartbeat(self._controller)
+                logger.debug("[%s] - Added controller node with uuid %s and hadd %s", self.__class__.__name__, self._controller.uuid, self._controller_hadd)
+                #~ print self._controller.__dict__
+                #~ print self.config_timeout
+        except:
+            logger.exception("[%s] - finish_controller_uuid", self.__class__.__name__)
+        finally:
+            self.request_boot_timer_lock.release()
         if not self.is_stopped:
             self.fsm_state_next()
 
@@ -440,10 +456,10 @@ class JNTNodeMan(object):
                     self.mqtt_controller_uuid.stop()
                     if self.mqtt_controller_uuid.is_alive():
                         self.mqtt_controller_uuid.join()
-                    self.mqtt_controller_uuid = None
                 except:
-                    logger.exception("[%s] - start_nodes_request", self.__class__.__name__)
+                    logger.exception("[%s] - stop_controller_uuid", self.__class__.__name__)
                 finally:
+                    self.mqtt_controller_uuid = None
                     self.mqtt_controller_uuid_lock.release()
 
     def start_controller_reply_system(self):
@@ -453,12 +469,15 @@ class JNTNodeMan(object):
         if self._test:
             print "start_controller_reply_system"
         else:
+            if self.is_stopped:
+                return
             self.request_boot_timer_lock.acquire()
             try:
+                self._stop_boot_timer()
+                if self.is_stopped:
+                    return
                 self.request_boot_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_controller_reply_system)
                 self.request_boot_timer.start()
-            except:
-                logger.exception("[%s] - start_controller_reply_system", self.__class__.__name__)
             finally:
                 self.request_boot_timer_lock.release()
 
@@ -467,13 +486,16 @@ class JNTNodeMan(object):
         """
         self.request_boot_timer_lock.acquire()
         try:
-            if self.request_boot_timer is not None:
-                self.request_boot_timer.cancel()
-                self.request_boot_timer = None
-        except:
-            logger.exception("[%s] - stop_boot_timer", self.__class__.__name__)
+            self._stop_boot_timer()
         finally:
             self.request_boot_timer_lock.release()
+
+    def _stop_boot_timer(self):
+        """
+        """
+        if self.request_boot_timer is not None:
+            self.request_boot_timer.cancel()
+            self.request_boot_timer = None
 
     def after_controller_reply_system(self):
         """
@@ -488,17 +510,14 @@ class JNTNodeMan(object):
             return
         self.request_boot_timer_lock.acquire()
         try:
-            self.request_boot_timer = None
+            self._stop_boot_timer()
+            if self.is_stopped:
+                return
             if self.request_controller_system_response == False:
-                #retrieve system values from local configuration
                 self._controller.load_system_from_local()
-                #~ print self._controller.__dict__
-                #~ print self.config_timeout
             self.config_timeout = self._controller.config_timeout
             self.request_controller_controller_system_response = False
             self.after_controller_reply_system()
-        except:
-            logger.exception("[%s] - start_nodes_request", self.__class__.__name__)
         finally:
             self.request_boot_timer_lock.release()
         if not self.is_stopped:
@@ -516,14 +535,15 @@ class JNTNodeMan(object):
         if self._test:
             print "start_controller_reply_config"
         else:
+            if self.is_stopped:
+                return
             self.request_boot_timer_lock.acquire()
             try:
-                logger.debug("fsm_state : %s", 'request_boot_timer')
+                self._stop_boot_timer()
+                if self.is_stopped:
+                    return
                 self.request_boot_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_controller_reply_config)
                 self.request_boot_timer.start()
-                logger.debug("fsm_state : %s", 'request_boot_timer')
-            except:
-                logger.exception("[%s] - start_controller_reply_config", self.__class__.__name__)
             finally:
                 self.request_boot_timer_lock.release()
 
@@ -551,24 +571,20 @@ class JNTNodeMan(object):
         """
         """
         logger.debug("fsm_state : %s in state %s", 'finish_reply_config', self.state)
-        self.request_controller_config_timer = None
         if self.is_stopped:
             return
-        self.before_controller_reply_config()
-        if self.request_controller_config_response == False:
-            #~ print self._controller.values
-            self._controller.load_config_from_local()
-        self.request_controller_config_response = False
-        #~ print self._controller.__dict__
-        #~ for value in self._controller.values:
-            #~ print self._controller.values[value].__dict__
-        #~ print self.config_timeout
-        #~ print self._controller.name
-        #~ print self._controller.location
+        self.request_boot_timer_lock.acquire()
         try:
+            self._stop_boot_timer()
+            if self.is_stopped:
+                return
+            self.before_controller_reply_config()
+            if self.request_controller_config_response == False:
+                self._controller.load_config_from_local()
+            self.request_controller_config_response = False
             self.after_controller_reply_config()
-        except:
-            logger.exception("Exception when starting coontroller")
+        finally:
+            self.request_boot_timer_lock.release()
         if not self.is_stopped:
             self.fsm_state_next()
 
@@ -579,12 +595,14 @@ class JNTNodeMan(object):
         if self._test:
             print "start_nodes_init"
         else:
+            if self.is_stopped:
+                return
             self.request_boot_timer_lock.acquire()
+            if self.is_stopped:
+                return
             try:
                 self.request_boot_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_nodes_hadds)
                 self.request_boot_timer.start()
-            except:
-                logger.exception("[%s] - start_nodes_init", self.__class__.__name__)
             finally:
                 self.request_boot_timer_lock.release()
 
@@ -593,22 +611,23 @@ class JNTNodeMan(object):
         """
         logger.debug("fsm_state : %s in state %s", 'finish_nodes_hadds', self.state)
         logger.debug("finish_nodes_hadds : nodes = %s", self.nodes)
-        self.request_nodes_hadds_timer = None
         #~ print "self.request_nodes_hadds_response ", self.request_nodes_hadds_response
-        if self.request_nodes_hadds_response == False:
-            #retrieve hadds from local configuration
-            self.nodes_hadds_response = self.get_nodes_hadds_from_local_config()
-            logger.debug("finish_nodes_hadds : nodes_hadds_response = %s", self.nodes_hadds_response)
-            for node in self.nodes_hadds_response:
-                onode = self.create_node(node, hadd=self.nodes_hadds_response[node])
-                self.after_create_node(node)
-                #~ print onode.__dict__
+        if self.is_stopped:
+            return
         self.request_boot_timer_lock.acquire()
         try:
+            self._stop_boot_timer()
+            if self.is_stopped:
+                return
+            if self.request_nodes_hadds_response == False:
+                self.nodes_hadds_response = self.get_nodes_hadds_from_local_config()
+                logger.debug("finish_nodes_hadds : nodes_hadds_response = %s", self.nodes_hadds_response)
+                for node in self.nodes_hadds_response:
+                    onode = self.create_node(node, hadd=self.nodes_hadds_response[node])
+                    self.after_create_node(node)
+                    #~ print onode.__dict__
             self.request_boot_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_nodes_system)
             self.request_boot_timer.start()
-        except:
-            logger.exception("[%s] - finish_nodes_hadds", self.__class__.__name__)
         finally:
             self.request_boot_timer_lock.release()
 
@@ -617,21 +636,22 @@ class JNTNodeMan(object):
         """
         logger.debug("fsm_state : %s in state %s", 'finish_nodes_system', self.state)
         logger.debug("finish_nodes_system : nodes = %s", self.nodes)
-        self.request_nodes_system_timer = None
-        if self.request_nodes_system_response == False:
-            #retrieve hadds from local configuration
-            for node in self.nodes:
-                if node != self._controller.uuid and not self.is_stopped:
-                    onode = self.nodes[node]
-                    onode.load_system_from_local()
-                    self.after_system_node(node)
-                    #~ print onode.__dict__
+        if self.is_stopped:
+            return
         self.request_boot_timer_lock.acquire()
         try:
+            self._stop_boot_timer()
+            if self.is_stopped:
+                return
+            if self.request_nodes_system_response == False:
+                for node in self.nodes:
+                    if node != self._controller.uuid and not self.is_stopped:
+                        onode = self.nodes[node]
+                        onode.load_system_from_local()
+                        self.after_system_node(node)
+                        #~ print onode.__dict__
             self.request_boot_timer = threading.Timer(self.config_timeout+self.slow_start, self.finish_nodes_config)
             self.request_boot_timer.start()
-        except:
-            logger.exception("[%s] - finish_nodes_system", self.__class__.__name__)
         finally:
             self.request_boot_timer_lock.release()
 
@@ -640,20 +660,22 @@ class JNTNodeMan(object):
         """
         logger.debug("fsm_state : %s in state %s", 'finish_nodes_config', self.state)
         logger.debug("finish_nodes_config : nodes = %s", self.nodes)
-        self.request_nodes_config_timer = None
         #~ print "self.request_nodes_hadds_response ", self.request_nodes_config_response
-        if self.request_nodes_config_response == False:
-            #retrieve hadds from local configuration
-            for node in self.nodes:
-                if node != self._controller.uuid and not self.is_stopped:
-                    onode = self.nodes[node]
-                    onode.load_config_from_local()
-                    #~ print "finish_nodes_config onode", onode.to_dict
-                    self.after_config_node(node)
-                    #~ print onode.__dict__
-                    #~ for value in onode.values:
-                        #~ print onode.values[value].__dict__
-        #~ if self.state == 'INIT':
+        if self.is_stopped:
+            return
+        self.request_boot_timer_lock.acquire()
+        try:
+            self._stop_boot_timer()
+            if self.is_stopped:
+                return
+            if self.request_nodes_config_response == False:
+                for node in self.nodes:
+                    if node != self._controller.uuid and not self.is_stopped:
+                        onode = self.nodes[node]
+                        onode.load_config_from_local()
+                        self.after_config_node(node)
+        finally:
+            self.request_boot_timer_lock.release()
         if not self.is_stopped:
             self.fsm_state_next()
 
@@ -1656,63 +1678,4 @@ class JNTNode(object):
             self.options.set_option(node_uuid, 'location', self.location)
         except ValueError:
             logger.exception('Exception when setting location')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
