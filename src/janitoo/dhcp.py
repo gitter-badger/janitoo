@@ -594,7 +594,7 @@ class JNTNetwork(object):
             self.fsm_network_stop()
         self._lock.acquire()
         try:
-        self.threads_timers = []
+            self.threads_timers = []
             self.nodes = {}
             self.hadds = {}
             self.configs = {}
