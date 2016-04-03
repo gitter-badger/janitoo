@@ -584,13 +584,12 @@ class JNTNetwork(object):
     def stop(self):
         """Stop the network
         """
+        self.stop_resolv_heartbeat_timer()
+        self.stop_dispatch_heartbeat_timer()
         self._stopevent.set()
         for th in self.threads_timers:
             if th.is_alive():
                 th.cancel()
-        self.threads_timers = []
-        self.stop_resolv_heartbeat_timer()
-        self.stop_dispatch_heartbeat_timer()
         if self.fsm_network is not None:
             self.fsm_network_stop()
         self._lock.acquire()
@@ -601,6 +600,7 @@ class JNTNetwork(object):
             self.users = {}
             self.bascis = {}
             self.systems = {}
+            self.threads_timers = []
         except:
             logger.exception("Exception in network stop")
         finally:
@@ -608,8 +608,6 @@ class JNTNetwork(object):
         if self.heartbeat_cache is not None:
             self.heartbeat_cache.flush()
             self.heartbeat_cache = None
-        self.emit_nodes()
-        self.emit_network()
 
     def fsm_is_primary(self):
         """
