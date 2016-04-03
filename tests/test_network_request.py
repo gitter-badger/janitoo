@@ -70,7 +70,7 @@ class TestNetworkState(JNTTBase):
         self.network = None
 
     def test_001_request_secondary(self):
-        self.wipTest("Freeze")
+        #~ self.wipTest("Freeze")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_network.conf']):
             options = vars(jnt_parse_args())
         stopevent = threading.Event()
