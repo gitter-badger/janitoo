@@ -55,14 +55,21 @@ class TestNetworkState(JNTTBase):
     nodeman = None
 
     def tearDown(self):
-        if self.nodeman is not None:
-            self.nodeman.stop()
-        time.sleep(2)
         if self.network is not None:
             self.network.stop()
-        time.sleep(2)
+            while not self.network.is_stopped and i<10:
+                i += 1
+                time.sleep(1)
+        if self.nodeman is not None:
+            self.nodeman.stop()
+            while not self.nodeman.is_stopped and i<10:
+                i += 1
+                time.sleep(1)
+        self.nodeman = None
+        self.network = None
 
     def test_001_broadcast_secondary(self):
+        self.wipTest()
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_nodeman.conf']):
             options = vars(jnt_parse_args())
             options = JNTOptions(options)
@@ -77,7 +84,7 @@ class TestNetworkState(JNTTBase):
                      #~ }
         self.nodeman.start()
         i = 0
-        while self.nodeman.state != 'ONLINE' and i<120:
+        while not self.nodeman.is_started and i<120:
             i += 1
             print self.nodeman.state
             time.sleep(1)
@@ -93,7 +100,7 @@ class TestNetworkState(JNTTBase):
                      }
         self.network.boot(hadds)
         i = 0
-        while self.network.state != 'STARTED' and i<150:
+        while not self.network.is_started and i<150:
             i += 1
             print self.network.state
             time.sleep(1)
@@ -136,7 +143,7 @@ class TestNetworkState(JNTTBase):
                      #~ }
         self.nodeman.start()
         i = 0
-        while self.nodeman.state != 'ONLINE' and i<120:
+        while not self.nodeman.is_started and i<120:
             i += 1
             print self.nodeman.state
             time.sleep(1)
@@ -152,7 +159,7 @@ class TestNetworkState(JNTTBase):
                      }
         self.network.boot(hadds)
         i = 0
-        while self.network.state != 'STARTED' and i<150:
+        while not self.network.is_started and i<150:
             i += 1
             print self.network.state
             time.sleep(1)
