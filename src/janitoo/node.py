@@ -1428,7 +1428,7 @@ class JNTBusNodeMan(JNTNodeMan):
             try:
                 logger.debug('[%s] - Add component %s', self.__class__.__name__, key)
                 if components[key] not in self.bus.factory:
-                    logger.warning("[%s] - Can't find component %s in factory", self.__class__.__name__, components[key])
+                    logger.error("[%s] - Can't find component %s in factory", self.__class__.__name__, components[key])
                 add_comp = '%s__%s' % (self.bus.uuid, key)
                 #add_comp = key
                 compo = self.bus.add_component(components[key], add_comp, options=self.options)

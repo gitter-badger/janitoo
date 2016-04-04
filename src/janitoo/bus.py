@@ -134,10 +134,12 @@ class JNTBus(object):
 
     def start(self, mqttc, trigger_thread_reload_cb=None):
         """Start the bus"""
+        logger.debug("[%s] - Start the bus", self.__class__.__name__)
         self.export_values()
         self._trigger_thread_reload_cb = trigger_thread_reload_cb
         self.mqttc = mqttc
         self.is_started = True
+        return self.is_started
 
     def stop(self):
         """Start the bus and components"""
@@ -147,6 +149,7 @@ class JNTBus(object):
                 self.components[compo].stop()
                 del self.components[compo]
             self.components = {}
+        return True
 
     @property
     def uuid(self):
@@ -211,3 +214,21 @@ class JNTBus(object):
         """
         return False
 
+    def extend_from_entry_points(self, oid, eps=[]):
+        """"Extend the bus with methods found in entrypoints
+        """
+        for entrypoint in iter_entry_points(group = '%s.extensions'%oid):
+            if entrypoint.name in eps:
+                logger.info('Extend bus %s with %s', oid, entrypoint.module_name )
+                extend = entrypoint.load()
+                extend( self )
+
+    def load_extensions(self, section):
+        """"Extend the bus with methods found in entrypoints
+        """
+        try:
+            exts = self.options.get_option(section, 'extensions').split(',')
+        except:
+            logger.exception("[%s] - load_extensions", self.__class__.__name__)
+            exts = []
+        self.extend_from_entry_points(self.oid, exts)
