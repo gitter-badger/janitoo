@@ -120,6 +120,7 @@ RUN make clone module=janitoo_layouts && \
 
 RUN make clone module=janitoo_events && \
     make clone module=janitoo_events_cron && \
+    make clone module=janitoo_events_earth && \
     apt-get clean && rm -Rf /tmp/* || true && \
     [ -d /root/.cache ] && rm -Rf /root/.cache/*
 
