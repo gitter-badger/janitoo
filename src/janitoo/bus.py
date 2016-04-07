@@ -227,7 +227,7 @@ class JNTBus(object):
         """"Extend the bus with methods found in entrypoints
         """
         try:
-            exts = self.options.get_option(section, 'extensions').split(',')
+            exts = self.options.get_option(section, 'extensions', default="").split(',')
         except:
             logger.exception("[%s] - load_extensions", self.__class__.__name__)
             exts = []
