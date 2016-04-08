@@ -91,7 +91,7 @@ RUN make clone module=janitoo_pki && \
 
 RUN make clone module=janitoo_mysql && \
     make clone module=janitoo_mysql_client && \
-    make docker-inst module=janitoo_mysql && \
+    make -C janitoo_mysql docker-inst && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -105,7 +105,7 @@ RUN make clone module=janitoo_mysql && \
 #    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_gogs && \
-    make docker-inst module=janitoo_gogs && \
+    make -C janitoo_gogs docker-inst && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
