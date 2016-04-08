@@ -2,6 +2,8 @@ FROM python:2.7
 
 MAINTAINER bibi21000 <bibi21000@gmail.com>
 
+ENV JANITOO_DOCKER 1
+
 RUN cat /etc/issue
 RUN env
 RUN /sbin/ip addr
