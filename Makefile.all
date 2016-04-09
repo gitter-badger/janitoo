@@ -265,11 +265,15 @@ docker-coverage:
 	@echo "Check coverage for Docker."
 	@echo
 	-rm -rf .coverage
+	-rm -rf .xunit
 	-mkdir -p .coverage
+	-mkdir -p .xunit
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage/coverage._$$target" 2>/dev/nul; done
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage/coverage._$$target" ".coverage/.coverage._$$target" 2>/dev/nul; done
+	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/nosetests.xml" ".xunit/$$module.xml" 2>/dev/nul; done
 	cd .coverage && coverage combine
 	cd .coverage && coverage report
+	xunitmerge nosetests.xml `ls .xunit/*.xml`
 	@echo
 	@echo "Coverage finished."
 
