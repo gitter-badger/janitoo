@@ -7,7 +7,7 @@ BUILDDIR      = build
 DISTDIR       = dists
 NOSE          = $(shell which nosetests)
 #~ NOSEOPTS      = --verbosity=2
-NOSECOVER     = --verbosity=2 --with-coverage --cover-inclusive --cover-tests --cover-html --cover-html-dir=${BUILDDIR}/docs/html/tools/coverage --with-html --html-file=${BUILDDIR}/docs/html/tools/nosetests/index.html
+NOSECOVER     = --verbosity=2 --with-coverage --cover-inclusive --cover-html --cover-html-dir=${BUILDDIR}/docs/html/tools/coverage --with-html --html-file=${BUILDDIR}/docs/html/tools/nosetests/index.html
 PYLINT        = $(shell which pylint)
 PYLINTOPTS    = --max-line-length=140 --max-args=9 --extension-pkg-whitelist=zmq --ignored-classes=zmq --min-public-methods=0
 
@@ -158,7 +158,7 @@ deps:
 	make -C $(module) deps
 
 pull-all:
-	for module in ${SUBMODULES};do make -C $$module pull; make -C $$module develop; done
+	for module in ${SUBMODULES};do make -C $$module pull && make -C $$module develop; done
 
 status:
 	make -C $(module) status
@@ -242,6 +242,11 @@ tests-all:
 	@echo
 	@echo "Tests for janitoo finished."
 
+docker-tests:
+	for module in ${SUBMODULES};do make -C $$module docker-tests; done
+	@echo
+	@echo "Tests for janitoo finished."
+
 docker-inst:
 	@echo "Configure Docker image."
 	@echo
@@ -259,9 +264,9 @@ docker-inst:
 coverage-check:coverage-collect
 	@echo "Check coverage for janitoo."
 	@echo
-	cd .coverage && coverage xml -o ../docs/tools/coverage.full.xml
+	#cd .coverage && coverage xml -o ../docs/tools/coverage.full.xml
 	cd .coverage && coverage report
-	cd .coverage_core && coverage report --fail-under=66
+	-cd .coverage_core && coverage report --fail-under=66
 	@echo
 	@echo "Coverage for janitoo collected."
 
