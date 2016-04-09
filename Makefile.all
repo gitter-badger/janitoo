@@ -274,6 +274,7 @@ docker-coverage:
 	cd .coverage && coverage combine
 	cd .coverage && coverage report
 	xunitmerge nosetests.xml `ls .xunit/*.xml`
+	xunitreport nosetests.xml
 	@echo
 	@echo "Coverage finished."
 
