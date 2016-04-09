@@ -148,7 +148,7 @@ class JNTBus(object):
             for compo in self.components.keys():
                 self.components[compo].stop()
                 del self.components[compo]
-            self.components = {}
+        self.is_started = False
         return True
 
     @property
