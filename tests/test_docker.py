@@ -44,6 +44,7 @@ from janitoo.utils import HADD_SEP, HADD
 class TestFakeSerser(JNTTDockerServer, JNTTDockerServerCommon):
     """Test the server
     """
+    loglevel = logging.DEBUG
     path = '/tmp/janitoo_test'
     broker_user = 'toto'
     broker_password = 'toto'
