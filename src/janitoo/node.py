@@ -1340,7 +1340,7 @@ class JNTBusNodeMan(JNTNodeMan):
         try:
             self.bus.stop()
         except:
-            logger.exception("Exception when stopping bus : %s", self.__class__.__name__)
+            logger.exception("[%s] - Exception when stopping", self.__class__.__name__)
         JNTNodeMan.stop(self)
 
     def after_controller_reply_config(self):
