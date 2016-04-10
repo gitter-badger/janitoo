@@ -225,15 +225,6 @@ develop-all:
 tests:
 	make -C $(module) tests
 
-#~ tests-all:
-	#~ -netcat -zv 127.0.0.1 1-9999 2>&1|grep succeeded
-	#~ export JANITOO_ALLTESTS=1
-	#~ -mkdir -p ${BUILDDIR}/docs/html/tools/coverage
-	#~ -mkdir -p ${BUILDDIR}/docs/html/tools/nosetests
-	#~ $(NOSE) $(NOSEOPTS) $(NOSECOVER) */tests
-	#~ unset JANITOO_ALLTESTS
-	#~ @echo
-	#~ @echo "Tests for janitoo finished."
 tests-all:
 	-netcat -zv 127.0.0.1 1-9999 2>&1|grep succeeded
 	export JANITOO_ALLTESTS=1
@@ -270,7 +261,7 @@ docker-coverage:
 	-mkdir -p .xunit
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage/coverage._$$target" 2>/dev/nul; done
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage/coverage._$$target" ".coverage/.coverage._$$target" 2>/dev/nul; done
-	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/nosetests.xml" ".xunit/$$module.xml" 2>/dev/nul; done
+	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/nosetests.xml ".xunit/$$module.xml" 2>/dev/nul; done
 	cd .coverage && coverage combine
 	cd .coverage && coverage report
 	xunitmerge nosetests.xml `ls .xunit/*.xml`
