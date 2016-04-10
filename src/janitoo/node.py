@@ -1336,6 +1336,7 @@ class JNTBusNodeMan(JNTNodeMan):
     def stop(self):
         """
         """
+        logger.info("[%s] - Stop the node manager", self.__class__.__name__)
         try:
             self.bus.stop()
         except:
