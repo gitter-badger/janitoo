@@ -261,7 +261,7 @@ docker-coverage:
 	-mkdir -p .xunit
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/.coverage ".coverage/coverage._$$target" 2>/dev/nul; done
 	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;mv ".coverage/coverage._$$target" ".coverage/.coverage._$$target" 2>/dev/nul; done
-	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/nosetests.xml ".xunit/$$target.xml"; done
+	-for module in ${SUBMODULES};do target=`echo $$module|cut -f 2 -d '/'`;cp $$module/nosetests.xml ".xunit/$$target.xml" 2>/dev/nul; done
 	cd .coverage && coverage combine
 	cd .coverage && coverage report
 	xunitmerge `ls .xunit/*.xml` nosetests.xml
