@@ -273,7 +273,7 @@ class JNTControllerManager(object):
     def stop_controller(self):
         """Stop the controller
         """
-        logger.info("Stop the controller")
+        logger.info("[%s] - Stop the controller", self.__class__.__name__)
         self.stop_controller_timer()
         if self.mqtt_controller is not None:
             self.mqtt_controller.unsubscribe(topic=TOPIC_NODES_REQUEST%(self._controller.hadd))
@@ -289,7 +289,7 @@ class JNTControllerManager(object):
     def start_controller(self, section, options, **kwargs):
         """Start the controller
         """
-        logger.info("Start the controller")
+        logger.info("[%s] - Start the controller", self.__class__.__name__)
         cmd_classes = kwargs.pop('cmd_classes', [])
         if not COMMAND_CONTROLLER in cmd_classes:
             cmd_classes.append(COMMAND_CONTROLLER)

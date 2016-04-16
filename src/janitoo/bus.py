@@ -123,7 +123,7 @@ class JNTBus(object):
         logger.debug("[%s] - Export attrs to all buses", self.__class__.__name__)
         for target in self._masters:
             if hasattr(target, objname):
-                logger.error("[%s] - Collision found on attribute %s. Continue anyway by overrinding.", self.__class__.__name__, objname)
+                logger.error("[%s] - Collision found on attribute %s. Continue anyway by overriding.", self.__class__.__name__, objname)
             setattr(target, objname, obj)
 
     def update_attrs(self, objname, obj):
