@@ -677,6 +677,7 @@ class JNTNodeMan(object):
         finally:
             self.request_boot_timer_lock.release()
         if not self.is_stopped:
+            self.add_heartbeat(self._controller)
             self.fsm_state_next()
 
     def on_reply(self, client, userdata, message):
@@ -1063,8 +1064,6 @@ class JNTNodeMan(object):
             self.nodes[uuid] = node
             self._controller = node
             self._controller_hadd = node.hadd
-            if node.hadd is not None:
-                self.add_heartbeat(node)
             node.options = self.options
             self.add_internal_system_values_to_node(node)
             self.add_internal_config_values_to_node(node)
