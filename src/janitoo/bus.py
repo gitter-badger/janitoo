@@ -219,7 +219,7 @@ class JNTBus(object):
         """
         for entrypoint in iter_entry_points(group = '%s.extensions'%oid):
             if entrypoint.name in eps:
-                logger.info('Extend bus %s with %s', oid, entrypoint.module_name )
+                logger.info('[%s] - Extend bus %s with %s', self.__class__.__name__, oid, entrypoint.module_name )
                 extend = entrypoint.load()
                 extend( self )
 
