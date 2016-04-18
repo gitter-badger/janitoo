@@ -39,7 +39,9 @@ from janitoo_nosetests.server import JNTTDockerServerCommon, JNTTDockerServer
 
 from janitoo.runner import Runner, jnt_parse_args
 from janitoo.server import JNTServer
-from janitoo.utils import HADD_SEP, HADD
+from janitoo.dhcp import JNTNetwork
+from janitoo.options import JNTOptions
+from janitoo.utils import HADD, HADD_SEP, CADD, json_dumps, json_loads
 
 class TestFakeSerser(JNTTDockerServer, JNTTDockerServerCommon):
     """Test the server
@@ -62,6 +64,7 @@ class TestNetworkState(JNTTBase):
     add_ctrl = 111
 
     def test_100_network_state_primary(self):
+        JNTTBase.onlyDockerTest()
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
@@ -86,6 +89,7 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_110_network_state_secondary(self):
+        JNTTBase.onlyDockerTest()
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
@@ -110,6 +114,7 @@ class TestNetworkState(JNTTBase):
         self.assertEqual(net_state.state, 'STOPPED')
 
     def test_120_network_state_secondary_fail(self):
+        JNTTBase.onlyDockerTest()
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
             options = vars(jnt_parse_args())
