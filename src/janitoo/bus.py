@@ -145,10 +145,10 @@ class JNTBus(object):
         """Start the bus and components"""
         logger.debug("[%s] - Stop the bus", self.__class__.__name__)
         if self.is_started:
+            self.is_started = False
             for compo in self.components.keys():
                 self.components[compo].stop()
                 del self.components[compo]
-        self.is_started = False
         return True
 
     @property
