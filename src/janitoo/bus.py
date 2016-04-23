@@ -142,7 +142,7 @@ class JNTBus(object):
         return self.is_started
 
     def stop(self):
-        """Start the bus and components"""
+        """Stop the bus and components"""
         logger.debug("[%s] - Stop the bus", self.__class__.__name__)
         if self.is_started:
             self.is_started = False
