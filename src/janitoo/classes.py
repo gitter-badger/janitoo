@@ -182,6 +182,12 @@ COMMAND_DESC = {
 #motor
         0x3100: 'COMMAND_MOTOR',
 
+#screen
+        0x3100: 'COMMAND_SCREEN_DRAW',
+        0x3101: 'COMMAND_SCREEN_MESSAGE',
+        0x3102: 'COMMAND_SCREEN_CLEAR',
+        0x3103: 'COMMAND_SCREEN_BLINK',
+
 #System command
         0x5000: 'COMMAND_DISCOVERY'
     }
