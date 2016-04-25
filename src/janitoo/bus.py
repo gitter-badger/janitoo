@@ -126,6 +126,15 @@ class JNTBus(object):
                 logger.error("[%s] - Collision found on attribute %s. Continue anyway by overriding.", self.__class__.__name__, objname)
             setattr(target, objname, obj)
 
+    def clean_attrs(self, objname):
+        '''Clean exported object from all targets'''
+        logger.debug("[%s] - Clean attrs to all buses", self.__class__.__name__)
+        for target in self._masters:
+            if hasattr(target, objname):
+                delattr(target, objname)
+        else:
+            logger.warning("[%s] - Missing attribute found %s when cleaning. Continue anyway.", self.__class__.__name__, objname)
+
     def update_attrs(self, objname, obj):
         '''Export object to all targets'''
         logger.debug("[%s] - Export attrs to all buses", self.__class__.__name__)
