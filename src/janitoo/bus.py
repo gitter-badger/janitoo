@@ -235,7 +235,7 @@ class JNTBus(object):
     def load_extensions(self, section):
         """"Extend the bus with methods found in entrypoints
         """
-        logger.debug('[%s] - Load bus extenions for section %s', self.__class__.__name__, section )
+        logger.debug('[%s] - Load bus extensions from section %s', self.__class__.__name__, section )
         try:
             exts = self.options.get_option(section, 'extensions', default="").split(',')
         except:
