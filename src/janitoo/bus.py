@@ -232,13 +232,13 @@ class JNTBus(object):
                 extend = entrypoint.load()
                 extend( self )
 
-    def load_extensions(self, section):
+    def load_extensions(self, oid):
         """"Extend the bus with methods found in entrypoints
         """
-        logger.debug('[%s] - Load bus extensions from section %s with oid %s', self.__class__.__name__, section, self.oid )
+        logger.debug('[%s] - Load bus extensions %s with in section %s', self.__class__.__name__, oid, self.oid )
         try:
-            exts = self.options.get_option(section, 'extensions', default="").split(',')
+            exts = self.options.get_option(self.oid, 'extensions', default="").split(',')
         except:
-            logger.exception("[%s] - load_extensions", self.__class__.__name__)
+            logger.exception("[%s] - Load_extensions", self.__class__.__name__)
             exts = []
-        self.extend_from_entry_points(self.oid, exts)
+        self.extend_from_entry_points(oid, exts)
