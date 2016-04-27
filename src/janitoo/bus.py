@@ -239,6 +239,6 @@ class JNTBus(object):
         try:
             exts = self.options.get_option(self.oid, 'extensions', default="").split(',')
         except:
-            logger.exception("[%s] - Load_extensions", self.__class__.__name__)
+            logger.error("[%s] - Load_extensions", self.__class__.__name__, exc_info=True)
             exts = []
         self.extend_from_entry_points(oid, exts)
