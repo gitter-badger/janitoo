@@ -1218,10 +1218,6 @@ class JNTNodeMan(object):
         if len(nodes)==0:
             return None
         vuuid='%s'%(value_uuid)
-        #~ print nodes[0].uuid
-        #~ for node in nodes:
-            #~ for value in node.values:
-                #~ print node.values[value].uuid
         values = [ nodes[0].values[value] for value in nodes[0].values if nodes[0].values[value].uuid == vuuid]
         if len(values)>1:
             logger.warning("[%s] - Found 2 valus %s with uuid %s. Returning the fisrt one.", self.__class__.__name__, nodes, value_uuid)
@@ -1276,7 +1272,7 @@ class JNTNodeMan(object):
     def remove_daily_job(self, callback):
         """Remove an daily job.
         """
-        logger.debug("[%s] - Remove_daily_job %s", self.__class__.__name__)
+        logger.debug("[%s] - Remove_daily_job %s", self.__class__.__name__, callback)
         if self._daily_jobs is not None and callback in self._daily_jobs:
             self._daily_jobs.remove(callback)
 
@@ -1285,7 +1281,7 @@ class JNTNodeMan(object):
         """
         self.stop_hourly_timer()
         self.start_hourly_timer()
-        logger.debug("[%s] - do_hourly_timer %s", self.__class__.__name__)
+        logger.debug("[%s] - do_hourly_timer", self.__class__.__name__)
         try:
             self.options.set_option(self.section, 'hourly_timer_lastrun', datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
         except:
