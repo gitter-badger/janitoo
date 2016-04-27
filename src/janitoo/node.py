@@ -1245,7 +1245,7 @@ class JNTNodeMan(object):
     def stop_hourly_timer(self):
         """Stop the thread
         """
-        logger.debug("[%s] - Stop_hourly_timer %s", self.__class__.__name__)
+        logger.debug("[%s] - Stop_hourly_timer", self.__class__.__name__)
         if self.hourly_timer is not None:
             self.hourly_timer.cancel()
             self.hourly_timer = None
@@ -1253,7 +1253,7 @@ class JNTNodeMan(object):
     def add_hourly_job(self, callback):
         """Add an hourly job.
         """
-        logger.debug("[%s] - Add_hourly_job %s", self.__class__.__name__, callback)
+        logger.debug("[%s] - Add_hourly_job", self.__class__.__name__, callback)
         self._hourly_jobs.append(callback)
 
     def remove_hourly_job(self, callback):
