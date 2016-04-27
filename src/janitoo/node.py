@@ -1049,13 +1049,6 @@ class JNTNodeMan(object):
         else:
             self.add_poll(value, timeout=self.config_timeout+self.slow_start)
 
-    #~ def call_value_set_data(self, value, data=None):
-        #~ """
-        #~ """
-        #~ node = self.nodes[value.node_uuid]
-        #~ value.data = data
-        #~ #logger.debug('call_value_set_data for node %s and value : %s', node.hadd, value)
-
     def add_controller_node(self, uuid, node):
         """
         """
@@ -1109,20 +1102,10 @@ class JNTNodeMan(object):
         add_ctrl, add_node = self._controller_hadd.split(HADD_SEP)
         return int(add_ctrl)
 
-    #~ def get_nodes_system_from_local_config(self):
-        #~ """
-        #~ """
-        #~ return {}
-
     def get_nodes_hadds_from_local_config(self):
         """ {'uuid':'hadd'}
         """
         return {}
-
-    #~ def get_nodes_config_from_local_config(self):
-        #~ """ {'uuid':'hadd'}
-        #~ """
-        #~ return {}
 
     def get_components(self):
         """Retrieve components from a section
@@ -1219,7 +1202,7 @@ class JNTNodeMan(object):
         #~ nuuid=node_uuid
         nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].uuid == nuuid ]
         if len(nodes)>1:
-            logger.warning("Found 2 nodes %s with uuid %s. Returning the fisrt one.", nodes, node_uuid)
+            logger.warning("[%s] - Found 2 nodes %s with uuid %s. Returning the fisrt one.", self.__class__.__name__, nodes, node_uuid)
         if len(nodes)==0:
             return None
         return nodes[0]
@@ -1231,7 +1214,7 @@ class JNTNodeMan(object):
         #~ nuuid=node_uuid
         nodes = [ self.nodes[node] for node in self.nodes if self.nodes[node].uuid == nuuid ]
         if len(nodes)>1:
-            logger.warning("Found 2 nodes %s with uuid %s.", nodes, node_uuid)
+            logger.warning("[%s] - Found 2 nodes %s with uuid %s.", self.__class__.__name__, nodes, node_uuid)
         if len(nodes)==0:
             return None
         vuuid='%s'%(value_uuid)
@@ -1241,7 +1224,7 @@ class JNTNodeMan(object):
                 #~ print node.values[value].uuid
         values = [ nodes[0].values[value] for value in nodes[0].values if nodes[0].values[value].uuid == vuuid]
         if len(values)>1:
-            logger.warning("Found 2 valus %s with uuid %s. Returning the fisrt one.", nodes, value_uuid)
+            logger.warning("[%s] - Found 2 valus %s with uuid %s. Returning the fisrt one.", self.__class__.__name__, nodes, value_uuid)
         if len(values)==0:
             return None
         return values[0]
@@ -1259,14 +1242,14 @@ class JNTNodeMan(object):
             logger.warning("[%s] - C'ant get hourly_timer from configuration file. Disable it", self.__class__.__name__)
             hourly = False
         if hourly == True:
-            logger.debug("start_hourly_timer %s", self.__class__.__name__)
+            logger.debug("[%s] - start_hourly_timer %s", self.__class__.__name__, callback)
             self.hourly_timer = threading.Timer(60*60, self.do_hourly_timer)
             self.hourly_timer.start()
 
     def stop_hourly_timer(self):
         """Stop the thread
         """
-        logger.debug("stop_hourly_timer %s", self.__class__.__name__)
+        logger.debug("[%s] - Stop_hourly_timer %s", self.__class__.__name__, callback)
         if self.hourly_timer is not None:
             self.hourly_timer.cancel()
             self.hourly_timer = None
@@ -1274,26 +1257,26 @@ class JNTNodeMan(object):
     def add_hourly_job(self, callback):
         """Add an hourly job.
         """
-        logger.debug("add_hourly_job %s", self.__class__.__name__)
+        logger.debug("[%s] - Add_hourly_job %s", self.__class__.__name__, callback)
         self._hourly_jobs.append(callback)
 
     def remove_hourly_job(self, callback):
         """Remove an hourly job.
         """
-        logger.debug("remove_hourly_job %s", self.__class__.__name__)
+        logger.debug("[%s] - Remove_hourly_job %s", self.__class__.__name__, callback)
         if self._hourly_jobs is not None and callback in self._hourly_jobs:
             self._hourly_jobs.remove(callback)
 
     def add_daily_job(self, callback):
         """Add an daily job.
         """
-        logger.debug("add_daily_job %s", self.__class__.__name__)
+        logger.debug("[%s] - Add_daily_job %s", self.__class__.__name__, callback)
         self._daily_jobs.append(callback)
 
     def remove_daily_job(self, callback):
         """Remove an daily job.
         """
-        logger.debug("remove_daily_job %s", self.__class__.__name__)
+        logger.debug("[%s] - Remove_daily_job %s", self.__class__.__name__)
         if self._daily_jobs is not None and callback in self._daily_jobs:
             self._daily_jobs.remove(callback)
 
@@ -1302,7 +1285,7 @@ class JNTNodeMan(object):
         """
         self.stop_hourly_timer()
         self.start_hourly_timer()
-        logger.debug("Start do_hourly_timer %s", self.__class__.__name__)
+        logger.debug("[%s] - do_hourly_timer %s", self.__class__.__name__)
         try:
             self.options.set_option(self.section, 'hourly_timer_lastrun', datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
         except:
@@ -1311,7 +1294,7 @@ class JNTNodeMan(object):
             try:
                 job()
             except:
-                logger.exception("exception in hourly timers : %s", self.__class__.__name__)
+                logger.exception("[%s] - Exception in hourly timers", self.__class__.__name__)
         if datetime.datetime.now().hour == 0:
             try:
                 self.options.set_option(self.section, 'daily_timer_lastrun', datetime.datetime.now().strftime('%m/%d/%Y %H:%M:%S'))
@@ -1321,8 +1304,8 @@ class JNTNodeMan(object):
                 try:
                     job()
                 except:
-                    logger.exception("exception in do daily timers : %s", self.__class__.__name__)
-        logger.debug("Finish do_hourly_timer %s", self.__class__.__name__)
+                    logger.exception("[%s] - exception in do daily timers", self.__class__.__name__)
+        logger.debug("[%s] - Finish do_hourly_timer", self.__class__.__name__)
 
 class JNTBusNodeMan(JNTNodeMan):
     """The node manager
