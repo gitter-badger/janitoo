@@ -186,7 +186,6 @@ COMMAND_DESC = {
         0x3200: 'COMMAND_SCREEN_DRAW',
         0x3201: 'COMMAND_SCREEN_MESSAGE',
         0x3202: 'COMMAND_SCREEN_CLEAR',
-        0x3203: 'COMMAND_SCREEN_BLINK', #Deprecated
         0x3203: 'COMMAND_BLINK',
 
 #System command
