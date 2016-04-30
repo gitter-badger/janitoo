@@ -143,6 +143,18 @@ class JNTValue(object):
             self._data = value
         return res
 
+    def start(self):
+        """Start the value. Can be used to start a thread to acquire data.
+
+        """
+        return True
+
+    def stop(self):
+        """Stop the value.
+
+        """
+        return True
+
     def from_dict(self, adict):
         """Update internal dict from adict
         """
