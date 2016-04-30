@@ -87,12 +87,16 @@ class JNTComponent(object):
 
         """
         self.mqttc = mqttc
+        for value in self.values:
+            self.values[value].start()
         return True
 
     def stop(self):
         """Stop the component.
 
         """
+        for value in self.values:
+            self.values[value].stop()
         return True
 
     def create_node(self, hadd, **kwargs):
