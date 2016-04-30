@@ -219,7 +219,18 @@ class RFIDBlock(RFIDBlock01):
 
 class RFIDTag(object):
     """ A RFID tag
-    Can contain up to 64 blocks
+    Can contain up to 64 blocks.
+
+    The reader and writer callbacks :
+
+    def writer(blockid, blockdata):
+
+        - should return True if everything isk ok
+
+    def reader(blockid):
+
+        - return bytesarray or None if no (more) data
+
     """
 
     def __init__(self, **kwargs):
@@ -232,8 +243,10 @@ class RFIDTag(object):
         """
         idx=0
         for block in self.blocks:
-            writer(idx, block.to_bytes(upgrade=True))
-            idx += 1
+            if writer(idx, block.to_bytes(upgrade=upgrade)):
+                idx += 1
+            else:
+                break
 
     def erase(self, writer, full=False):
         """Format the tag for Janitoo
