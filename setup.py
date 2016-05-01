@@ -99,7 +99,7 @@ setup(
                      'python-daemon',
                      'paho-mqtt >= 1.1',
                      'featmongo >= 0.1.2',
-                     'transitions',
+                     'transitions >= 0.4.0',
                      'mock == 1.0.1',
                      'six',
                     ],
