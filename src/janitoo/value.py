@@ -167,7 +167,9 @@ class JNTValue(object):
         res = {}
         res.update(self.__dict__)
         for key in res.keys():
-            if key.startswith('_') or key in ['instances', 'options', 'master_config_value']:
+            if key.endswith('lock') or key.endswith('_cb') \
+              or key.startswith('_') or key.startswith('timer') \
+              or key in ['instances', 'options', 'master_config_value']:
                 del res[key]
         res['data'] = self.data
         return res

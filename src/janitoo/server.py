@@ -167,6 +167,18 @@ class JNTServer(object):
         for th in self._threads:
             th.trigger_reload()
 
+    def find_thread(self, section):
+        """Find a thread using its oid (section)
+        """
+        ths = [ th for th in self._threads if hasattr(th,'section') and th.section == section ]
+        if len(ths) == 0:
+            return None
+        elif len(ths)>1:
+            logger.error("[%s] - Found multiple threads with same section %s : %s", self.__class__.__name__, section, ths)
+            return None
+        logger.debug("[%s] - Found thread with section %s : %s", self.__class__.__name__,section, ths[0] )
+        return ths[0]
+
     def reload(self):
         """Reload the server
         """

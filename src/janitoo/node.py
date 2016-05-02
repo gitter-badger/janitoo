@@ -1149,9 +1149,19 @@ class JNTNodeMan(object):
             self.nodes[node.uuid].cmd_classes.append(value.cmd_class)
         return True
 
-    def add_poll(self, value, timeout=None):
+    def is_polled(self, value):
+        """Is the value poll active (in the polling system)
         """
+        if value.hadd not in self.polls:
+            return False
+        if value.uuid not in self.polls[value.hadd]:
+            return False
+
+    def add_poll(self, value, timeout=None, overwrite=True):
+        """Add a value to the polling system
         """
+        if value is None:
+            return
         if value.poll_delay == 0:
             self.remove_poll(value)
             return
@@ -1161,21 +1171,42 @@ class JNTNodeMan(object):
             if timeout is None:
                 timeout = self.config_timeout
             self.polls[value.hadd][value.uuid] = {'next_run':datetime.datetime.now()+datetime.timedelta(seconds=timeout+random.random()*(1+self.slow_start)), 'value':value}
-        else:
+            value.is_polled = True
+        elif overwrite:
             self.polls[value.hadd][value.uuid]['next_run'] = datetime.datetime.now()+datetime.timedelta(seconds=value.poll_delay)
-        value.is_polled= True
+            value.is_polled = True
+
+    def add_polls(self, values, timeout=None, slow_start=False, overwrite=True):
+        """Add values to the polling system
+        """
+        if timeout is None:
+            timeout = 0
+        if slow_start:
+            slow_start = 1 + self.slow_start
+        else:
+            slow_start = 0.1
+        i = 0
+        for value in values:
+            self.add_poll(value, timeout=slow_start * i + timeout, overwrite=overwrite)
+            i += 1
+
+    def remove_polls(self, values):
+        """Remove polls from polling system
+        """
+        for value in values:
+            self.remove_poll(value)
 
     def remove_poll(self, value):
+        """Remove poll from polling system
         """
-        """
-        if value.hadd in self.polls and value.uuid in self.polls[value.hadd]:
+        if value and value.hadd in self.polls and value.uuid in self.polls[value.hadd]:
             #~ value.is_polled= False
             del self.polls[value.hadd][value.uuid]
-        if len(self.polls[value.hadd]) == 0:
+        if value and value.hadd in self.polls and len(self.polls[value.hadd]) == 0:
             del self.polls[value.hadd]
 
     def add_heartbeat(self, node):
-        """
+        """Add a node to the heartbeat system
         """
         #~ print "heartbeats = %s" % self.heartbeats
         if node.uuid not in self.heartbeats:
@@ -1184,7 +1215,7 @@ class JNTNodeMan(object):
             self.heartbeats[node.uuid]['next_run'] = datetime.datetime.now()+datetime.timedelta(seconds=node.heartbeat)
 
     def remove_heartbeat(self, node):
-        """
+        """Remove a node from the heartbeat system
         """
         if node.uuid in self.heartbeats:
             del self.heartbeats[node.uuid]
@@ -1196,7 +1227,7 @@ class JNTNodeMan(object):
         return nodes
 
     def find_node(self, node_uuid):
-        """Find a node usinf its uuid
+        """Find a node using its uuid
         """
         nuuid='%s__%s'%(self.section, node_uuid)
         #~ nuuid=node_uuid
@@ -1208,7 +1239,7 @@ class JNTNodeMan(object):
         return nodes[0]
 
     def find_value(self, node_uuid, value_uuid):
-        """Find a value usinf its uuid and the node one
+        """Find a value using its uuid and the node one
         """
         nuuid='%s__%s'%(self.section, node_uuid)
         #~ nuuid=node_uuid
@@ -1226,7 +1257,7 @@ class JNTNodeMan(object):
         return values[0]
 
     def start_hourly_timer(self):
-        """Stop the thread
+        """Start the hourly timer
         """
         if self.hourly_timer is not None:
             self.hourly_timer.cancel()
@@ -1243,7 +1274,7 @@ class JNTNodeMan(object):
             self.hourly_timer.start()
 
     def stop_hourly_timer(self):
-        """Stop the thread
+        """Stop the hourly timer
         """
         logger.debug("[%s] - Stop_hourly_timer", self.__class__.__name__)
         if self.hourly_timer is not None:
@@ -1277,7 +1308,7 @@ class JNTNodeMan(object):
             self._daily_jobs.remove(callback)
 
     def do_hourly_timer(self):
-        """Do the thread
+        """Do the hourly timer thread
         """
         self.stop_hourly_timer()
         self.start_hourly_timer()
