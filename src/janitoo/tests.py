@@ -94,7 +94,7 @@ class FakeComponent(JNTComponent):
         oid = kwargs.pop('oid', 'fake.component')
         name = kwargs.pop('name', "Fake component")
         JNTComponent.__init__(self, oid=oid, bus=bus, addr=addr, name=name,
-                product_manufacturer="Janitoo", **kwargs)
+                **kwargs)
         logger.debug("[%s] - __init__ node uuid:%s", self.__class__.__name__, self.uuid)
         uuid="test_basic"
         self.values[uuid] = JNTValue( uuid=uuid,

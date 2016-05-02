@@ -40,10 +40,10 @@ class JNTComponent(object):
         :param oid: The oid implemented by the component.
         :type oid: str
         """
-        self.name = kwargs.pop('name', 'The name of the node')
-        self.product_name = kwargs.pop('product_name', 'The product_name of the node')
-        self.product_type = kwargs.pop('product_type', 'The product_type of the node')
-        self.product_manufacturer = kwargs.pop('product_manufacturer', 'The product_manufacturer of the node')
+        self.name = kwargs.pop('name', 'Generic component')
+        self.product_name = kwargs.pop('product_name', 'Software generic component')
+        self.product_type = kwargs.pop('product_type', 'Software component')
+        self.product_manufacturer = kwargs.pop('product_manufacturer', 'Janitoo')
         self.oid = oid
         self._bus = bus
         self._addr = addr
