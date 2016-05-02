@@ -69,7 +69,7 @@ class BaseThread(threading.Thread):
         self.config_timeout_timer = None
         self.config_timeout_delay = 3
         self.loop_sleep = 0.1
-        self.slow_start = 0.5
+        self.slow_start = 0.2
         if hasattr(self,'options') == False:
             self.options = JNTOptions(options)
         self.uuid = None

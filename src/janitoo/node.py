@@ -144,7 +144,7 @@ class JNTNodeMan(object):
         """
         pass
 
-    def start(self, trigger_reload=None, loop_sleep=0.1, slow_start=0):
+    def start(self, trigger_reload=None, loop_sleep=0.1, slow_start=0.05):
         """
         """
         if trigger_reload is not None:
