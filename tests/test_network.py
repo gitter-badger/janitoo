@@ -43,14 +43,9 @@ import mock
 import logging
 #~ logging.basicConfig(filename='/tmp/janitoo_test/log/network.log',level=logging.DEBUG)
 
-class TestNetworkState(JNTTBase):
+class NetworkStateCommon():
     """Test the network state machine
     """
-
-    prog = 'start.py'
-
-    add_ctrl = 111
-
     def test_010_network_sfm_primary(self):
         logging.config.fileConfig("tests/data/test_runner_conf_complete.conf")
         with mock.patch('sys.argv', [self.prog, 'start', '--conf_file=tests/data/test_runner_conf_complete.conf']):
@@ -175,6 +170,15 @@ class TestNetworkState(JNTTBase):
             print net_state.state
             time.sleep(1)
         self.assertEqual(net_state.state, 'STOPPED')
+
+class TestNetworkState(JNTTBase, NetworkStateCommon):
+    """Test the network state machine
+    """
+
+    prog = 'start.py'
+
+    add_ctrl = 111
+
 
     def test_130_network_state_secondary_random(self):
         #~ self.skipTest("Pass but freeze on Docker/CI. Surely a non stopped thread in the state machine")

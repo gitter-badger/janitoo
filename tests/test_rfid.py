@@ -39,7 +39,7 @@ from janitoo.options import JNTOptions
 from janitoo.rfid import RFIDBlock, RFIDBlock01, decode_rfid_block
 from janitoo.rfid import RFIDTag, decode_rfid_tag, INVALID_BLOCK
 
-class TestRFID(JNTTBase):
+class RFIDCommon():
     """Test RFID
     """
     current_version = 0b00000001
@@ -157,3 +157,8 @@ class TestRFID(JNTTBase):
         #Read it again in another tag
         tag3 = decode_rfid_tag(self.reader)
         self.assertEqual(len(tag3.blocks), 3)
+
+class TestRFID(JNTTBase, RFIDCommon):
+    """Test RFID
+    """
+    pass
