@@ -99,3 +99,22 @@ class TestFakeSerser(JNTTServer, JNTTServerCommon):
     server_section = "fake"
     hadds = [HADD%(1118,0), HADD%(1118,1), HADD%(1118,2)]
 
+    def test_040_server_start_no_error_in_log(self):
+        self.start()
+        self.assertHeartbeatNodes(hadds=self.hadds)
+        time.sleep(65)
+        self.assertNotInLogfile('^ERROR ')
+        self.assertInLogfile('Connected to broker')
+        print "Reload server"
+        self.server.reload()
+        time.sleep(2)
+        self.assertHeartbeatNodes(hadds=self.hadds)
+        time.sleep(30)
+        self.assertNotInLogfile('^ERROR ')
+        print "Reload threads"
+        self.server.reload_threads()
+        time.sleep(2)
+        self.assertHeartbeatNodes(hadds=self.hadds)
+        time.sleep(30)
+        self.assertNotInLogfile('^ERROR ')
+

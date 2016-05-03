@@ -145,12 +145,16 @@ class JNTValue(object):
 
     def start(self):
         """Start the value. Can be used to start a thread to acquire data.
+        This method is not called in the nodeman process.
+        Programmer must call it manually, ie at stat machine change.
 
         """
         return True
 
     def stop(self):
         """Stop the value.
+        This method is not called in the nodeman process.
+        Programmer must call it manually, ie at stat machine change.
 
         """
         return True
@@ -162,7 +166,12 @@ class JNTValue(object):
         return self
 
     def to_dict(self):
-        """Retrieve a dict version of the value
+        """Retrieve a dict version of the value.
+        Include all properties except :
+         - ends with lock, _cb,
+         - starts with timer, _
+        So use the naming convention above or ask for update if you really need it.
+
         """
         res = {}
         res.update(self.__dict__)
