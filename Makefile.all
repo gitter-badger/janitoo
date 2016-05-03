@@ -225,6 +225,8 @@ develop-all:
 tests:
 	make -C $(module) tests
 
+tests-report: tests-all coverage-collect coverage-check
+
 tests-all:
 	-netcat -zv 127.0.0.1 1-9999 2>&1|grep succeeded
 	export JANITOO_ALLTESTS=1
