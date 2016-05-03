@@ -37,7 +37,7 @@ ARCHDIR      = ${ARCHBASE}/${ARCHNAME}
 
 DOCKIP       = 127.0.0.1
 
-SUBMODULES   = $(shell find . -iname jani\* -type d -maxdepth 1|sort)
+SUBMODULES   = $(shell find . -iname jani\* -type d -maxdepth 1|sort|sed -e 's/janitoo_nosetests_flask//g'|sed -e 's/janitoo_nosetests//g'|sed -e 's/janitoo_sphinx//g')
 COREMODULES   = janitoo janitoo_factory janitoo_db janitoo_flask janitoo_flask_socketio janitoo_manager janitoo_manager_proxy janitoo_datalog_rrd janitoo_thermal janitoo_hostsensor janitoo_layouts
 
 -include Makefile.local
