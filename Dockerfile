@@ -43,16 +43,7 @@ RUN apt-get install -y build-essential && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-COPY docker/supervisord-tests.conf /etc/supervisor/
-COPY docker/supervisor-tests.conf.d/ /etc/supervisor/janitoo-tests.conf.d/
-COPY docker/supervisord.conf /etc/supervisor/
-COPY docker/supervisor.conf.d/ /etc/supervisor/janitoo.conf.d/
-
-COPY docker/auto.sh /root/
 COPY docker/shell.sh /root/
-COPY docker/rescue.sh /root/
-COPY docker/halt.sh /root/
-COPY docker/shutdown.sh /root/
 
 RUN mkdir /opt/janitoo && \
     for dir in src cache cache/janitoo_manager home log run etc init; do mkdir /opt/janitoo/$dir; done && \

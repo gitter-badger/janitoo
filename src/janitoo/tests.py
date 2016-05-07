@@ -59,8 +59,8 @@ assert(COMMAND_DESC[COMMAND_DOC_RESOURCE] == 'COMMAND_DOC_RESOURCE')
 
 DEPLOY_DIRS = ['css', 'images', 'js']
 
-def make_thread(options):
-    if get_option_autostart(options, 'fake') == True:
+def make_thread(options, force=False):
+    if get_option_autostart(options, 'fake') == True or force:
         return FakeThread(options)
     else:
         return None
