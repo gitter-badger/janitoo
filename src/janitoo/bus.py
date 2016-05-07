@@ -235,7 +235,7 @@ class JNTBus(object):
                 extend( self )
 
     def load_extensions(self, oid):
-        """"Extend the bus with methods found in entrypoints
+        """"Load extensions from config file.
         """
         logger.debug('[%s] - Load bus extensions %s with in section %s', self.__class__.__name__, oid, self.oid )
         try:
@@ -252,7 +252,7 @@ class JNTBus(object):
         :param str params: module parameters
         """
         try:
-            cmd = 'modprobe {:s} {:s}'.format(module, params)
+            cmd = '/sbin/modprobe %s %s' % (module, params)
             process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE.PIPE)
             stdout, stderr = process.communicate()
             stdout = [x for x in stdout.split("\n") if x != ""]
@@ -263,7 +263,7 @@ class JNTBus(object):
             else:
                 return True
         except :
-            logger.exception("Can't load {:s} kernel modules", module)
+            logger.exception("Can't load kernel module %s", module)
 
     def kernel_rmmod(self, module):
         """Remove a kernel module. Needs to be root (raspberry)
@@ -271,7 +271,7 @@ class JNTBus(object):
         :param str module: the kernel module to remove
         """
         try:
-            cmd = 'rmmod {:s}'.format(module)
+            cmd = '/sbin/rmmod %s' % (module)
             process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE.PIPE)
             stdout, stderr = process.communicate()
             stdout = [x for x in stdout.split("\n") if x != ""]
@@ -282,4 +282,4 @@ class JNTBus(object):
             else:
                 return True
         except :
-            logger.exception("Can't load {:s} kernel modules", module)
+            logger.exception("Can't remove kernel module %s", module)
