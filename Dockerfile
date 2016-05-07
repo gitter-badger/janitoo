@@ -75,8 +75,19 @@ RUN make clone module=janitoo_factory && \
     rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_pki && \
-    make clone module=janitoo_nginx && \
-    make clone module=janitoo_mosquitto && \
+    make docker-deps module=janitoo_pki && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN make clone module=janitoo_nginx && \
+    make docker-deps module=janitoo_nginx && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
+
+RUN make clone module=janitoo_mosquitto && \
+    make docker-deps module=janitoo_mosquitto && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true

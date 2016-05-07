@@ -46,6 +46,22 @@ assert(COMMAND_DESC[COMMAND_CONTROLLER] == 'COMMAND_CONTROLLER')
 ##############################################################
 
 class JNTBus(object):
+    """A bus holds components
+    A bus is mapped in a controller node
+
+    Bus aggregation
+    ---------------
+    A master bus can aggregate multiple bus to hold different compenents on the same bus.
+
+    Look at janitoo_raspberry_fishtank, janitoo_lapinoo, ...
+
+    Bus extension
+    ---------------
+    A bus can be extended to add new features, shared resource, ...
+
+    Look at janitoo_raspberry_spi, janitoo_raspberry_i2c and janitoo_raspberry_i2c_pca9865, janitoo_events and janitoo_events_cron, ...
+
+    """
     def __init__(self, oid='generic', **kwargs):
         """Initialise the bus
         A bus can define values to configure itself.
