@@ -199,7 +199,7 @@ uninstall-all:
 	@echo "Uninstallation finished."
 
 deps-all:
-	for module in ${SUBMODULES};do make -C $$module install; done
+	for module in ${SUBMODULES};do make -C $$module deps; done
 	@echo
 	@echo "Debian packages installed."
 
@@ -213,11 +213,6 @@ docker-deps:
 	make -C $(module) docker-deps
 
 develop-all:
-	-make -C janitoo develop
-	-make -C janitoo_packaging develop
-	-make -C janitoo_db develop
-	-make -C janitoo_factory develop
-	-make -C janitoo_flask develop
 	for module in ${SUBMODULES};do make -C $$module develop; done
 	@echo
 	@echo "Installation for developpers of janitoo finished."

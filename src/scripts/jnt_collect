@@ -27,6 +27,8 @@ __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 from pkg_resources import iter_entry_points
 import argparse
 
+from janitoo.classes import GENRE_DESC, VALUE_DESC
+
 def collect(key, output='txt'):
     if output == 'txt':
         print "-------------------------------------------------------------------------------"
@@ -45,6 +47,38 @@ def collect(key, output='txt'):
     if output=='txt':
         print ""
 
+def component(key, output='txt'):
+    if output == 'txt':
+        print "-------------------------------------------------------------------------------"
+        print "Component : %s" %key
+    for entry in iter_entry_points(group = 'janitoo.components'):
+        if entry.name==key:
+            compo = entry.load()()
+            for val in compo.values:
+                if output=='txt':
+                    print " %s : %s : %s - %s" %(val, GENRE_DESC[compo.values[val].genre]['label'], VALUE_DESC[compo.values[val].type]['label'], compo.values[val].help)
+                elif output=='short':
+                    print "%s" %(val)
+                else:
+                    print "%s" %(val)
+
+def bus(key, output='txt'):
+    if output == 'txt':
+        print "-------------------------------------------------------------------------------"
+        print "Bus (thread) : %s" %key
+    for entry in iter_entry_points(group = 'janitoo.threads'):
+        if entry.name==key:
+            compo = entry.load()({}, force=True)
+            th = entry.load()({}, force=True)
+            th.init_bus()
+            for val in th.bus.values:
+                if output=='txt':
+                    print " %s : %s : %s - %s" %(val, GENRE_DESC[th.bus.values[val].genre]['label'], VALUE_DESC[th.bus.values[val].type]['label'], th.bus.values[val].help)
+                elif output=='short':
+                    print "%s" %(val)
+                else:
+                    print "%s" %(val)
+
 CORE = ["janitoo.threads", "janitoo.components", "janitoo.values", "janitoo.models"]
 
 FLASK = ["janitoo_flask.blueprint", "janitoo_flask.menu_left", "janitoo_flask.listener", "janitoo_flask.network"]
@@ -54,6 +88,8 @@ MANAGER = ["janitoo_manager.blueprint", "janitoo_manager.menu_left", "janitoo_ma
 def jnt_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output', action='store', help='The format (txt, raw, ...)', choices=['txt', 'raw'], default='txt')
+    parser.add_argument('-b', '--bus', action='store', help='Collect values of the bus', default=None)
+    parser.add_argument('-c', '--component', action='store', help='Collect values of the compoent', default=None)
     parser.add_argument('-t', '--type', action='store', help='The type of entry-point', choices=['all']+CORE+FLASK+MANAGER, default='all')
 
     #~ subparsers = parser.add_subparsers(dest='command', help='commands')
@@ -63,7 +99,11 @@ def jnt_parser():
 def main():
     parser = jnt_parser()
     args = parser.parse_args()
-    if args.type == "all":
+    if args.bus != None:
+        bus(args.bus, output=args.output)
+    elif args.component != None:
+        component(args.component, output=args.output)
+    elif args.type == "all":
         for mod in CORE+FLASK+MANAGER:
             collect(mod, output=args.output)
     else:
