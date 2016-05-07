@@ -87,7 +87,7 @@ class BaseThread(threading.Thread):
             pass
 
     def init_section(self):
-        """Init the bus. Must be overloaded
+        """Init the section. Must be overloaded
         """
         self.section = None
 
@@ -192,7 +192,7 @@ class JNTThread(BaseThread):
         return self.nodeman.state
 
     def create_nodeman(self):
-        """
+        """Create the node manager
         """
         return JNTNodeMan(self.options, self.section, self.uuid)
 
@@ -255,17 +255,12 @@ class JNTBusThread(JNTThread):
         self.bus = None
 
     def post_loop(self):
-        """Stop the bus
+        """After the loop is finished
         """
-        #The bus is stopped by the nodeman
-        #~ if self.bus != None:
-            #~ try:
-                #~ self.bus.stop()
-            #~ except:
-                #~ logger.exception("[%s] - Exception in post-loop", self.__class__.__name__)
         pass
 
     def post_run(self):
-        """Derefernce the bus
+        """Launch before exititng the run methode. You should dereference here.
+        Derefernce the bus
         """
         self.bus = None

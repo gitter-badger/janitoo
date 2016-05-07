@@ -23,7 +23,7 @@ RUN apt-get install -y sudo cron openssh-server lsb-release lsb-base apt-transpo
     rm -Rf /tmp/* 2>/dev/null||true
 
 RUN apt-get install -y sudo supervisor && \
-    mkdir -p /var/log/supervisor /etc/supervisord && \
+    mkdir -p /var/log/supervisor /etc/supervisord /etc/supervisor/janitoo.conf.d /etc/supervisor/janitoo-tests.conf.d && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true

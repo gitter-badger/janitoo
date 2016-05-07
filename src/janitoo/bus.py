@@ -154,13 +154,15 @@ class JNTBus(object):
             logger.warning("[%s] - Missing attribute found %s when cleaning. Continue anyway.", self.__class__.__name__, objname)
 
     def update_attrs(self, objname, obj):
-        '''Export object to all targets'''
+        '''Update object to all targets'''
         logger.debug("[%s] - Export attrs to all buses", self.__class__.__name__)
         for target in self._masters:
             setattr(target, objname, obj)
 
     def start(self, mqttc, trigger_thread_reload_cb=None):
-        """Start the bus"""
+        """Start the bus
+        Components will be started by the nodemanager after retrieving configuration.
+        """
         logger.debug("[%s] - Start the bus", self.__class__.__name__)
         self.export_values()
         self._trigger_thread_reload_cb = trigger_thread_reload_cb
@@ -186,14 +188,14 @@ class JNTBus(object):
         return "%s" % self.oid
 
     def loop(self, stopevent):
-        """Retrieve data
+        """Loop
         Don't do long task in loop. Use a separated thread to not perturbate the nodeman
 
         """
         pass
 
     def add_component(self, oid, addr, **kwargs):
-        """Return an uuid for the bus
+        """Add a component on the bus
 
         """
         if addr in self.components:
