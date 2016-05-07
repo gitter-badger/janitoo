@@ -88,24 +88,16 @@ RUN make clone module=janitoo_mysql && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-#Only for tests
-#RUN make clone module=janitoo_postgresql && \
-#    make clone module=janitoo_postgresql_client && \
-#    make docker-deps module=janitoo_postgresql && \
-#    apt-get clean && \
-#    rm -Rf /root/.cache/* 2>/dev/null||true && \
-#    rm -Rf /tmp/* 2>/dev/null||true
-
 RUN make clone module=janitoo_gogs && \
     make -C janitoo_gogs docker-deps && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
 
-#RUN make clone module=janitoo_dhcp && \
-#    apt-get clean && \
-#    rm -Rf /root/.cache/* 2>/dev/null||true && \
-#    rm -Rf /tmp/* 2>/dev/null||true
+RUN make clone module=janitoo_dhcp && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_layouts && \
     make docker-deps module=janitoo_layouts && \
