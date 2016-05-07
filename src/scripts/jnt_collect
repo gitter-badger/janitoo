@@ -60,7 +60,7 @@ def component(key, output='txt'):
             compo = entry.load()()
             for val in compo.values:
                 if output=='txt':
-                    print " %s : %s : %s - %s" %(val, GENRE_DESC[compo.values[val].genre]['label'], VALUE_DESC[compo.values[val].type]['label'], compo.values[val].help)
+                    print " %s : %s : %s - %s (%s)" %(val, GENRE_DESC[compo.values[val].genre]['label'], VALUE_DESC[compo.values[val].type]['label'], compo.values[val].help, compo.values[val].default)
                 elif output=='short':
                     print "%s" %(val)
                 else:
@@ -77,7 +77,7 @@ def bus(key, output='txt'):
             th.init_bus()
             for val in th.bus.values:
                 if output=='txt':
-                    print " %s : %s : %s - %s" %(val, GENRE_DESC[th.bus.values[val].genre]['label'], VALUE_DESC[th.bus.values[val].type]['label'], th.bus.values[val].help)
+                    print " %s : %s : %s - %s (%s)" %(val, GENRE_DESC[th.bus.values[val].genre]['label'], VALUE_DESC[th.bus.values[val].type]['label'], th.bus.values[val].help, th.bus.values[val].default)
                 elif output=='short':
                     print "%s" %(val)
                 else:
