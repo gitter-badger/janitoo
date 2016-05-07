@@ -26,9 +26,11 @@ __email__ = 'bibi21000@gmail.com'
 __copyright__ = "Copyright © 2013-2014-2015-2016 Sébastien GALLET aka bibi21000"
 
 import logging
+#~ logging.getLogger(__name__).addHandler(logging.NullHandler())
 logger = logging.getLogger(__name__)
 
 from pkg_resources import iter_entry_points
+import subprocess
 
 from utils import JanitooNotImplemented, HADD
 from janitoo.node import JNTNode
@@ -242,3 +244,42 @@ class JNTBus(object):
             logger.warning("[%s] - Can't load_extensions", self.__class__.__name__, exc_info=True)
             exts = []
         self.extend_from_entry_points(oid, exts)
+
+    def kernel_modprobe(self, module, params=''):
+        """Load a kernel module. Needs to be root (raspberry)
+
+        :param str module: the kernel module to load
+        :param str params: module parameters
+        """
+        try:
+            cmd = 'modprobe {:s} {:s}'.format(module, params)
+            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE.PIPE)
+            stdout, stderr = process.communicate()
+            stdout = [x for x in stdout.split("\n") if x != ""]
+            stderr = [x for x in stderr.split("\n") if x != ""]
+            if process.returncode < 0 or len(stderr):
+                for error in stderr:
+                    logger.error(error)
+            else:
+                return True
+        except :
+            logger.exception("Can't load {:s} kernel modules", module)
+
+    def kernel_rmmod(self, module):
+        """Remove a kernel module. Needs to be root (raspberry)
+
+        :param str module: the kernel module to remove
+        """
+        try:
+            cmd = 'rmmod {:s}'.format(module)
+            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE.PIPE)
+            stdout, stderr = process.communicate()
+            stdout = [x for x in stdout.split("\n") if x != ""]
+            stderr = [x for x in stderr.split("\n") if x != ""]
+            if process.returncode < 0 or len(stderr):
+                for error in stderr:
+                    logger.error(error)
+            else:
+                return True
+        except :
+            logger.exception("Can't load {:s} kernel modules", module)

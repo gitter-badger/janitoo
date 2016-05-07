@@ -24,6 +24,10 @@ __author__ = 'Sébastien GALLET aka bibi21000'
 __email__ = 'bibi21000@gmail.com'
 __copyright__ = "Copyright © 2013-2014-2015 Sébastien GALLET aka bibi21000"
 
+import logging
+h = logging.NullHandler()
+logger = logging.getLogger(__name__).addHandler(h)
+
 from pkg_resources import iter_entry_points
 import argparse
 
@@ -91,9 +95,6 @@ def jnt_parser():
     parser.add_argument('-b', '--bus', action='store', help='Collect values of the bus', default=None)
     parser.add_argument('-c', '--component', action='store', help='Collect values of the compoent', default=None)
     parser.add_argument('-t', '--type', action='store', help='The type of entry-point', choices=['all']+CORE+FLASK+MANAGER, default='all')
-
-    #~ subparsers = parser.add_subparsers(dest='command', help='commands')
-
     return parser
 
 def main():
