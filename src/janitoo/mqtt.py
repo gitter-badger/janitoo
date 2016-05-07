@@ -81,20 +81,20 @@ class MQTTBasic(mqttc.Client):
             6-255: Currently unused.
 
         """
-        if "broker_user" in self.options:
+        if "broker_user" in self.options and self.options['broker_user'] is not None:
             password = None
             if "broker_password" in self.options:
                 password = self.options['broker_password']
             self.username_pw_set(self.options['broker_user'], password)
         server = '127.0.0.1'
-        if "broker_ip" in self.options:
+        if "broker_ip" in self.options and self.options['broker_ip'] is not None:
             server = self.options['broker_ip']
         #print server
         port = 1883
-        if "broker_port" in self.options:
+        if "broker_port" in self.options and self.options['broker_port'] is not None:
             port = self.options['broker_port']
         keepalive = 60
-        if "broker_keepalive" in self.options:
+        if "broker_keepalive" in self.options and self.options['broker_keepalive'] is not None:
             keepalive = int(self.options['broker_keepalive'])
         return self.connect(server, port=port, keepalive=keepalive)
 

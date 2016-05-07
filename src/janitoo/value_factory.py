@@ -254,7 +254,7 @@ class JNTValueFactoryEntry(JNTValue):
                 self.instances[index]['data'] = None
             if self.instances[index]['data'] is None and self.genre == 0x03:
                 #It's a config, try to retrieve option from config
-                self.instances[index]['data'] = self.options.get_option(node_uuid, '%s_%s'%(self.uuid, index))
+                self.instances[index]['data'] = self.convert(self.options.get_option(node_uuid, '%s_%s'%(self.uuid, index)))
             if self._data is not None:
                 self.instances[index]['data'] = self._data
             if self.instances[index]['data'] is None:

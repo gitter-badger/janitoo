@@ -26,13 +26,6 @@ __copyright__ = "Copyright © 2013-2014-2015-2016 Sébastien GALLET aka bibi2100
 
 # Set default logging handler to avoid "No handler found" warnings.
 import logging
-try:  # Python 2.7+                                   # pragma: no cover
-    from logging import NullHandler                   # pragma: no cover
-except ImportError:                                   # pragma: no cover
-    class NullHandler(logging.Handler):               # pragma: no cover
-        """NullHandler logger for python 2.6"""       # pragma: no cover
-        def emit(self, record):                       # pragma: no cover
-            pass                                      # pragma: no cover
 logger = logging.getLogger(__name__)
 
 from classes import GENRE_DESC, VALUE_DESC
@@ -105,6 +98,35 @@ class JNTValue(object):
         """The hadd to reply to"""
         self.master_config_value = kwargs.get('master_config_value', None)
         """The master_value. Used with value_factory entries"""
+
+    def convert(self, data):
+        """
+        Convert data to the type of value
+
+        :return: The data of the value
+        :rtype: depending of the type of the value
+
+        """
+        if data is not None:
+            try:
+                if self.type == 0x01:
+                    #Bool
+                    return bool(data)
+                elif self.type == 0x02 or self.type == 0x04 or self.type == 0x07:
+                    #Byte or Int or Short
+                    return int(data)
+                elif self.type == 0x03:
+                    #Decimal
+                    return float(data)
+                elif self.type == 0x16:
+                    #Array
+                     return data.split('|')
+                logger.warning('[%s] - Do not convert data %s to %s.', self.__class__.__name__, data, VALUE_DESC[self.type]['label'])
+                return data
+            except:
+                logger.exception('[%s] - Exception when converting data %s to %s', self.__class__.__name__, data, VALUE_DESC[self.type]['label'])
+                return None
+        return None
 
     @property
     def data(self):
