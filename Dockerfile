@@ -59,6 +59,7 @@ RUN ln -s janitoo/Makefile.all Makefile && \
     make docker-inst && \
     make deps module=janitoo && \
     make develop module=janitoo && \
+    make docker-deps module=janitoo && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -82,7 +83,7 @@ RUN make clone module=janitoo_pki && \
 
 RUN make clone module=janitoo_mysql && \
     make clone module=janitoo_mysql_client && \
-    make -C janitoo_mysql docker-inst && \
+    make -C janitoo_mysql docker-deps && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -90,13 +91,13 @@ RUN make clone module=janitoo_mysql && \
 #Only for tests
 #RUN make clone module=janitoo_postgresql && \
 #    make clone module=janitoo_postgresql_client && \
-#    make docker-inst module=janitoo_postgresql && \
+#    make docker-deps module=janitoo_postgresql && \
 #    apt-get clean && \
 #    rm -Rf /root/.cache/* 2>/dev/null||true && \
 #    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_gogs && \
-    make -C janitoo_gogs docker-inst && \
+    make -C janitoo_gogs docker-deps && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -107,6 +108,7 @@ RUN make clone module=janitoo_gogs && \
 #    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_layouts && \
+    make docker-deps module=janitoo_layouts && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -114,15 +116,19 @@ RUN make clone module=janitoo_layouts && \
 RUN make clone module=janitoo_events && \
     make clone module=janitoo_events_cron && \
     make clone module=janitoo_events_earth && \
-    apt-get clean && rm -Rf /tmp/* || true && \
-    [ -d /root/.cache ] && rm -Rf /root/.cache/*
+    make docker-deps module=janitoo_events && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_thermal && \
-    apt-get clean && rm -Rf /tmp/* || true && \
-    [ -d /root/.cache ] && rm -Rf /root/.cache/*
+    make docker-deps module=janitoo_thermal && \
+    apt-get clean && \
+    rm -Rf /root/.cache/* 2>/dev/null||true && \
+    rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_datalog_rrd && \
-    make docker-inst module=janitoo_datalog_rrd && \
+    make docker-deps module=janitoo_datalog_rrd && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
@@ -136,7 +142,7 @@ RUN make clone module=janitoo_flask && \
 
 RUN make clone module=janitoo_manager && \
     make clone module=janitoo_manager_proxy && \
-    make docker-inst module=janitoo_manager && \
+    make docker-deps module=janitoo_manager && \
     jnt_dbman initdb -c /opt/janitoo/etc/janitoo_manager.conf && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
