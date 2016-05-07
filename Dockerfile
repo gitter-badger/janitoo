@@ -95,6 +95,7 @@ RUN make clone module=janitoo_gogs && \
     rm -Rf /tmp/* 2>/dev/null||true
 
 RUN make clone module=janitoo_dhcp && \
+    make -C janitoo_dhcp docker-deps && \
     apt-get clean && \
     rm -Rf /root/.cache/* 2>/dev/null||true && \
     rm -Rf /tmp/* 2>/dev/null||true
