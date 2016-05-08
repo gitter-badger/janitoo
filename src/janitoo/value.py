@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 from classes import GENRE_DESC, VALUE_DESC
 from utils import json_dumps
+from options import JNTOptions, string_to_bool
 
 ##############################################################
 #Check that we are in sync with the official command classes
@@ -111,7 +112,7 @@ class JNTValue(object):
             try:
                 if self.type == 0x01:
                     #Bool
-                    return bool(data)
+                    return string_to_bool(data)
                 elif self.type == 0x02 or self.type == 0x04 or self.type == 0x07:
                     #Byte or Int or Short
                     return int(data)
