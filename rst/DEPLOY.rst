@@ -18,7 +18,7 @@ Mosquitto
 
 This is the mqtt server.
 
-..code: bash
+.. code:: bash
 
     sudo apt-get install mosquitto
 
@@ -30,7 +30,7 @@ On every computers
 
 Create a directory for janitoo. It is highly recommended to put it in /opt/janitoo.
 
-..code: bash
+.. code:: bash
 
     sudo mkdir /opt/janitoo
 
@@ -45,35 +45,35 @@ Create a directory for janitoo. It is highly recommended to put it in /opt/janit
 
 Go to the src directory :
 
-..code: bash
+.. code:: bash
 
     cd src
 
 
 Clone janitoo repository from github
 
-..code: bash
+.. code:: bash
 
     git clone https://github.com/bibi21000/janitoo.git
 
 
 Create a link to the makefile helper:
 
-..code: bash
+.. code:: bash
 
     ln -s janitoo/makefile.all Makefile
 
 
 You can now "develop" janitoo. It use a lot of entry-points, so it MUST be developed:
 
-..code: bash
+.. code:: bash
 
     make develop module=janitoo
 
 Installing mosquito
 -------------------
 
-..code: bash
+.. code:: bash
 
     make clone module=janitoo_mosquitto
 
@@ -84,7 +84,7 @@ You are now ready to install modules. You don't need to install all of them on t
 
 For example, if you want to monitor cpu speed and voltage on a raspberry, you must install :
 
-..code: bash
+.. code:: bash
 
     make clone module=janitoo_hostsensor_raspberry
 
@@ -93,19 +93,19 @@ Your admin password may be asked by sudo. Sometimes, it's necessary to install d
 
 If you want to monitor disks and processes, you can install the extension:
 
-..code: bash
+.. code:: bash
 
     make clone module=janitoo_hostsensor_psutil
 
 On a laptop, you can use the lmsensor extension:
 
-..code: bash
+.. code:: bash
 
     make clone module=janitoo_hostsensor_lmsensor
 
 You can now create you init script :
 
-..code: bash
+.. code:: bash
 
     cd /opt/janitoo/init
 
