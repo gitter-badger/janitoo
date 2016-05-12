@@ -216,7 +216,7 @@ class JNTServer(object):
         """Catch SIGTERM signal
         """
         print('TERM signal received : %s' % (signal))
-        logger.warning('TERM signal received : %s', signal)
+        logger.warning('[%s] - TERM signal received : %s', self.__class__.__name__, signal)
         self.stop()
         #~ sys.exit(0)
 
@@ -224,7 +224,7 @@ class JNTServer(object):
         """Catch SIGHUP signal
         """
         print('HUP signal received : %s' % (signal))
-        logger.warning('HUP signal received : %s', signal)
+        logger.warning('[%s] - HUP signal received : %s', self.__class__.__name__, signal)
         self.reload()
         #~ sys.exit(0)
 
@@ -234,7 +234,7 @@ class JNTServer(object):
         The mosquitto broker use it to persist its database to disk.
         """
         print('USR1 signal received : %s' % (signal))
-        logger.warning('USR1 signal received : %s', signal)
+        logger.warning('[%s] - USR1 signal received : %s', self.__class__.__name__, signal)
         self.reload()
         #~ sys.exit(0)
 
@@ -294,7 +294,7 @@ class JNTControllerManager(object):
                 try:
                     self.mqtt_controller.join()
                 except:
-                    logger.exception("Catched exception")
+                    logger.exception("[%s] - Catched exception", self.__class__.__name__)
             self.mqtt_controller = None
         self.mqtt_controller = None
 
@@ -414,11 +414,11 @@ class JNTControllerManager(object):
                                 self._requests[data['uuid']](topic, resp)
                             return
                         except:
-                            logger.exception(u"Exception when running on_request method")
+                            logger.exception(u"[%s] - Exception when running on_request method", self.__class__.__name__)
                             return
-            logger.warning("Unknown request value %s", data)
+            logger.warning("[%s] - Unknown request value %s", self.__class__.__name__, data)
         except:
-            logger.exception("Exception in on_request")
+            logger.exception("[%s] - Exception in on_request", self.__class__.__name__)
 
 
     def request_info_nodes(self, reply_topic, resp):
