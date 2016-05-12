@@ -271,7 +271,7 @@ class JNTBus(object):
         """
         try:
             cmd = '/sbin/modprobe %s %s' % (module, params)
-            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE.PIPE)
+            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
             stdout = [x for x in stdout.split("\n") if x != ""]
             stderr = [x for x in stderr.split("\n") if x != ""]
@@ -290,7 +290,7 @@ class JNTBus(object):
         """
         try:
             cmd = '/sbin/rmmod %s' % (module)
-            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE.PIPE)
+            process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
             stdout = [x for x in stdout.split("\n") if x != ""]
             stderr = [x for x in stderr.split("\n") if x != ""]
