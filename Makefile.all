@@ -177,12 +177,17 @@ doc-all: clean-doc
 	@echo "Documentation finished."
 
 doc-commit-all:
-	for module in ${SUBMODULES};do make -C $$module tests; make -C $$module pylint; make -C $$module doc-commit; done
+	for module in ${SUBMODULES};do make -C $$module doc-commit; done
 	@echo
 	@echo "Documentation to github.io published."
 
 github.io-all:
 	for module in ${SUBMODULES};do make -C $$module github.io; done
+
+doc-full-all:
+	for module in ${SUBMODULES};do make -C $$module doc-full; done
+	@echo
+	@echo "Documentation to github.io built and published."
 
 doc-commit: doc
 	git checkout gh-pages
