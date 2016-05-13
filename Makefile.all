@@ -62,16 +62,13 @@ clean: clean-docs clean-archive
 	for module in ${SUBMODULES};do make -C $$module clean; done
 	-rm -rf $(BUILDDIR)
 	-find . -name \*.pyc -delete
-	-rm -f .coverage
+	-rm -rf .coverage
+	-rm -rf .coverage_core
 
 clean-dist:
 	for module in ${SUBMODULES};do make -C $$module clean-dist; done
 	@echo
 	@echo "Archives created"
-
-uninstall:
-	for module in ${SUBMODULES};do make -C $$module uninstall; done
-	-@find . -name \*.egg-info -type d -exec rm -rf "{}" \;
 
 developper-deps: common-deps cython-deps tests-deps pip-deps doc-deps
 	@echo
@@ -152,7 +149,7 @@ pull:
 	git clone $(repo)
 
 commit-all:
-	for module in ${SUBMODULES};do echo $$module;cd $$module;git commit -m "$$message" -a;git push;cd ..; done
+	for module in ${SUBMODULES};do make -C $$module commit; done
 
 deps:
 	make -C $(module) deps
@@ -179,16 +176,13 @@ doc-all: clean-doc
 	@echo
 	@echo "Documentation finished."
 
-github.io:
-	git checkout --orphan gh-pages
-	git rm -rf .
-	touch .nojekyll
-	git add .nojekyll
-	git commit -m "Initial import" -a
-	git push origin gh-pages
-	git checkout master
+doc-commit-all: clean-doc
+	for module in ${SUBMODULES};do make -C $$module tests; make -C $$module pylint; make -C $$module doc-commit; done
 	@echo
-	@echo "github.io branch initialised."
+	@echo "Documentation to github.io published."
+
+github.io-all:
+	for module in ${SUBMODULES};do make -C $$module github.io; done
 
 doc-commit: doc
 	git checkout gh-pages
@@ -223,12 +217,12 @@ uninstall:
 	make -C $(module) uninstall
 
 uninstall-all:
-	for module in ${SUBMODULES};do make -C $$module uninstall; done
+	-for module in ${SUBMODULES};do make -C $$module uninstall; done
 	@echo
 	@echo "Uninstallation finished."
 
 deps-all:
-	for module in ${SUBMODULES};do make -C $$module deps; done
+	for module in ${SUBMODULES};do make -C $$module install; done
 	@echo
 	@echo "Debian packages installed."
 
@@ -242,6 +236,11 @@ docker-deps:
 	make -C $(module) docker-deps
 
 develop-all:
+	-make -C janitoo develop
+	-make -C janitoo_packaging develop
+	-make -C janitoo_db develop
+	-make -C janitoo_factory develop
+	-make -C janitoo_flask develop
 	for module in ${SUBMODULES};do make -C $$module develop; done
 	@echo
 	@echo "Installation for developpers of janitoo finished."
@@ -249,12 +248,10 @@ develop-all:
 tests:
 	make -C $(module) tests
 
-tests-report: tests-all coverage-collect coverage-check
-
 tests-all:
 	-netcat -zv 127.0.0.1 1-9999 2>&1|grep succeeded
 	export JANITOO_ALLTESTS=1
-	for module in ${SUBMODULES};do make -C $$module tests || true; done
+	for module in ${SUBMODULES};do make -C $$module tests; done
 	unset JANITOO_ALLTESTS
 	@echo
 	@echo "Tests for janitoo finished."
@@ -270,6 +267,10 @@ docker-inst:
 	sudo apt-get install -y python-pip git python2.7-dev
 	pip install git+git://github.com/bibi21000/janitoo_nosetests@master
 	pip install git+git://github.com/bibi21000/janitoo_nosetests_flask@master
+	-test -d $(module)/docker/config && cp -rf $(module)/docker/config/* /opt/janitoo/etc/
+	-test -d $(module)/docker/supervisor.conf.d && cp -rf $(module)/docker/supervisor.conf.d/* /etc/supervisor/janitoo.conf.d/
+	-test -d $(module)/docker/supervisor-tests.conf.d && cp -rf $(module)/docker/supervisor-tests.conf.d/* /etc/supervisor/janitoo-tests.conf.d/
+	-test -d $(module)/docker/nginx && cp -rf $(module)/docker/nginx/* /etc/nginx/conf.d/
 	true
 	@echo
 	@echo "Docker image configured."
@@ -344,6 +345,11 @@ tar-all:
 	@echo
 	@echo "Archives created"
 
+tag-all:
+	for module in ${SUBMODULES};do make -C $$module tag; done
+	@echo
+	@echo "Tag created"
+
 ~/.ssh/id_rsa.pub:
 	ssh-keygen -t rsa
 
@@ -354,3 +360,10 @@ ssh:
 
 sshkey_copy:
 	ssh-copy-id root@${DOCKIP} -p 8882
+
+venv:
+	virtualenv venv
+	for module in ${SUBMODULES};do make VIRTUAL_ENV=../venv -C $$module install; done
+
+source:
+	source venv
