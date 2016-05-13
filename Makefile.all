@@ -176,7 +176,7 @@ doc-all: clean-doc
 	@echo
 	@echo "Documentation finished."
 
-doc-commit-all: clean-doc
+doc-commit-all:
 	for module in ${SUBMODULES};do make -C $$module tests; make -C $$module pylint; make -C $$module doc-commit; done
 	@echo
 	@echo "Documentation to github.io published."
